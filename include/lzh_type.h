@@ -31,6 +31,15 @@ typedef int             LZH_BOOL;
 #define LZH_TRUE  1
 #define LZH_FALSE 0
 
+typedef struct LZH_SPRITE LZH_SPRITE;
+typedef struct LZH_ENGINE LZH_ENGINE;
+typedef LZH_UINT32 (*LZH_LOOP_UPDATE)(LZH_ENGINE *, void *);
+
+typedef struct LZH_RECT {
+    int x, y;
+    int w, h;
+} LZH_RECT;
+
 #ifdef __cplusplus
 }
 #endif

@@ -11,14 +11,6 @@
 extern "C" {
 #endif
 
-/* 引擎对象定义 */
-typedef struct LZH_ENGINE LZH_ENGINE;
-
-/* 主循环更新回调 */
-typedef LZH_UINT32 (*LZH_LOOP_UPDATE)(LZH_ENGINE *, void *);
-
-/*===========================================================================*/
-
 /* 初始化 */
 LZH_API int lzh_init();
 
@@ -36,8 +28,15 @@ LZH_API void lzh_engine_destroy(LZH_ENGINE *engine);
 LZH_API void lzh_engine_set_update(
     LZH_ENGINE *engine, LZH_LOOP_UPDATE callback, void *args);
 
+/* 设置固定帧率更新回调 */
+LZH_API void lzh_engine_set_fixed_update(
+    LZH_ENGINE *engine, LZH_LOOP_UPDATE callback, void *args);
+
 /* 启动主循环渲染 */
 LZH_API void lzh_engine_render(LZH_ENGINE *engine);
+
+/* 获取当前帧间隔时间 ms */
+LZH_API int lzh_engine_delta(LZH_ENGINE *engine);
 
 #ifdef __cplusplus
 }

@@ -6,6 +6,8 @@
     <ClCompile Include="lzh_mem.c" />
     <ClCompile Include="lzh_mem_page.c" />
     <ClCompile Include="lzh_engine.c" />
+    <ClCompile Include="lzh_sprite.c" />
+    <ClCompile Include="lzh_keyboard.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lzh_link.h" />
@@ -18,6 +20,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="lzh_istruct.h" />
+    <ClInclude Include="..\include\lzh_sprite.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lzh_keyboard.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">

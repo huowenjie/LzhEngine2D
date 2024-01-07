@@ -10,6 +10,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lzhtank", "lzhtank\lzhtank.
 		{02DCC6F4-37A6-450C-B459-8428DF9E8261} = {02DCC6F4-37A6-450C-B459-8428DF9E8261}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{128AC74A-BAB0-4598-BFFF-CEE64CBF36E7}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
