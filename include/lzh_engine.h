@@ -1,0 +1,48 @@
+#ifndef __LZH_ENGINE_H__
+#define __LZH_ENGINE_H__
+
+#include "lzh_type.h"
+
+/*===========================================================================*/
+/* 窗口 */
+/*===========================================================================*/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* 引擎对象定义 */
+typedef struct LZH_ENGINE LZH_ENGINE;
+
+/* 主循环更新回调 */
+typedef LZH_UINT32 (*LZH_LOOP_UPDATE)(LZH_ENGINE *, void *);
+
+/*===========================================================================*/
+
+/* 初始化 */
+LZH_API int lzh_init();
+
+/* 终止 */
+LZH_API void lzh_quit();
+
+/* 创建渲染引擎对象 */
+LZH_API LZH_ENGINE *lzh_engine_create(
+    const char *title, int width, int height);
+
+/* 销毁引擎 */
+LZH_API void lzh_engine_destroy(LZH_ENGINE *engine);
+
+/* 设置更新回调 */
+LZH_API void lzh_engine_set_update(
+    LZH_ENGINE *engine, LZH_LOOP_UPDATE callback, void *args);
+
+/* 启动主循环渲染 */
+LZH_API void lzh_engine_render(LZH_ENGINE *engine);
+
+#ifdef __cplusplus
+}
+#endif
+
+/*===========================================================================*/
+
+#endif /* __LZH_ENGINE_H__ */
