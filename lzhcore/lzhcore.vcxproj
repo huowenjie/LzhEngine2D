@@ -165,10 +165,13 @@
     <ClCompile Include="lzh_maindll.c" />
     <ClCompile Include="lzh_mem.c" />
     <ClCompile Include="lzh_mem_page.c" />
+    <ClCompile Include="lzh_object.c" />
+    <ClCompile Include="lzh_render_queue.c" />
     <ClCompile Include="lzh_sprite.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\lzh_keyboard.h" />
+    <ClInclude Include="..\include\lzh_object.h" />
     <ClInclude Include="..\include\lzh_sprite.h" />
     <ClInclude Include="..\include\lzh_type.h" />
     <ClInclude Include="..\include\lzh_engine.h" />
@@ -176,6 +179,10 @@
     <ClInclude Include="lzh_mem.h" />
     <ClInclude Include="lzh_mem_page.h" />
     <ClInclude Include="lzh_istruct.h" />
+    <ClInclude Include="lzh_render_queue.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

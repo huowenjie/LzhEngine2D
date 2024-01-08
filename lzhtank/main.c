@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     LZH_ENGINE *engine = NULL;
     LZH_SPRITE *sprite = NULL;
     LZH_OBJECT *object = NULL;
-    
+
     lzh_init();
 
     engine = lzh_engine_create("Tank", 800, 600);
@@ -55,7 +55,7 @@ static float globaly = 0.0f;
 LZH_UINT32 update(LZH_ENGINE *eg, void *args)
 {
     float delta = lzh_engine_interval(eg);
-    float speed = 50.0f * delta;
+    float speed = 80.0f * delta;
 
     if (lzh_get_key_status(KEY_CODE_W)) {
         globaly -= speed;

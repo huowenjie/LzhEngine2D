@@ -8,6 +8,8 @@
     <ClCompile Include="lzh_engine.c" />
     <ClCompile Include="lzh_sprite.c" />
     <ClCompile Include="lzh_keyboard.c" />
+    <ClCompile Include="lzh_object.c" />
+    <ClCompile Include="lzh_render_queue.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lzh_link.h" />
@@ -26,10 +28,17 @@
     <ClInclude Include="..\include\lzh_keyboard.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\lzh_object.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="lzh_render_queue.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
       <UniqueIdentifier>{a04ce497-85b4-44b1-a6f6-b28a32d088de}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
   </ItemGroup>
 </Project>
