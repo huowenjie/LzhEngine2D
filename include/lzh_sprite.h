@@ -25,12 +25,6 @@ LZH_API LZH_SPRITE *lzh_sprite_create_from_sheets(
 /* 销毁精灵 */
 LZH_API void lzh_sprite_destroy(LZH_SPRITE *sprite);
 
-/* 设置尺寸 */
-LZH_API void lzh_sprite_set_size(LZH_SPRITE *sprite, int w, int h);
-
-/* 设置位置 */
-LZH_API void lzh_sprite_set_pos(LZH_SPRITE *sprite, int x, int y);
-
 /* 渲染精灵 */
 LZH_API void lzh_sprite_render(LZH_SPRITE *sprite);
 

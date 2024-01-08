@@ -1,6 +1,8 @@
 #include <stddef.h>
+#include <stdio.h>
 #include <lzh_engine.h>
 #include <lzh_sprite.h>
+#include <lzh_object.h>
 #include <lzh_keyboard.h>
 
 /*===========================================================================*/
@@ -12,7 +14,8 @@ static LZH_UINT32 update(LZH_ENGINE *eg, void *args);
 int main(int argc, char* argv[])
 {
     LZH_ENGINE *engine = NULL;
-    LZH_SPRITE *siprite = NULL;
+    LZH_SPRITE *sprite = NULL;
+    LZH_OBJECT *object = NULL;
     
     lzh_init();
 
@@ -21,13 +24,24 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    siprite = lzh_sprite_create(
+#ifdef _WINDOWS
+    sprite = lzh_sprite_create(
         engine, "D:\\vs-projects\\LzhEngine2D\\LzhEngine2D\\lzhtank\\res\\tank.png");
+#else
+    sprite = lzh_sprite_create(
+        engine, "/home/huowj/engine/LzhEngine2D/lzhtank/res/tank.png");
+#endif
 
-    lzh_engine_set_update(engine, update, siprite);
+    object = lzh_object_create(engine);
+
+    lzh_object_set_size(object, 30, 30);
+    lzh_object_set_sprite(object, sprite);
+
+    lzh_engine_set_update(engine, update, object);
     lzh_engine_render(engine);
 
-    lzh_sprite_destroy(siprite);
+    lzh_object_destroy(object);
+    lzh_sprite_destroy(sprite);
     lzh_engine_destroy(engine);
     lzh_quit();
     return 0;
@@ -40,9 +54,8 @@ static float globaly = 0.0f;
 
 LZH_UINT32 update(LZH_ENGINE *eg, void *args)
 {
-    int delta = lzh_engine_delta(eg);
-    float fdelta = ((float)delta) / 1000.0f;
-    float speed = 50.0f * fdelta;
+    float delta = lzh_engine_interval(eg);
+    float speed = 50.0f * delta;
 
     if (lzh_get_key_status(KEY_CODE_W)) {
         globaly -= speed;
@@ -60,8 +73,7 @@ LZH_UINT32 update(LZH_ENGINE *eg, void *args)
         globalx += speed;
     }
 
-    lzh_sprite_set_pos((LZH_SPRITE *)args, (int)globalx, (int)globaly);
-    lzh_sprite_render((LZH_SPRITE *)args);
+    lzh_object_set_pos((LZH_OBJECT *)args, (int)globalx, (int)globaly);
     return 0;
 }
 

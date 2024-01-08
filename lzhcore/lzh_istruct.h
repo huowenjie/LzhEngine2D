@@ -5,6 +5,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "lzh_type.h"
+#include "lzh_render_queue.h"
 
 /*===========================================================================*/
 /* 内部结构 */
@@ -15,37 +16,44 @@ struct LZH_ENGINE {
     SDL_Window *window;
     SDL_Renderer *renderer;
 
+    /* 渲染队列 */
+    struct RENDER_LAYER_QUEUE *render_queue;
+
     LZH_LOOP_UPDATE render_update;
     LZH_LOOP_UPDATE fixed_update;
     void *render_args;
     void *fixed_args;
 
-    Uint32 logic_fps;      /* 逻辑帧帧率 ms */
-    Uint32 render_fps;     /* 渲染帧帧率 ms */
-    Uint32 pause_delay;    /* 暂停延时 ms */
-    Uint32 delta_time;     /* 帧间隔时间 ms */
+    float logic_fps;      /* 逻辑帧帧率 ms */
+    float render_fps;     /* 渲染帧帧率 ms */
+    float pause_delay;    /* 暂停延时 ms */
+    float delta_time;     /* 帧间隔时间 ms */
 };
 
-/* 集合模式 */
+/* 组合模式 */
 typedef enum {
-    SPM_SINGLE_IMAGES = 0,  /* 单图模式 */
-    SPM_MULT_IMAGES,        /* 多图模式 */
-    SPM_SINGLE_SHEET        /* 单图分割模式 */
-} SPRITE_MODE;
+    SP_IMAGES = 0,          /* 多图模式 */
+    SP_SHEET                /* 单图切片模式 */
+} SPRITE_COMB_MODE;
 
-/* 单图模式精灵结构 */
-struct SINGLE_SPRITE {
+/* 多图模式精灵节点 */
+struct SPRITE_IMAGES_NODE {
+    struct SPRITE_IMAGES_NODE *prev;
+    struct SPRITE_IMAGES_NODE *next;
+
     SDL_Texture *texture;
 };
 
 /* 多图模式精灵结构 */
-struct MULT_SPRITE{
-    SDL_Texture *texture;
+struct SPRITE_IMAGES {
+    struct SPRITE_IMAGES_NODE *head;
+    struct SPRITE_IMAGES_NODE *tail;
+
     int count;
 };
 
-/* 单图分割结构 */
-struct SHEET_SPRITE {
+/* 单图切片模式结构 */
+struct SPRITE_SHEET {
     SDL_Texture *texture;
 
     SDL_Rect *rect_list;
@@ -54,17 +62,22 @@ struct SHEET_SPRITE {
 
 /* 精灵对象 */
 struct LZH_SPRITE {
+    SPRITE_COMB_MODE mode;
+
+    union {
+        struct SPRITE_IMAGES images;
+        struct SPRITE_SHEET sheet;
+    };
+};
+
+/* 对象结构 */
+struct LZH_OBJECT {
     LZH_ENGINE *engine;
-    SPRITE_MODE mode;
 
     int x, y;
     int w, h;
 
-    union {
-        struct SINGLE_SPRITE single_sp;
-        struct MULT_SPRITE mult_sp;
-        struct SHEET_SPRITE sheets_sp;
-    };
+    LZH_SPRITE *sprite;
 };
 
 /*===========================================================================*/
