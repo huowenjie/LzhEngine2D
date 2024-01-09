@@ -140,7 +140,6 @@ void lzh_engine_render(LZH_ENGINE *engine)
     float render_time = 0.0f;
     float prev_time = 0.0f;
     float time_count = 0.0f;
-    float render_count = 0.0f;
 
     if (!engine || !engine->logic_fps) {
         return;
@@ -192,16 +191,14 @@ void lzh_engine_render(LZH_ENGINE *engine)
         SDL_RenderPresent(renderer);
 
         start = (float)SDL_GetTicks64();
-
         engine->delta_time = start - prev_time;
+
         prev_time = start;
         time_count += engine->delta_time;
-        render_count += engine->delta_time;
 
-        /* äÖÈ¾Ö¡Ëø¶¨ 60 Ö¡ */
-        if (render_count > render_time) {
-            render_count -= render_time;
-            SDL_Delay((Uint32)render_time);
+        /* äÖÈ¾Ö¡Ëø¶¨ */
+        if (render_time > engine->delta_time) {
+            SDL_Delay((Uint32)(render_time - engine->delta_time));
         }
     }
 }

@@ -44,6 +44,7 @@ struct RENDER_LAYER_QUEUE {
 struct RENDER_LAYER_QUEUE *create_render_layer_queue();
 void destroy_render_layer_queue(struct RENDER_LAYER_QUEUE *queue);
 
+/* 将对象添加到渲染队列 */
 void render_queue_push(
     struct RENDER_LAYER_QUEUE *queue, int layer, LZH_OBJECT *object);
 

@@ -142,7 +142,7 @@ void add_sprite_texture(
     return;
 
 err:
-    if (!node) {
+    if (node) {
         LZH_FREE(node);
     }
 
