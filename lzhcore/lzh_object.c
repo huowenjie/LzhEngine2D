@@ -8,6 +8,7 @@
 /*===========================================================================*/
 
 static void lzh_obj_render_sprite(LZH_OBJECT *object, LZH_SPRITE *sprite);
+static int global_order = 0;
 
 /*===========================================================================*/
 
@@ -24,7 +25,7 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
         return NULL;
     }
 
-    render_queue_push(engine->render_queue, 0, obj);
+    render_tree_push(engine->render_tree, 0, global_order++, obj);
 
     obj->engine = engine;
     obj->x = 0;

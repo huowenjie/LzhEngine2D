@@ -5,7 +5,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "lzh_type.h"
-#include "lzh_render_queue.h"
+#include "lzh_render_tree.h"
 
 /*===========================================================================*/
 /* 内部结构 */
@@ -16,8 +16,8 @@ struct LZH_ENGINE {
     SDL_Window *window;
     SDL_Renderer *renderer;
 
-    /* 渲染队列 */
-    struct RENDER_LAYER_QUEUE *render_queue;
+    /* 渲染树对象 */
+    RT_RB_TREE *render_tree;
 
     LZH_LOOP_UPDATE render_update;
     LZH_LOOP_UPDATE fixed_update;

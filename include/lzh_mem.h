@@ -1,6 +1,8 @@
 #ifndef __LZH_MEM_H__
 #define __LZH_MEM_H__
 
+#include "lzh_type.h"
+
 #include <stddef.h>
 #include <stdlib.h>
 
@@ -14,8 +16,8 @@ extern "C" {
 
 /* 内存追踪通用宏 */
 #ifdef LZH_MEMORY_DEBUG
-    #define LZH_MEM_START create_res()
-    #define LZH_MEM_END clear_res()
+    #define LZH_MEM_START mem_create_res()
+    #define LZH_MEM_END mem_clear_res()
 
     #define LZH_MALLOC(len) mem_dbg_malloc((len), __FUNCTION__, __FILE__, __LINE__)
     #define LZH_REALLOC(p, len) mem_dbg_realloc((p), (len), __FUNCTION__, __FILE__, __LINE__)
@@ -41,35 +43,35 @@ extern "C" {
 #define LZH_MEM_CLEAR_FREE(p, len) (LZH_MEM_CLEAR((p), (len)), LZH_FREE((p)))
 
 /* 初始化内存资源 */
-void create_res();
+LZH_API void mem_create_res();
 
 /* 销毁内存资源 */
-void clear_res();
+LZH_API void mem_clear_res();
 
 /* 通用内存管理函数 */
-void *mem_malloc(size_t len);
-void *mem_realloc(void *ptr, size_t len);
-void  mem_free(void *ptr);
+LZH_API void *mem_malloc(size_t len);
+LZH_API void *mem_realloc(void *ptr, size_t len);
+LZH_API void  mem_free(void *ptr);
 
 /* 携带调试的内存管理函数 */
-void *mem_dbg_malloc(size_t len, const char *func, const char *file, int line);
-void *mem_dbg_realloc(void *ptr, size_t len, const char *func, const char *file, int line);
-void  mem_dbg_free(void *ptr);
+LZH_API void *mem_dbg_malloc(size_t len, const char *func, const char *file, int line);
+LZH_API void *mem_dbg_realloc(void *ptr, size_t len, const char *func, const char *file, int line);
+LZH_API void  mem_dbg_free(void *ptr);
 
 /* 内存擦除 */
-void mem_clear(void *ptr, size_t len);
+LZH_API void mem_clear(void *ptr, size_t len);
 
 /* 打印内存信息 */
-void mem_print_info();
-void mem_dbg_print_info();
+LZH_API void mem_print_info();
+LZH_API void mem_dbg_print_info();
 
 /* 打印内存块信息 */
-void mem_print_block_list(size_t len);
-void mem_dbg_print_block_list(size_t len);
+LZH_API void mem_print_block_list(size_t len);
+LZH_API void mem_dbg_print_block_list(size_t len);
 
 /* 打印泄漏信息 */
-void mem_print_leak_info();
-void mem_dbg_print_leak_info();
+LZH_API void mem_print_leak_info();
+LZH_API void mem_dbg_print_leak_info();
 
 #ifdef __cplusplus
 }

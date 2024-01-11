@@ -9,7 +9,7 @@
 /*===========================================================================*/
 
 /* 渲染队列中的对象 */
-static void render_queue_object(LZH_ENGINE *engine);
+static void render_objects(int layer, int order, LZH_OBJECT *object, void *args);
 
 /*===========================================================================*/
 
@@ -38,7 +38,7 @@ LZH_ENGINE *lzh_engine_create(
 {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-    struct RENDER_LAYER_QUEUE *render_queue = NULL;
+    RT_RB_TREE *render_tree = NULL;
 
     LZH_ENGINE *engine = LZH_MALLOC(sizeof(LZH_ENGINE));
     if (!engine) {
@@ -60,14 +60,14 @@ LZH_ENGINE *lzh_engine_create(
         goto err;
     }
 
-    render_queue = create_render_layer_queue();
-    if (!render_queue) {
+    render_tree = create_render_tree();
+    if (!render_tree) {
         goto err;
     }
 
     engine->window = window;
     engine->renderer = renderer;
-    engine->render_queue = render_queue;
+    engine->render_tree = render_tree;
     engine->logic_fps = 30.0f;
     engine->render_fps = 60.0f;
     engine->pause_delay = 250.0f;
@@ -75,8 +75,8 @@ LZH_ENGINE *lzh_engine_create(
     return engine;
 
 err:
-    if (render_queue) {
-        destroy_render_layer_queue(render_queue);
+    if (render_tree) {
+        destroy_render_tree(render_tree);
     }
 
     if (engine) {
@@ -96,8 +96,8 @@ err:
 void lzh_engine_destroy(LZH_ENGINE *engine)
 {
     if (engine) {
-        if (engine->render_queue) {
-            destroy_render_layer_queue(engine->render_queue);
+        if (engine->render_tree) {
+            destroy_render_tree(engine->render_tree);
         }
 
         if (engine->renderer) {
@@ -187,7 +187,8 @@ void lzh_engine_render(LZH_ENGINE *engine)
         }
 
         SDL_RenderClear(renderer);
-        render_queue_object(engine);
+        //render_queue_object(engine);
+        render_tree_iterate(engine->render_tree, render_objects, engine);
         SDL_RenderPresent(renderer);
 
         start = (float)SDL_GetTicks64();
@@ -221,30 +222,10 @@ float lzh_engine_interval_msec(LZH_ENGINE *engine)
 
 /*===========================================================================*/
 
-void render_queue_object(LZH_ENGINE *engine)
+void render_objects(int layer, int order, LZH_OBJECT *object, void *args)
 {
-    struct RENDER_LAYER_QUEUE_NODE *rlq_elem = NULL;
-    struct RENDER_LAYER_QUEUE *rld_link = NULL;
-    int i = 0;
-
-    if (!engine || !engine->render_queue) {
-        return;
-    }
-
-    rld_link = engine->render_queue;
-    rlq_elem = rld_link->head;
-    while (i++ < rld_link->count) {
-        struct RENDER_QUEUE *rq_link = rlq_elem->render_queue;
-        if (rq_link) {
-            int j = 0;
-            struct RENDER_QUEUE_NODE *rq_elem = rq_link->head;
-            while (j++ < rq_link->count) {
-                lzh_object_render(rq_elem->object);
-                rq_elem = rq_elem->next;
-            }
-        }
-
-        rlq_elem = rlq_elem->next;
+    if (object) {
+        lzh_object_render(object);
     }
 }
 

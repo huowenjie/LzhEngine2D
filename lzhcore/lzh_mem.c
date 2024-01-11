@@ -76,12 +76,12 @@ static int destroy_mutex(MUTEX_HANDLE *handle)
 /* ÄÚ´æ»¥³âËø */
 static MUTEX_HANDLE mem_lock;
 
-void create_res() 
+void mem_create_res() 
 {
     create_mutex(&mem_lock);
 }
 
-void clear_res()
+void mem_clear_res()
 {
     MEM_LOCK(mem_lock);
     clear_mem_pages();

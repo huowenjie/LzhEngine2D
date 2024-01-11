@@ -71,7 +71,7 @@ endif
 #------------------------------------------------------------------------------
 
 # 预定义宏
-DEF :=
+DEF := LZH_MEMORY_DEBUG
 
 # c++ 文件列表
 CPP_FILES := $(foreach dir,$(SRC_DIR),$(wildcard $(dir)/*.cpp))
