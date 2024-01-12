@@ -88,8 +88,6 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
  * 
  * 迭代函数 RB_VISIT 定义：
  *      首个参数为当前 key，第二个参数为值 value，最后一个参数为用户传入的参数
- * 
- * 
  */
 #define RBTREE_DECLARE(ns, fns, keytype, valuetype) \
     typedef struct ns##_RB_NODE ns##_RB_NODE; \

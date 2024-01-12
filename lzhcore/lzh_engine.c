@@ -150,9 +150,7 @@ void lzh_engine_render(LZH_ENGINE *engine)
     fix_time = 1000.0f / engine->logic_fps;
     render_time = 1000.0f / engine->render_fps;
 
-    while (run)
-    {
-        /* 计算增量时间  */
+    while (run) {
         float start = 0.0f;
 
         /* 如果帧时间过长（比如发生暂停等操作，这里则重置时间） */
@@ -160,10 +158,8 @@ void lzh_engine_render(LZH_ENGINE *engine)
             engine->delta_time = engine->pause_delay;
         }
 
-        while (SDL_PollEvent(&evt))
-        {
-            if (evt.type == SDL_QUIT)
-            {
+        while (SDL_PollEvent(&evt)) {
+            if (evt.type == SDL_QUIT) {
                 run = 0;
                 break;
             }
@@ -188,7 +184,6 @@ void lzh_engine_render(LZH_ENGINE *engine)
         }
 
         SDL_RenderClear(renderer);
-        //render_queue_object(engine);
         render_tree_iterate(engine->render_tree, render_objects, engine);
         SDL_RenderPresent(renderer);
 
