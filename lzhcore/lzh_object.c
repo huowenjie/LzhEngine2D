@@ -3,11 +3,11 @@
 #include <lzh_sprite.h>
 
 #include "lzh_mem.h"
-#include "lzh_istruct.h"
+#include "lzh_core_object.h"
+#include "lzh_core_sprite.h"
 
 /*===========================================================================*/
 
-static void lzh_obj_render_sprite(LZH_OBJECT *object, LZH_SPRITE *sprite);
 static int global_order = 0;
 
 /*===========================================================================*/
@@ -63,7 +63,7 @@ void lzh_object_render(LZH_OBJECT *object)
 {
     if (object) {
         if (object->sprite) {
-            lzh_obj_render_sprite(object, object->sprite);
+            lzh_sprite_render(object, object->sprite);
         }
     }
 }
@@ -72,36 +72,6 @@ void lzh_object_set_sprite(LZH_OBJECT *object, LZH_SPRITE *sp)
 {
     if (object && sp) {
         object->sprite = sp;
-    }
-}
-
-/*===========================================================================*/
-
-void lzh_obj_render_sprite(LZH_OBJECT *object, LZH_SPRITE *sprite)
-{
-    LZH_ENGINE *engine = NULL;
-    SDL_Rect target;
-
-    if (!object || !sprite || !object->engine) {
-        return;
-    }
-
-    engine = object->engine;
-
-    target.x = object->x;
-    target.y = object->y;
-    target.w = object->w;
-    target.h = object->h;
-
-    if (sprite->mode == SP_IMAGES) {
-        struct SPRITE_IMAGES_NODE *node = sprite->images.head;
-
-        if (node) {
-            SDL_Texture *texture = node->texture;
-            if (texture) {
-                SDL_RenderCopy(engine->renderer, texture, NULL, &target);
-            }
-        }
     }
 }
 

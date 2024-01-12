@@ -38,9 +38,12 @@ typedef int                 LZH_BOOL;
 typedef struct LZH_OBJECT   LZH_OBJECT;
 typedef struct LZH_SPRITE   LZH_SPRITE;
 typedef struct LZH_ENGINE   LZH_ENGINE;
-typedef void *              LZH_COMPONENT;
 
+/* 主循环更新回调 */
 typedef LZH_UINT32 (*LZH_LOOP_UPDATE)(LZH_ENGINE *, void *);
+
+/* 关键帧回调 */
+typedef LZH_UINT32 (*LZH_KEYFRAME_CB)(void *);
 
 typedef struct LZH_RECT {
     int x, y;

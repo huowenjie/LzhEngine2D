@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <lzh_engine.h>
 #include <lzh_object.h>
+#include <SDL2/SDL_image.h>
 
-#include "lzh_istruct.h"
+#include "lzh_core_engine.h"
 #include "lzh_mem.h"
 
 /*===========================================================================*/
