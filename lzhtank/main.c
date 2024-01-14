@@ -71,13 +71,12 @@ static float globaly = 0.0f;
 LZH_UINT32 update(LZH_ENGINE *eg, void *args)
 {
     float delta = lzh_engine_interval(eg);
-    float speed = 1.0f * delta;
+    float speed = 10.0f * delta;
 
     globalx += speed;
 
     lzh_object_set_pos(
         (LZH_OBJECT *)args, globalx, globaly);
-    printf("target = %f, %f\n", globalx, globaly);
     return 0;
 }
 
