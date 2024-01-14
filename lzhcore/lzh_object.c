@@ -43,7 +43,7 @@ void lzh_object_destroy(LZH_OBJECT *object)
     }
 }
 
-void lzh_object_set_size(LZH_OBJECT *object, int w, int h)
+void lzh_object_set_size(LZH_OBJECT *object, float w, float h)
 {
     if (object) {
         object->w = w;
@@ -51,7 +51,7 @@ void lzh_object_set_size(LZH_OBJECT *object, int w, int h)
     }
 }
 
-void lzh_object_set_pos(LZH_OBJECT *object, int x, int y)
+void lzh_object_set_pos(LZH_OBJECT *object, float x, float y)
 {
     if (object) {
         object->x = x;

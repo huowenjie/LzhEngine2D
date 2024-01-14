@@ -9,11 +9,12 @@
     <ClCompile Include="lzh_sprite.c" />
     <ClCompile Include="lzh_keyboard.c" />
     <ClCompile Include="lzh_object.c" />
-    <ClCompile Include="lzh_render_queue.c" />
+    <ClCompile Include="lzh_core_sprite.c" />
+    <ClCompile Include="lzh_rbtree.c" />
+    <ClCompile Include="lzh_render_tree.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lzh_link.h" />
-    <ClInclude Include="lzh_mem.h" />
     <ClInclude Include="lzh_mem_page.h" />
     <ClInclude Include="..\include\lzh_engine.h">
       <Filter>include</Filter>
@@ -21,7 +22,6 @@
     <ClInclude Include="..\include\lzh_type.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="lzh_istruct.h" />
     <ClInclude Include="..\include\lzh_sprite.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -31,7 +31,19 @@
     <ClInclude Include="..\include\lzh_object.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="lzh_render_queue.h" />
+    <ClInclude Include="..\include\lzh_mem.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lzh_rbtree.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lzh_stack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="lzh_core_engine.h" />
+    <ClInclude Include="lzh_core_object.h" />
+    <ClInclude Include="lzh_core_sprite.h" />
+    <ClInclude Include="lzh_render_tree.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">

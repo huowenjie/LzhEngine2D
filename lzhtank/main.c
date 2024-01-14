@@ -25,8 +25,6 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    LZH_MALLOC(2);
-
 #ifndef _WINDOWS
     sprite1 = lzh_sprite_create(
         engine, "/home/huowj/engine/LzhEngine2D/lzhtank/res/tank.png");
@@ -34,6 +32,22 @@ int main(int argc, char *argv[])
     object1 = lzh_object_create(engine);
 
     lzh_object_set_size(object1, 30, 30);
+    lzh_object_set_sprite(object1, sprite1);
+
+    lzh_engine_set_update(engine, update, object1);
+    lzh_engine_render(engine);
+
+    lzh_object_destroy(object1);
+    lzh_sprite_destroy(sprite1);
+
+    lzh_engine_destroy(engine);
+#else
+    sprite1 = lzh_sprite_create(
+        engine, "D:\\vs-projects\\LzhEngine2D\\LzhEngine2D\\lzhtank\\res\\tank.png");
+
+    object1 = lzh_object_create(engine);
+
+    lzh_object_set_size(object1, 160.0f, 160.0f);
     lzh_object_set_sprite(object1, sprite1);
 
     lzh_engine_set_update(engine, update, object1);
@@ -51,32 +65,19 @@ int main(int argc, char *argv[])
 
 /*===========================================================================*/
 
-static float globalx = -15.0f;
-static float globaly = -15.0f;
+static float globalx = 0.0f;
+static float globaly = 0.0f;
 
 LZH_UINT32 update(LZH_ENGINE *eg, void *args)
 {
     float delta = lzh_engine_interval(eg);
-    float speed = 100.0f * delta;
+    float speed = 1.0f * delta;
 
-    if (lzh_get_key_status(KEY_CODE_W)) {
-        globaly -= speed;
-    }
-
-    if (lzh_get_key_status(KEY_CODE_S)) {
-        globaly += speed;
-    }
-
-    if (lzh_get_key_status(KEY_CODE_A)) {
-        globalx -= speed;
-    }
-
-    if (lzh_get_key_status(KEY_CODE_D)) {
-        globalx += speed;
-    }
+    globalx += speed;
 
     lzh_object_set_pos(
-        (LZH_OBJECT *)args, (int)(globalx + 0.5f), (int)(globaly + 0.5f));
+        (LZH_OBJECT *)args, globalx, globaly);
+    printf("target = %f, %f\n", globalx, globaly);
     return 0;
 }
 

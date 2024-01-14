@@ -12,8 +12,8 @@
 struct LZH_OBJECT {
     LZH_ENGINE *engine;
 
-    int x, y;
-    int w, h;
+    float x, y;
+    float w, h;
 
     LZH_SPRITE *sprite;
 };

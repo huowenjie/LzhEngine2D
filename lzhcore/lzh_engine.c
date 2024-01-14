@@ -139,8 +139,8 @@ void lzh_engine_render(LZH_ENGINE *engine)
 
     float fix_time = 0.0f;
     float render_time = 0.0f;
-    float prev_time = 0.0f;
     float time_count = 0.0f;
+    Uint64 prev_time = SDL_GetPerformanceCounter();
 
     if (!engine || !engine->logic_fps) {
         return;
@@ -151,12 +151,7 @@ void lzh_engine_render(LZH_ENGINE *engine)
     render_time = 1000.0f / engine->render_fps;
 
     while (run) {
-        float start = 0.0f;
-
-        /* 如果帧时间过长（比如发生暂停等操作，这里则重置时间） */
-        if (engine->delta_time > engine->pause_delay) {
-            engine->delta_time = engine->pause_delay;
-        }
+        Uint64 start = 0;
 
         while (SDL_PollEvent(&evt)) {
             if (evt.type == SDL_QUIT) {
@@ -187,15 +182,13 @@ void lzh_engine_render(LZH_ENGINE *engine)
         render_tree_iterate(engine->render_tree, render_objects, engine);
         SDL_RenderPresent(renderer);
 
-        start = (float)SDL_GetTicks64();
-        engine->delta_time = start - prev_time;
-
+        start = SDL_GetPerformanceCounter();
+        engine->delta_time = ((start - prev_time) * 1000.0f) / (float)SDL_GetPerformanceFrequency();
         prev_time = start;
         time_count += engine->delta_time;
 
-        /* 渲染帧锁定 */
-        if (render_time > engine->delta_time) {
-            SDL_Delay((Uint32)(render_time - engine->delta_time));
+        if (engine->delta_time > render_time) {
+            SDL_Delay((Uint32)(engine->delta_time - render_time));
         }
     }
 }

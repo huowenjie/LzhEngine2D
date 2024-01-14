@@ -13,7 +13,7 @@ void lzh_sprite_render(LZH_OBJECT *object, LZH_SPRITE *sprite)
     LZH_ENGINE *engine = NULL;
 
     int cur_frame = 0;
-    SDL_Rect target;
+    SDL_FRect target;
 
     if (!object || !sprite || !object->engine) {
         return;
@@ -36,7 +36,7 @@ void lzh_sprite_render(LZH_OBJECT *object, LZH_SPRITE *sprite)
         SDL_Texture **textures = sprite->textures;
 
         if (textures && textures[cur_frame]) {
-            SDL_RenderCopy(engine->renderer, textures[cur_frame], NULL, &target);
+            SDL_RenderCopyF(engine->renderer, textures[cur_frame], NULL, &target);
         }
     }
 
@@ -66,7 +66,7 @@ int calc_images_frame(LZH_SPRITE *sprite)
     cur_frame = sprite->cur_frame;
     start = sprite->start_frame;
     end = sprite->end_frame + 1;
-    cur_time = SDL_GetTicks64();
+    cur_time = (int)SDL_GetTicks64();
 
     if ((cur_time - sprite->prev_time) > per_frame) {
         cur_frame = start + (cur_frame + 1) % end;

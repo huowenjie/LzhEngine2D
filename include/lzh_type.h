@@ -50,6 +50,11 @@ typedef struct LZH_RECT {
     int w, h;
 } LZH_RECT;
 
+typedef struct LZH_RECTF {
+    float x, y;
+    float w, h;
+} LZH_RECTF;
+
 #ifdef __cplusplus
 }
 #endif

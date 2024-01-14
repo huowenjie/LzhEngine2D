@@ -18,10 +18,10 @@ LZH_API LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine);
 LZH_API void lzh_object_destroy(LZH_OBJECT *object);
 
 /* 设置尺寸 */
-LZH_API void lzh_object_set_size(LZH_OBJECT *object, int w, int h);
+LZH_API void lzh_object_set_size(LZH_OBJECT *object, float w, float h);
 
 /* 设置位置 */
-LZH_API void lzh_object_set_pos(LZH_OBJECT *object, int x, int y);
+LZH_API void lzh_object_set_pos(LZH_OBJECT *object, float x, float y);
 
 /* 渲染对象 */
 LZH_API void lzh_object_render(LZH_OBJECT *object);
