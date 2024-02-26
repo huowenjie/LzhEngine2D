@@ -87,7 +87,7 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
  * 则返回正整数值，若两参数等价，则返回零。
  * 
  * 迭代函数 RB_VISIT 定义：
- *      首个参数为当前 key，第二个参数为值 value，最后一个参数为用户传入的参数
+ *      首个参数为当前节点，第二个参数为用户传入的参数
  */
 #define RBTREE_DECLARE(ns, fns, keytype, valuetype) \
     typedef struct ns##_RB_NODE ns##_RB_NODE; \
@@ -115,7 +115,7 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
     ns##_RB_TREE *fns##_rb_create(ns##_RB_COMP comp); \
     void fns##_rb_destroy(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args); \
     int fns##_rb_insert(ns##_RB_TREE *tree, keytype key, valuetype value); \
-    int fns##_rb_delete(ns##_RB_TREE *tree, keytype key); \
+    int fns##_rb_delete(ns##_RB_TREE *tree, keytype key, ns##_RB_VISIT visit, void *args); \
     int fns##_rb_find(ns##_RB_TREE *tree, keytype key, valuetype *value); \
     int fns##_rb_iterate(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args);
 
@@ -248,7 +248,7 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
         tree->count++; \
         return 0; \
     } \
-    int fns##_rb_delete(ns##_RB_TREE *tree, keytype key) { \
+    int fns##_rb_delete(ns##_RB_TREE *tree, keytype key, ns##_RB_VISIT visit, void *args) { \
         ns##_RB_NODE *target = NULL; \
         ns##_RB_NODE *tmp = NULL; \
         ns##_RB_COMP comp = NULL; \
@@ -317,6 +317,9 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
         } \
         \
         tree->count--; \
+        if (visit) { \
+            visit(target, args); \
+        } \
         LZH_FREE(target); \
         return 0; \
     } \

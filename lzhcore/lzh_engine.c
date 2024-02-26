@@ -188,8 +188,8 @@ void lzh_engine_render(LZH_ENGINE *engine)
         prev_time = start;
         time_count += engine->delta_time;
 
-        if (engine->delta_time > render_time) {
-            SDL_Delay((Uint32)(engine->delta_time - render_time));
+        if (engine->delta_time < render_time) {
+            SDL_Delay((Uint32)(render_time - engine->delta_time));
         }
     }
 }

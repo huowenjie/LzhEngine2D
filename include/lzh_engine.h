@@ -41,7 +41,6 @@ LZH_API float lzh_engine_interval(LZH_ENGINE *engine);
 /* 获取当前帧间隔时间 ms */
 LZH_API float lzh_engine_interval_msec(LZH_ENGINE *engine);
 
-
 #ifdef __cplusplus
 }
 #endif
