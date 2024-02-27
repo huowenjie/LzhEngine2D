@@ -147,6 +147,8 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
             \
             int count = tree->count; \
             if (count <= 0) { \
+                LZH_FREE(tree->nil); \
+                LZH_FREE(tree); \
                 return; \
             } \
             \

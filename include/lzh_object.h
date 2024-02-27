@@ -2,6 +2,7 @@
 #define __LZH_OBJECT_H__
 
 #include "lzh_type.h"
+#include "lzh_vec2f.h"
 
 /*===========================================================================*/
 /* 对象模型 */
@@ -21,7 +22,21 @@ LZH_API void lzh_object_destroy(LZH_OBJECT *object);
 LZH_API void lzh_object_set_size(LZH_OBJECT *object, float w, float h);
 
 /* 设置位置 */
-LZH_API void lzh_object_set_pos(LZH_OBJECT *object, float x, float y);
+LZH_API void lzh_object_set_pos(LZH_OBJECT *object, const LZH_VEC2F *pos);
+
+/* 设置旋转角度，单位是角度 */
+LZH_API void lzh_object_set_angle(LZH_OBJECT *object, float angle);
+
+/* 获取位置 */
+LZH_API LZH_VEC2F lzh_object_get_pos(LZH_OBJECT *object);
+LZH_API float lzh_object_get_x(LZH_OBJECT *object);
+LZH_API float lzh_object_get_y(LZH_OBJECT *object);
+
+/* 获取旋转角度，单位是角度 */
+LZH_API float lzh_object_get_angle(LZH_OBJECT *object);
+
+/* 获取前进向量 */
+LZH_API LZH_VEC2F lzh_object_get_forward(LZH_OBJECT *object);
 
 /* 渲染对象 */
 LZH_API void lzh_object_render(LZH_OBJECT *object);

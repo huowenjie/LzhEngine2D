@@ -41,7 +41,49 @@ void tk_destroy_tank(TANK *tank)
 void tk_set_pos(TANK *tank, float x, float y)
 {
     if (tank) {
-        lzh_object_set_pos(tank->object, x, y);
+        LZH_VEC2F pos = lzh_vec2f_xy(x, y);
+        lzh_object_set_pos(tank->object, &pos);
+    }
+}
+
+void tk_move_forward(TANK *tank, float speed)
+{
+    if (tank) {
+        LZH_VEC2F forward = lzh_object_get_forward(tank->object);
+        LZH_VEC2F pos = lzh_object_get_pos(tank->object);
+
+        forward = lzh_vec2f_mul(&forward, speed);
+        pos = lzh_vec2f_add(&pos, &forward);
+        lzh_object_set_pos(tank->object, &pos);
+    }
+}
+
+void tk_move_backward(TANK *tank, float speed)
+{
+    if (tank) {
+        LZH_VEC2F forward = lzh_object_get_forward(tank->object);
+        LZH_VEC2F pos = lzh_object_get_pos(tank->object);
+
+        forward = lzh_vec2f_reverse(&forward);
+        forward = lzh_vec2f_mul(&forward, speed);
+        pos = lzh_vec2f_add(&pos, &forward);
+        lzh_object_set_pos(tank->object, &pos);
+    }
+}
+
+void tk_rotate_left(TANK *tank, float speed)
+{
+    if (tank) {
+        float angle = lzh_object_get_angle(tank->object) - speed;
+        lzh_object_set_angle(tank->object, angle);
+    }
+}
+
+void tk_rotate_right(TANK *tank, float speed)
+{
+    if (tank) {
+        float angle = lzh_object_get_angle(tank->object) + speed;
+        lzh_object_set_angle(tank->object, angle);
     }
 }
 

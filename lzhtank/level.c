@@ -1,5 +1,6 @@
 #include <lzh_mem.h>
 #include <lzh_engine.h>
+#include <lzh_keyboard.h>
 
 #include "tank.h"
 #include "level.h"
@@ -12,6 +13,7 @@ static int level_tree_comp(const void *, const void *);
 static void level_tree_visit(const LEVEL_RB_NODE *, void *);
 
 static LZH_UINT32 level_turtorials_update(LZH_ENGINE *eg, void *args);
+static void update_player(LZH_ENGINE *eg, TANK *player);
 
 /*===========================================================================*/
 
@@ -148,23 +150,45 @@ void level_tree_visit(const LEVEL_RB_NODE *node, void *args)
 
 /*===========================================================================*/
 
-static float globalx = 0.0f;
-static float globaly = 0.0f;
-
 LZH_UINT32 level_turtorials_update(LZH_ENGINE *eg, void *args)
 {
     LEVEL *level = NULL;
     TANK *player = NULL;
 
-    float delta = lzh_engine_interval(eg);
-    float speed = 10.0f * delta;
-
-    globalx += speed;
     level = (LEVEL *)args;
     player = (TANK *)level_find_object(level, "player");
 
-    tk_set_pos(player, globalx, globaly);
+    update_player(eg, player);
     return 0;
+}
+
+void update_player(LZH_ENGINE *eg, TANK *player)
+{
+    float delta = 0.0f;
+    float speed = 0.0f;
+
+    if (!eg || !player) {
+        return;
+    }
+
+    delta = lzh_engine_interval(eg);
+    speed = 20.0f * delta;
+
+    if (lzh_get_key_status(KEY_CODE_W)) {
+        tk_move_forward(player, speed);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_S)) {
+        tk_move_backward(player, speed);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_A)) {
+        tk_rotate_left(player, speed);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_D)) {
+        tk_rotate_right(player, speed);
+    }
 }
 
 /*===========================================================================*/

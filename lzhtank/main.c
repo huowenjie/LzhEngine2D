@@ -34,23 +34,3 @@ int main(int argc, char *argv[])
 }
 
 /*===========================================================================*/
-#if 0
-static float globalx = 0.0f;
-static float globaly = 0.0f;
-
-LZH_UINT32 update(LZH_ENGINE *eg, void *args)
-{
-    LEVEL_TUTORIALS *level = NULL;
-
-    float delta = lzh_engine_interval(eg);
-    float speed = 10.0f * delta;
-
-    globalx += speed;
-    level = (LEVEL_TUTORIALS *)args;
-
-    tk_set_pos(
-        (TANK *)args, globalx, globaly);
-    return 0;
-}
-#endif
-/*===========================================================================*/

@@ -14,6 +14,7 @@ void lzh_sprite_render(LZH_OBJECT *object, LZH_SPRITE *sprite)
 
     int cur_frame = 0;
     SDL_FRect target;
+    SDL_FPoint center;
 
     if (!object || !sprite || !object->engine) {
         return;
@@ -30,13 +31,23 @@ void lzh_sprite_render(LZH_OBJECT *object, LZH_SPRITE *sprite)
     target.w = object->w;
     target.h = object->h;
 
+    center.x = object->rx;
+    center.y = object->ry;
+
     cur_frame = calc_images_frame(sprite);
 
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
         SDL_Texture **textures = sprite->textures;
 
         if (textures && textures[cur_frame]) {
-            SDL_RenderCopyF(engine->renderer, textures[cur_frame], NULL, &target);
+            SDL_RenderCopyExF(
+                engine->renderer,
+                textures[cur_frame],
+                NULL,
+                &target,
+                object->angle,
+                &center,
+                SDL_FLIP_NONE);
         }
     }
 
