@@ -41,6 +41,9 @@ LZH_API float lzh_engine_interval(LZH_ENGINE *engine);
 /* 获取当前帧间隔时间 ms */
 LZH_API float lzh_engine_interval_msec(LZH_ENGINE *engine);
 
+/* 获取窗口区域 */
+LZH_API LZH_RECT lzh_engine_get_winrect(LZH_ENGINE *engine);
+
 #ifdef __cplusplus
 }
 #endif

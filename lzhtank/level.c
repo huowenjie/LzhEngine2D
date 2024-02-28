@@ -1,6 +1,7 @@
 #include <lzh_mem.h>
 #include <lzh_engine.h>
 #include <lzh_keyboard.h>
+#include <lzh_quadtree.h>
 
 #include "tank.h"
 #include "level.h"
@@ -50,7 +51,7 @@ LZH_BOOL level_add_object(LEVEL *level, const char *name, void *object)
         return LZH_FALSE;
     }
 
-    size = strlen(name) + 1;
+    size = (int)strlen(name) + 1;
     key = LZH_MALLOC(size);
     strcpy(key, name);
 
@@ -109,6 +110,15 @@ void level_end(LEVEL *level)
 void level_init_tutorials(LEVEL *level)
 {
     if (level) {
+        LZH_RECT winrect = lzh_engine_get_winrect(level->engine);
+        LZH_RECTF region = { 
+            (float)winrect.x,
+            (float)winrect.y,
+            (float)winrect.w,
+            (float)winrect.h,
+        };
+        LZH_QUAD_TREE *quad = lzh_quad_tree_create(&region);
+
         TANK *player = tk_create_tank(level->engine, 30.0f, 30.0f);
         if (!player) {
             return;
@@ -117,6 +127,7 @@ void level_init_tutorials(LEVEL *level)
         level_add_object(level, "player", player);
 
         lzh_engine_set_update(level->engine, level_turtorials_update, level);
+        lzh_quad_tree_destroy(quad);
     }
 }
 
@@ -172,7 +183,7 @@ void update_player(LZH_ENGINE *eg, TANK *player)
     }
 
     delta = lzh_engine_interval(eg);
-    speed = 20.0f * delta;
+    speed = 50.0f * delta;
 
     if (lzh_get_key_status(KEY_CODE_W)) {
         tk_move_forward(player, speed);

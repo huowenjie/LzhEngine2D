@@ -210,6 +210,17 @@ float lzh_engine_interval_msec(LZH_ENGINE *engine)
     return 0.0f;
 }
 
+LZH_RECT lzh_engine_get_winrect(LZH_ENGINE *engine)
+{
+    LZH_RECT rect = { 0, 0, 0, 0 };
+    if (engine) {
+        rect.x = 0;
+        rect.y = 0;
+        SDL_GetWindowSize(engine->window, &rect.w, &rect.h);
+    }
+    return rect;
+}
+
 /*===========================================================================*/
 
 void render_objects(int layer, int order, LZH_OBJECT *object, void *args)

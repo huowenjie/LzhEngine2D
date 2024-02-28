@@ -18,7 +18,7 @@ LZH_BOOL lzh_get_exe_path(char *buff, int *len)
         return LZH_FALSE;
     }
 
-    size = strlen(path);
+    size = (int)strlen(path);
     *len = size;
 
     if (!buff) {
