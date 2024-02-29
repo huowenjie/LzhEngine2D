@@ -12,10 +12,13 @@ extern "C" {
 #endif
 
 /* 创建四叉树 */
-LZH_API LZH_QUAD_TREE *lzh_quad_tree_create(const LZH_RECTF *region);
+LZH_API LZH_QUAD_TREE *lzh_quad_tree_create();
 
 /* 销毁四叉树 */
 LZH_API void lzh_quad_tree_destroy(LZH_QUAD_TREE *tree);
+
+/* 设置根节点空间区域 */
+LZH_API void lzh_quad_tree_init_root(LZH_QUAD_TREE *tree, const LZH_RECTF *region);
 
 /* 添加对象 */
 LZH_API void lzh_quad_tree_add(LZH_QUAD_TREE *tree, LZH_OBJECT *object);

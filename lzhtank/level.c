@@ -117,7 +117,8 @@ void level_init_tutorials(LEVEL *level)
             (float)winrect.w,
             (float)winrect.h,
         };
-        LZH_QUAD_TREE *quad = lzh_quad_tree_create(&region);
+        LZH_QUAD_TREE *quad = lzh_quad_tree_create();
+        lzh_quad_tree_init_root(quad, &region);
 
         TANK *player = tk_create_tank(level->engine, 30.0f, 30.0f);
         if (!player) {

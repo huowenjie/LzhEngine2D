@@ -110,6 +110,18 @@ float lzh_object_get_y(LZH_OBJECT *object)
     return y;
 }
 
+LZH_RECTF lzh_object_get_rect(LZH_OBJECT *object)
+{
+    LZH_RECTF rect = { 0.0f, 0.0f, 0.0f, 0.0f };
+    if (object) {
+        rect.x = object->x;
+        rect.y = object->y;
+        rect.w = object->w;
+        rect.h = object->h;
+    }
+    return rect;
+}
+
 float lzh_object_get_angle(LZH_OBJECT *object)
 {
     float angle = 0.0f;

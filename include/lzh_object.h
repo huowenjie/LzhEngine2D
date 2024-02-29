@@ -32,6 +32,9 @@ LZH_API LZH_VEC2F lzh_object_get_pos(LZH_OBJECT *object);
 LZH_API float lzh_object_get_x(LZH_OBJECT *object);
 LZH_API float lzh_object_get_y(LZH_OBJECT *object);
 
+/* 获取包围盒 */
+LZH_API LZH_RECTF lzh_object_get_rect(LZH_OBJECT *object);
+
 /* 获取旋转角度，单位是角度 */
 LZH_API float lzh_object_get_angle(LZH_OBJECT *object);
 
