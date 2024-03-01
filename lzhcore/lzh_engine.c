@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdio.h>
+#include <time.h>
 #include <lzh_engine.h>
 #include <lzh_object.h>
 #include <SDL2/SDL_image.h>
@@ -19,6 +20,7 @@ int lzh_init()
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+    srand(time(NULL));
 
     LZH_MEM_START;
     return 0;
@@ -210,15 +212,11 @@ float lzh_engine_interval_msec(LZH_ENGINE *engine)
     return 0.0f;
 }
 
-LZH_RECT lzh_engine_get_winrect(LZH_ENGINE *engine)
+void lzh_engine_win_size(LZH_ENGINE *engine, int *w, int *h)
 {
-    LZH_RECT rect = { 0, 0, 0, 0 };
     if (engine) {
-        rect.x = 0;
-        rect.y = 0;
-        SDL_GetWindowSize(engine->window, &rect.w, &rect.h);
+        SDL_GetWindowSize(engine->window, w, h);
     }
-    return rect;
 }
 
 /*===========================================================================*/

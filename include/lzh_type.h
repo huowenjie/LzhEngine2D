@@ -46,16 +46,6 @@ typedef LZH_UINT32 (*LZH_LOOP_UPDATE)(LZH_ENGINE *, void *);
 /* ¹Ø¼üÖ¡»Øµ÷ */
 typedef LZH_UINT32 (*LZH_KEYFRAME_CB)(void *);
 
-typedef struct LZH_RECT {
-    int x, y;
-    int w, h;
-} LZH_RECT;
-
-typedef struct LZH_RECTF {
-    float x, y;
-    float w, h;
-} LZH_RECTF;
-
 #ifdef __cplusplus
 }
 #endif

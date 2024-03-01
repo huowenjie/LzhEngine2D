@@ -7,6 +7,10 @@
 /* 2x2 方阵，行主序存储 */
 /*===========================================================================*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef union {
     struct {
         float m00;
@@ -57,6 +61,10 @@ LZH_API LZH_MAT2X2F lzh_mat2x2f_mul_real(const LZH_MAT2X2F *a, float b);
 
 /* 矩阵和向量乘 */
 LZH_API LZH_VEC2F lzh_mat2x2f_mul_vec(const LZH_MAT2X2F *a, const LZH_VEC2F *b);
+
+#ifdef __cplusplus
+}
+#endif
 
 /*===========================================================================*/
 

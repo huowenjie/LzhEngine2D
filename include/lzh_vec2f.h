@@ -7,6 +7,10 @@
 /* ¶þÎ¬ÏòÁ¿ */
 /*===========================================================================*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
     float x;
@@ -58,6 +62,10 @@ LZH_API LZH_BOOL lzh_vec2f_inside_triangle(
     const LZH_VEC2F *b,
     const LZH_VEC2F *c,
     const LZH_VEC2F *p);
+
+#ifdef __cplusplus
+}
+#endif
 
 /*===========================================================================*/
 

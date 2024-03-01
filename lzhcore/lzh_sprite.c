@@ -71,11 +71,13 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     return sprite;
 }
 
+#if 0
 LZH_SPRITE *lzh_sprite_create_from_sheets(
     LZH_ENGINE *engine, const LZH_RECT *rect_list, int count)
 {
     return NULL;
 }
+#endif
 
 void lzh_sprite_destroy(LZH_SPRITE *sprite)
 {

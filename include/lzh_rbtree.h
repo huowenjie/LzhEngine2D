@@ -116,6 +116,7 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
     void fns##_rb_destroy(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args); \
     int fns##_rb_insert(ns##_RB_TREE *tree, keytype key, valuetype value); \
     int fns##_rb_delete(ns##_RB_TREE *tree, keytype key, ns##_RB_VISIT visit, void *args); \
+    void fns##_rb_clear(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args); \
     int fns##_rb_find(ns##_RB_TREE *tree, keytype key, valuetype *value); \
     int fns##_rb_iterate(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args);
 
@@ -324,6 +325,56 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
         } \
         LZH_FREE(target); \
         return 0; \
+    } \
+    void fns##_rb_clear(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args) { \
+        if (tree) { \
+            ns##_RB_STACK stack; \
+            ns##_RB_STACK tmp; \
+            \
+            ns##_RB_NODE **buf = NULL; \
+            ns##_RB_NODE *node = NULL; \
+            \
+            int count = tree->count; \
+            if (count <= 0) { \
+                return; \
+            } \
+            \
+            buf = LZH_MALLOC(2 * count * sizeof(ns##_RB_NODE *)); \
+            memset(buf, 0, 2 * count * sizeof(ns##_RB_NODE *)); \
+            \
+            stack.elems = buf; \
+            stack.num = 0; \
+            stack.size = count; \
+            \
+            tmp.elems = buf + count; \
+            tmp.num = 0; \
+            tmp.size = count; \
+            \
+            node = tree->root; \
+            \
+            while ((node && !rb_node_is_nil((RB_NODE *)node)) || tmp.num > 0) { \
+                while (node && !rb_node_is_nil((RB_NODE *)node)) { \
+                    fns##_stack_push(&stack, node); \
+                    fns##_stack_push(&tmp, node); \
+                    node = node->right; \
+                } \
+                \
+                if (tmp.num > 0) { \
+                    fns##_stack_pop(&tmp, &node); \
+                    node = node->left; \
+                } \
+            } \
+            \
+            while (stack.num > 0) { \
+                fns##_stack_pop(&stack, &node); \
+                if (visit) { \
+                    visit(node, args); \
+                } \
+                LZH_FREE(node); \
+            } \
+            tree->count = 0; \
+            LZH_FREE(buf); \
+        } \
     } \
     int fns##_rb_find(ns##_RB_TREE *tree, keytype key, valuetype *value) { \
         ns##_RB_NODE *target = NULL; \

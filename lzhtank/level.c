@@ -1,7 +1,10 @@
+#include <stdio.h>
 #include <lzh_mem.h>
 #include <lzh_engine.h>
 #include <lzh_keyboard.h>
 #include <lzh_quadtree.h>
+#include <lzh_systool.h>
+#include <lzh_object.h>
 
 #include "tank.h"
 #include "level.h"
@@ -12,6 +15,8 @@ RBTREE_IMPLEMENT(LEVEL, level, char *, void *);
 
 static int level_tree_comp(const void *, const void *);
 static void level_tree_visit(const LEVEL_RB_NODE *, void *);
+static void level_clear_visit(const LEVEL_RB_NODE *, void *);
+static void level_clear_objects(LEVEL *level, LEVEL_RB_VISIT visit);
 
 static LZH_UINT32 level_turtorials_update(LZH_ENGINE *eg, void *args);
 static void update_player(LZH_ENGINE *eg, TANK *player);
@@ -107,25 +112,74 @@ void level_end(LEVEL *level)
     }
 }
 
+static void test_quad(LEVEL *level, LZH_QUAD_TREE *quad, float w, float h, TANK *player)
+{
+    int i = 0;
+
+    float x = 0.0f;
+    float y = 0.0f;
+
+    int count = 0;
+    LZH_OBJECT **other = NULL;
+
+    char name[32] = { 0 };
+    LZH_VEC2F pos;
+
+    for (; i < 14; i++) {
+        x = lzh_random_float(0.0f, w);
+        y = lzh_random_float(0.0f, h);
+
+        TANK *t = tk_create_tank(level->engine, 5.0f, 5.0f);
+        tk_set_pos(t, x, y);
+
+        sprintf(name, "npc%d", i);
+        level_add_object(level, name, t);
+        lzh_quad_tree_add(quad, t->object);
+    }
+
+    lzh_quad_tree_find(quad, player->object, NULL, &count);
+
+    other = LZH_MALLOC(count * sizeof(LZH_OBJECT *));
+    memset(other, 0, sizeof(LZH_OBJECT *));
+
+    lzh_quad_tree_find(quad, player->object, other, &count);
+
+    pos = lzh_object_get_pos(player->object);
+    printf("player pos = %.2f, %.2f\n", pos.x, pos.y);
+
+    for (i = 0; i < count; i++) {
+        LZH_OBJECT *obj = other[i];
+
+        pos = lzh_object_get_pos(obj);
+        printf("obj collider pos = %.2f, %.2f\n", pos.x, pos.y);
+    }
+
+    LZH_FREE(other);
+}
+
 void level_init_tutorials(LEVEL *level)
 {
     if (level) {
-        LZH_RECT winrect = lzh_engine_get_winrect(level->engine);
-        LZH_RECTF region = { 
-            (float)winrect.x,
-            (float)winrect.y,
-            (float)winrect.w,
-            (float)winrect.h,
-        };
+        int w = 0;
+        int h = 0;
+        TANK *player = NULL;
+        LZH_RECTF region;
+
+        lzh_engine_win_size(level->engine, &w, &h);
+        lzh_rectf_init(&region, 0.0f, 0.0f, (float)w, (float)h);
+
         LZH_QUAD_TREE *quad = lzh_quad_tree_create();
         lzh_quad_tree_init_root(quad, &region);
 
-        TANK *player = tk_create_tank(level->engine, 30.0f, 30.0f);
+        player = tk_create_tank(level->engine, 30.0f, 30.0f);
         if (!player) {
             return;
         }
-        tk_set_pos(player, 0.0f, 0.0f);
+        tk_set_pos(player, 400.0f, 400.0f);
         level_add_object(level, "player", player);
+        lzh_quad_tree_add(quad, player->object);
+
+        test_quad(level, quad, (float)w, (float)h, player);
 
         lzh_engine_set_update(level->engine, level_turtorials_update, level);
         lzh_quad_tree_destroy(quad);
@@ -135,10 +189,7 @@ void level_init_tutorials(LEVEL *level)
 void level_quit_tutorials(LEVEL *level)
 {
     if (level) {
-        TANK *player = (TANK *)level_del_object(level, "player");
-        if (player) {
-            tk_destroy_tank(player);
-        }
+        level_clear_objects(level, level_clear_visit);
         lzh_engine_set_update(level->engine, NULL, NULL);
     }
 }
@@ -157,6 +208,27 @@ void level_tree_visit(const LEVEL_RB_NODE *node, void *args)
 {
     if (node->key) { 
         LZH_FREE(node->key);
+    }
+}
+
+void level_clear_visit(const LEVEL_RB_NODE *node, void *args)
+{
+    if (node->key) { 
+        LZH_FREE(node->key);
+    }
+
+    if (node->value) {
+        TANK *player = (TANK *)node->value;
+        if (player) {
+            tk_destroy_tank(player);
+        }
+    }
+}
+
+void level_clear_objects(LEVEL *level, LEVEL_RB_VISIT visit)
+{
+    if (level) {
+        level_rb_clear(level->objtree, visit, NULL);
     }
 }
 

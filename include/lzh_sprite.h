@@ -18,10 +18,6 @@ LZH_API LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res);
 LZH_API LZH_SPRITE *lzh_sprite_create_from_images(
     LZH_ENGINE *engine, const char *res_list[], int count);
 
-/* 创建单图精灵集 */
-LZH_API LZH_SPRITE *lzh_sprite_create_from_sheets(
-    LZH_ENGINE *engine, const LZH_RECT *rect_list, int count);
-
 /* 销毁精灵 */
 LZH_API void lzh_sprite_destroy(LZH_SPRITE *sprite);
 

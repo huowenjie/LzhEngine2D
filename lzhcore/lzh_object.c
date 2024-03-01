@@ -110,7 +110,7 @@ float lzh_object_get_y(LZH_OBJECT *object)
     return y;
 }
 
-LZH_RECTF lzh_object_get_rect(LZH_OBJECT *object)
+LZH_RECTF lzh_object_get_rect(const LZH_OBJECT *object)
 {
     LZH_RECTF rect = { 0.0f, 0.0f, 0.0f, 0.0f };
     if (object) {

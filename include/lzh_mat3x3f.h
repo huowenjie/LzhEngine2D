@@ -7,6 +7,10 @@
 /* 3x3 方阵，行主序存储 */
 /*===========================================================================*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef union {
     /**
      * [ m00, m01, m02 ]
@@ -64,6 +68,10 @@ LZH_API LZH_MAT3X3F lzh_mat3x3f_mul_real(const LZH_MAT3X3F *a, float b);
 
 /* 矩阵和向量乘 */
 LZH_API LZH_VEC3F lzh_mat3x3f_mul_vec(const LZH_MAT3X3F *a, const LZH_VEC3F *b);
+
+#ifdef __cplusplus
+}
+#endif
 
 /*===========================================================================*/
 

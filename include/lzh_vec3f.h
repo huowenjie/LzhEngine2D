@@ -8,6 +8,10 @@
 /* ÈýÎ¬ÏòÁ¿ */
 /*===========================================================================*/
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
     float x;
@@ -64,6 +68,10 @@ LZH_API LZH_BOOL lzh_vec3f_build_basic(
     LZH_VEC3F *w,
     LZH_VEC3F *u,
     LZH_VEC3F *v);
+
+#ifdef __cplusplus
+}
+#endif
 
 /*===========================================================================*/
 

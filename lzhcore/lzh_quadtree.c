@@ -23,7 +23,6 @@ typedef struct LZH_QUAD_NODE LZH_QUAD_NODE;
 #define QUAD_NODE_INDEX_LB 0x00000004
 #define QUAD_NODE_INDEX_RB 0x00000008
 #define QUAD_NODE_INDEX_MASK 0x0000000F
-#define QUAD_NODE_INDEX_CUR 0x000000FF
 
 /*===========================================================================*/
 
@@ -79,6 +78,14 @@ static void insert_object(LZH_QUAD_NODE *node, LZH_OBJECT *object);
 
 /* 删除对象 */
 static void remove_object(LZH_QUAD_NODE *node, LZH_OBJECT *object);
+
+/* 查找节点 */
+void find_quad_node(
+    LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count,
+    int offset);
+
+void find_object(
+    LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count);
 
 /*===========================================================================*/
 
@@ -145,7 +152,15 @@ void lzh_quad_tree_add(LZH_QUAD_TREE *tree, LZH_OBJECT *object)
 void lzh_quad_tree_find(
     LZH_QUAD_TREE *tree, const LZH_OBJECT *target, LZH_OBJECT **other, int *count)
 {
-    
+    if (!tree || !target) {
+        return;
+    }
+
+    if (!count) {
+        return;
+    }
+
+    find_quad_node(tree->root, target, other, count, 0);
 }
 
 int lzh_quad_tree_obj_max_count(LZH_QUAD_TREE *tree)
@@ -210,25 +225,16 @@ void destroy_quad_node(LZH_QUAD_NODE *node)
 
     child = node->child;
 
-    destroy_quad_node(child[0]);
-    destroy_quad_node(child[1]);
-    destroy_quad_node(child[2]);
-    destroy_quad_node(child[3]);
-
     if (child[0]) {
-        LZH_FREE(child[0]);
-    }
+        destroy_quad_node(child[0]);
+        destroy_quad_node(child[1]);
+        destroy_quad_node(child[2]);
+        destroy_quad_node(child[3]);
 
-    if (child[1]) {
-        LZH_FREE(child[1]);
-    }
-
-    if (child[2]) {
-        LZH_FREE(child[2]);
-    }
-
-    if (child[3]) {
-        LZH_FREE(child[3]);
+        child[0] = NULL;
+        child[1] = NULL;
+        child[2] = NULL;
+        child[3] = NULL;
     }
 
     LZH_FREE(node->objects);
@@ -237,7 +243,48 @@ void destroy_quad_node(LZH_QUAD_NODE *node)
 
 LZH_UINT32 get_quad_node_index(LZH_QUAD_NODE *node, const LZH_RECTF *rect)
 {
-    return 0;
+    LZH_UINT32 index = 0;
+    LZH_RECTF *bound = NULL;
+
+    float quadw = 0.0f;
+    float quadh = 0.0f;
+
+    LZH_RECTF rect_rt;
+    LZH_RECTF rect_lt;
+    LZH_RECTF rect_lb;
+    LZH_RECTF rect_rb;
+
+    if (!node || !rect) {
+        return index;
+    }
+
+    bound = &node->bound;
+    quadw = bound->w / 2.0f;
+    quadh = bound->h / 2.0f;
+
+    lzh_rectf_init(&rect_rt, bound->x + quadw, bound->y, quadw, quadh);
+    lzh_rectf_init(&rect_lt, bound->x, bound->y, quadw, quadh);
+    lzh_rectf_init(&rect_lb, bound->x, bound->y + quadh, quadw, quadh);
+    lzh_rectf_init(&rect_rb, bound->x + quadw, bound->y + quadh, quadw, quadh);
+
+    /* 目标矩形和四个象限的相交测试 */
+    if (lzh_rectf_intersection(&rect_rt, rect)) {
+        index |= QUAD_NODE_INDEX_RT;
+    }
+
+    if (lzh_rectf_intersection(&rect_lt, rect)) {
+        index |= QUAD_NODE_INDEX_LT;
+    }
+
+    if (lzh_rectf_intersection(&rect_lb, rect)) {
+        index |= QUAD_NODE_INDEX_LB;
+    }
+
+    if (lzh_rectf_intersection(&rect_rb, rect)) {
+        index |= QUAD_NODE_INDEX_RB;
+    }
+
+    return index;
 }
 
 void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
@@ -250,28 +297,27 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
         return;
     }
 
-    objrect = lzh_object_get_rect(object);
-
-    /* 获取象限索引 */
-    index = get_quad_node_index(node, &objrect);
-    if (!index) {
-        return;
-    }
-
     tree = node->tree;
     if (!tree) {
         return;
     }
 
-    /* 当前节点的处理方式 */
-    if (index == QUAD_NODE_INDEX_CUR) {
-        /* 数量大于最大限制，分裂子节点处理，否则直接缓存对象 */
+    /* 首先判断是否分裂，如果未分裂，直接在当前节点上操作 */
+    if (!node->child[0]) {
         if (node->obj_count >= tree->obj_max_count) {
             split_quad_node(node);
             add_quad_node(node, object);
         } else {
             insert_object(node, object);
         }
+        return;
+    }
+
+    objrect = lzh_object_get_rect(object);
+
+    /* 获取象限索引 */
+    index = get_quad_node_index(node, &objrect);
+    if (!index) {
         return;
     }
 
@@ -291,6 +337,7 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
         add_quad_node(node->child[QUAD_NODE_RB], object);
     }
 
+    /* 将对象从当前节点中移除 */
     if ((index & QUAD_NODE_INDEX_MASK) != 0) {
         remove_object(node, object);
     }
@@ -298,17 +345,186 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
 
 void split_quad_node(LZH_QUAD_NODE *node)
 {
+    LZH_QUAD_TREE *tree = NULL;
+    LZH_RECTF *bound = NULL;
+    float w = 0.0f;
+    float h = 0.0f;
 
+    if (!node) {
+        return;
+    }
+
+    /* 子节点存在则不分裂 */
+    if (node->child[QUAD_NODE_RT]) {
+        return;
+    }
+
+    tree = node->tree;
+    if (!tree) {
+        return;
+    }
+
+    bound = &node->bound;
+    w = bound->w / 2.0f;
+    h = bound->h / 2.0f;
+
+    node->child[QUAD_NODE_RT] = create_quad_node();
+    node->child[QUAD_NODE_LT] = create_quad_node();
+    node->child[QUAD_NODE_LB] = create_quad_node();
+    node->child[QUAD_NODE_RB] = create_quad_node();
+
+    lzh_rectf_init(&node->child[QUAD_NODE_RT]->bound, bound->x + w, bound->y, w, h);
+    lzh_rectf_init(&node->child[QUAD_NODE_LT]->bound, bound->x, bound->y, w, h);
+    lzh_rectf_init(&node->child[QUAD_NODE_LB]->bound, bound->x, bound->y + h, w, h);
+    lzh_rectf_init(&node->child[QUAD_NODE_RB]->bound, bound->x + w, bound->y + h, w, h);
+
+    node->child[QUAD_NODE_RT]->tree = tree;
+    node->child[QUAD_NODE_LT]->tree = tree;
+    node->child[QUAD_NODE_LB]->tree = tree;
+    node->child[QUAD_NODE_RB]->tree = tree;
+
+    tree->count += 4;
 }
 
 void insert_object(LZH_QUAD_NODE *node, LZH_OBJECT *object)
 {
+    int i = 0;
+    int num = 0;
+    LZH_QUAD_TREE *tree = NULL;
+    LZH_OBJECT **objs = NULL;
 
+    if (!node || !node->tree) {
+        return;
+    }
+
+    tree = node->tree;
+    num = tree->obj_max_count;
+    objs = node->objects;
+
+    for (i = 0; i < num; i++) {
+        if (!objs[i]) {
+            objs[i] = object;
+            node->obj_count++;
+            break;
+        }
+    }
 }
 
 void remove_object(LZH_QUAD_NODE *node, LZH_OBJECT *object)
 {
+    int i = 0;
+    int num = 0;
+    LZH_QUAD_TREE *tree = NULL;
+    LZH_OBJECT **objs = NULL;
 
+    if (!node || !node->tree) {
+        return;
+    }
+
+    tree = node->tree;
+    num = tree->obj_max_count;
+    objs = node->objects;
+
+    for (i = 0; i < num; i++) {
+        if (objs[i] == object) {
+            objs[i] = NULL;
+            node->obj_count--;
+            break;
+        }
+    }
+}
+
+void find_quad_node(
+    LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count,
+    int offset)
+{
+    LZH_RECTF objrect;
+    LZH_UINT32 index = 0;
+
+    int num = 0;
+
+    if (!node || !target) {
+        return;
+    }
+
+    if (!count) {
+        return;
+    }
+
+    /* 首先判断是否分裂，如果未分裂，直接在当前节点上查找 */
+    if (!node->child[0]) {
+        find_object(node, target, other ? (other + offset) : NULL, count);
+        return;
+    }
+
+    objrect = lzh_object_get_rect(target);
+
+    /* 获取象限索引 */
+    index = get_quad_node_index(node, &objrect);
+    if (!index) {
+        return;
+    }
+
+    if ((index & QUAD_NODE_INDEX_RT) == QUAD_NODE_INDEX_RT) {
+        find_quad_node(node->child[QUAD_NODE_RT], target, other, &num, offset);
+        offset += num;
+    }
+
+    if ((index & QUAD_NODE_INDEX_LT) == QUAD_NODE_INDEX_LT) {
+        find_quad_node(node->child[QUAD_NODE_LT], target, other, &num, offset);
+        offset += num;
+    }
+
+    if ((index & QUAD_NODE_INDEX_LB) == QUAD_NODE_INDEX_LB) {
+        find_quad_node(node->child[QUAD_NODE_LB], target, other, &num, offset);
+        offset += num;
+    }
+
+    if ((index & QUAD_NODE_INDEX_RB) == QUAD_NODE_INDEX_RB) {
+        find_quad_node(node->child[QUAD_NODE_RB], target, other, &num, offset);
+        offset += num;
+    }
+
+    *count = offset;
+}
+
+void find_object(
+    LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count)
+{    
+    int i = 0;
+    int j = 0;
+    int num = 0;
+    LZH_QUAD_TREE *tree = NULL;
+    LZH_OBJECT **objs = NULL;
+
+    if (!node || !target) {
+        return;
+    }
+
+    if (!count) {
+        return;
+    }
+
+    if (!node || !node->tree) {
+        return;
+    }
+
+    tree = node->tree;
+    num = tree->obj_max_count;
+    objs = node->objects;
+
+    if (!other) {
+        *count = node->obj_count;
+        return;
+    }
+
+    for (i = 0; i < num; i++) {
+        if (objs[i] && objs[i] != target) {
+            other[j++] = objs[i];
+        }
+    }
+
+    *count = j;
 }
 
 /*===========================================================================*/
