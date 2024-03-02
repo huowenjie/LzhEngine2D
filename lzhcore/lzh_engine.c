@@ -20,7 +20,7 @@ int lzh_init()
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
 
     LZH_MEM_START;
     return 0;

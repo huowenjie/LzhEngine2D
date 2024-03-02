@@ -171,6 +171,7 @@
     <ClCompile Include="lzh_object.c" />
     <ClCompile Include="lzh_quadtree.c" />
     <ClCompile Include="lzh_rbtree.c" />
+    <ClCompile Include="lzh_rectf.c" />
     <ClCompile Include="lzh_render_tree.c" />
     <ClCompile Include="lzh_sprite.c" />
     <ClCompile Include="lzh_systool.c" />
@@ -185,6 +186,7 @@
     <ClInclude Include="..\include\lzh_object.h" />
     <ClInclude Include="..\include\lzh_quadtree.h" />
     <ClInclude Include="..\include\lzh_rbtree.h" />
+    <ClInclude Include="..\include\lzh_rectf.h" />
     <ClInclude Include="..\include\lzh_sprite.h" />
     <ClInclude Include="..\include\lzh_stack.h" />
     <ClInclude Include="..\include\lzh_systool.h" />

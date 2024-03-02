@@ -31,6 +31,9 @@ void *level_del_object(LEVEL *level, const char *name);
 /* 查找对象 */
 void *level_find_object(LEVEL *level, const char *name);
 
+/* 迭代对象 */
+void level_object_iterate(LEVEL *level, LEVEL_RB_VISIT visit, void *args);
+
 /* 开启关卡 */
 void level_start(LEVEL *level);
 

@@ -305,7 +305,17 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
     /* 首先判断是否分裂，如果未分裂，直接在当前节点上操作 */
     if (!node->child[0]) {
         if (node->obj_count >= tree->obj_max_count) {
+            int i = 0;
+            int count = node->obj_count;
+            LZH_OBJECT **objs = node->objects;
+
             split_quad_node(node);
+
+            /* 分裂后，将当前节点的对象分配到各个子节点，并移除当前节点的对象 */
+            for (i = 0; i < count; i++) {
+                add_quad_node(node, objs[i]);
+                remove_object(node, objs[i]);
+            }
             add_quad_node(node, object);
         } else {
             insert_object(node, object);
@@ -335,11 +345,6 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
 
     if ((index & QUAD_NODE_INDEX_RB) == QUAD_NODE_INDEX_RB) {
         add_quad_node(node->child[QUAD_NODE_RB], object);
-    }
-
-    /* 将对象从当前节点中移除 */
-    if ((index & QUAD_NODE_INDEX_MASK) != 0) {
-        remove_object(node, object);
     }
 }
 

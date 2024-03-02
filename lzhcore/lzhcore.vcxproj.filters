@@ -18,6 +18,7 @@
     <ClCompile Include="lzh_systool.c" />
     <ClCompile Include="lzh_vec2f.c" />
     <ClCompile Include="lzh_vec3f.c" />
+    <ClCompile Include="lzh_rectf.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lzh_link.h" />
@@ -334,6 +335,9 @@
     </ClInclude>
     <ClInclude Include="..\include\SDL2\SDL_vulkan.h">
       <Filter>include\SDL2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lzh_rectf.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
