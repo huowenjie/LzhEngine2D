@@ -76,14 +76,12 @@ static void split_quad_node(LZH_QUAD_NODE *node);
 /* 插入对象 */
 static void insert_object(LZH_QUAD_NODE *node, LZH_OBJECT *object);
 
-/* 删除对象 */
-static void remove_object(LZH_QUAD_NODE *node, LZH_OBJECT *object);
-
 /* 查找节点 */
 void find_quad_node(
     LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count,
     int offset);
 
+/* 查找对象 */
 void find_object(
     LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count);
 
@@ -314,7 +312,8 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
             /* 分裂后，将当前节点的对象分配到各个子节点，并移除当前节点的对象 */
             for (i = 0; i < count; i++) {
                 add_quad_node(node, objs[i]);
-                remove_object(node, objs[i]);
+                objs[i] = NULL;
+                node->obj_count--;
             }
             add_quad_node(node, object);
         } else {
@@ -415,6 +414,7 @@ void insert_object(LZH_QUAD_NODE *node, LZH_OBJECT *object)
     }
 }
 
+#if 0
 void remove_object(LZH_QUAD_NODE *node, LZH_OBJECT *object)
 {
     int i = 0;
@@ -438,6 +438,7 @@ void remove_object(LZH_QUAD_NODE *node, LZH_OBJECT *object)
         }
     }
 }
+#endif
 
 void find_quad_node(
     LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count,

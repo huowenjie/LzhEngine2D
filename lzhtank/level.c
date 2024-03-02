@@ -207,7 +207,7 @@ void level_init_tutorials(LEVEL *level)
         tk_set_pos(player, 400.0f, 400.0f);
         level_add_object(level, "player", player);
 
-        for (; i < 16; i++) {
+        for (; i < 32; i++) {
             x = lzh_random_float(50.0f, 750.0f);
             y = lzh_random_float(50.0f, 550.0f);
 
