@@ -43,8 +43,14 @@ typedef struct LZH_QUAD_TREE    LZH_QUAD_TREE;
 /* 主循环更新回调 */
 typedef LZH_UINT32 (*LZH_LOOP_UPDATE)(LZH_ENGINE *, void *);
 
+/* 对象更新 */
+typedef void (*LZH_OBJECT_UPDATE)(LZH_ENGINE *, LZH_OBJECT *, void *);
+
+/* 对象固定时间更新 */
+typedef void (*LZH_OBJECT_FIXEDUPDATE)(LZH_ENGINE *, LZH_OBJECT *, void *);
+
 /* 关键帧回调 */
-typedef LZH_UINT32 (*LZH_KEYFRAME_CB)(void *);
+typedef LZH_UINT32(*LZH_KEYFRAME_CB)(void *);
 
 #ifdef __cplusplus
 }

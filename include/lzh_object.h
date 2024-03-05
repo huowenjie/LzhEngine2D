@@ -19,6 +19,20 @@ LZH_API LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine);
 /* 销毁对象 */
 LZH_API void lzh_object_destroy(LZH_OBJECT *object);
 
+/* 设置对象名称 */
+LZH_API void lzh_object_set_name(LZH_OBJECT *object, const char *name);
+
+/* 获取对象名称 */
+LZH_API const char *lzh_object_get_name(LZH_OBJECT *object);
+
+/* 设置对象更新回调 */
+LZH_API void lzh_object_set_update(
+    LZH_OBJECT *object, LZH_OBJECT_UPDATE update, void *param);
+
+/* 设置对象固定时间更新回调 */
+LZH_API void lzh_object_set_fixedupdate(
+    LZH_OBJECT *object, LZH_OBJECT_FIXEDUPDATE update, void *param);
+
 /* 设置尺寸 */
 LZH_API void lzh_object_set_size(LZH_OBJECT *object, float w, float h);
 
@@ -41,9 +55,6 @@ LZH_API float lzh_object_get_angle(LZH_OBJECT *object);
 
 /* 获取前进向量 */
 LZH_API LZH_VEC2F lzh_object_get_forward(LZH_OBJECT *object);
-
-/* 渲染对象 */
-LZH_API void lzh_object_render(LZH_OBJECT *object);
 
 /* 设置精灵组件 */
 LZH_API void lzh_object_set_sprite(LZH_OBJECT *object, LZH_SPRITE *sp);

@@ -8,7 +8,7 @@
 /* ¹Ø¿¨ */
 /*===========================================================================*/
 
-RBTREE_DECLARE(LEVEL, level, char *, void *);
+RBTREE_DECLARE(LEVEL, level, char *, void *)
 
 typedef struct
 {

@@ -6,12 +6,15 @@
 #include <SDL2/SDL_image.h>
 
 #include "lzh_core_engine.h"
+#include "lzh_core_object.h"
 #include "lzh_mem.h"
 
 /*===========================================================================*/
 
 /* 渲染队列中的对象 */
 static void render_objects(int layer, int order, LZH_OBJECT *object, void *args);
+static void render_objects_fixed(
+    int layer, int order, LZH_OBJECT *object, void *args);
 
 /*===========================================================================*/
 
@@ -163,6 +166,8 @@ void lzh_engine_render(LZH_ENGINE *engine)
             }
         }
 
+        SDL_RenderClear(renderer);
+
         /*
          * 假设某一帧渲染时间过长，导致时间累计大于当前的
          * 逻辑帧时间，则直接放弃这一帧的渲染，按照逻辑帧速率来追赶
@@ -172,6 +177,9 @@ void lzh_engine_render(LZH_ENGINE *engine)
             while (time_count > fix_time) {
                 time_count -= fix_time;
                 engine->fixed_update(engine, engine->fixed_args);
+
+                render_tree_iterate(
+                    engine->render_tree, render_objects_fixed, engine);
             }
         } else {
             time_count = 0.0f;
@@ -181,7 +189,6 @@ void lzh_engine_render(LZH_ENGINE *engine)
             engine->render_update(engine, engine->render_args);
         }
 
-        SDL_RenderClear(renderer);
         render_tree_iterate(engine->render_tree, render_objects, engine);
         SDL_RenderPresent(renderer);
 
@@ -224,7 +231,15 @@ void lzh_engine_win_size(LZH_ENGINE *engine, int *w, int *h)
 void render_objects(int layer, int order, LZH_OBJECT *object, void *args)
 {
     if (object) {
-        lzh_object_render(object);
+        lzh_object_update(object);
+    }
+}
+
+void render_objects_fixed(
+    int layer, int order, LZH_OBJECT *object, void *args)
+{
+    if (object) {
+        lzh_object_fixedupdate(object);
     }
 }
 

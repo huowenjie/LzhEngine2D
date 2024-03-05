@@ -11,7 +11,11 @@
 
 /* 对象结构 */
 struct LZH_OBJECT {
+    /* 引擎对象 */
     LZH_ENGINE *engine;
+
+    /* 对象名称 */
+    char *name;
 
     /* 对象位置 */
     float x, y;
@@ -33,7 +37,21 @@ struct LZH_OBJECT {
 
     /* 精灵组件 */
     LZH_SPRITE *sprite;
+
+    /* 对象更新回调和参数*/
+    LZH_OBJECT_UPDATE update;
+    void *update_param;
+
+    /* 固定时间更新回调和参数 */
+    LZH_OBJECT_FIXEDUPDATE fixed_update;
+    void *fixed_param;
 };
+
+/* 更新对象 */
+void lzh_object_update(LZH_OBJECT *object);
+
+/* 固定时间更新对象 */
+void lzh_object_fixedupdate(LZH_OBJECT *object);
 
 /*===========================================================================*/
 

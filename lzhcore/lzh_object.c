@@ -35,6 +35,7 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     render_tree_push(engine->render_tree, 0, global_order++, obj);
 
     obj->engine = engine;
+    obj->name = NULL;
     obj->x = 0.0f;
     obj->y = 0.0f;
     obj->offset_x = 0.0f;
@@ -46,13 +47,74 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->ry = 0.0f;
     obj->forward = lzh_vec2f_xy(0.0f, -1.0f);
     obj->sprite = NULL;
+    obj->update = NULL;
+    obj->update_param = NULL;
+    obj->fixed_update = NULL;
+    obj->fixed_param = NULL;
     return obj;
 }
 
 void lzh_object_destroy(LZH_OBJECT *object)
 {
     if (object) {
+        if (object->name) {
+            LZH_FREE(object->name);
+            object->name = NULL;
+        }
         LZH_FREE(object);
+    }
+}
+
+void lzh_object_set_name(LZH_OBJECT *object, const char *name)
+{
+    char *buf = NULL;
+    size_t size = 0;
+
+    if (!object) {
+        return;   
+    }
+
+    if (!name || !*name) {
+        return;
+    }
+
+    size = strlen(name) + 1;
+    buf = LZH_MALLOC(size);
+    if (!buf) {
+        return;
+    }
+    memset(buf, 0, size);
+    strcpy(buf, name);
+
+    if (object->name) {
+        LZH_FREE(object->name);
+    }
+    object->name = buf;
+}
+
+const char *lzh_object_get_name(LZH_OBJECT *object)
+{
+    if (object) {
+        return object->name;
+    }
+    return NULL;
+}
+
+void lzh_object_set_update(
+    LZH_OBJECT *object, LZH_OBJECT_UPDATE update, void *param)
+{
+    if (object) {
+        object->update = update;
+        object->update_param = param;
+    }
+}
+
+void lzh_object_set_fixedupdate(
+    LZH_OBJECT *object, LZH_OBJECT_FIXEDUPDATE update, void *param)
+{
+    if (object) {
+        object->fixed_update = update;
+        object->fixed_param = param;
     }
 }
 
@@ -140,19 +202,34 @@ LZH_VEC2F lzh_object_get_forward(LZH_OBJECT *object)
     return vec;
 }
 
-void lzh_object_render(LZH_OBJECT *object)
+void lzh_object_set_sprite(LZH_OBJECT *object, LZH_SPRITE *sp)
+{
+    if (object && sp) {
+        object->sprite = sp;
+    }
+}
+
+/*===========================================================================*/
+
+void lzh_object_update(LZH_OBJECT *object)
 {
     if (object) {
+        if (object->update) {
+            object->update(object->engine, object, object->update_param);
+        }
+
         if (object->sprite) {
             lzh_sprite_render(object, object->sprite);
         }
     }
 }
 
-void lzh_object_set_sprite(LZH_OBJECT *object, LZH_SPRITE *sp)
+void lzh_object_fixedupdate(LZH_OBJECT *object)
 {
-    if (object && sp) {
-        object->sprite = sp;
+    if (object) {
+        if (object->fixed_update) {
+            object->fixed_update(object->engine, object, object->fixed_param);
+        }
     }
 }
 

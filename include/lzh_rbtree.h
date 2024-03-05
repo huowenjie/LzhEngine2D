@@ -125,9 +125,16 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
     ns##_RB_TREE *fns##_rb_create(ns##_RB_COMP comp) { \
         ns##_RB_NODE *nil = NULL; \
         ns##_RB_TREE *tree = LZH_MALLOC(sizeof(ns##_RB_TREE)); \
+        if (!tree) { \
+            return NULL; \
+        } \
         memset(tree, 0, sizeof(sizeof(ns##_RB_TREE))); \
         \
         nil = LZH_MALLOC(sizeof(ns##_RB_NODE)); \
+        if (!nil) { \
+            LZH_FREE(tree); \
+            return NULL; \
+        } \
         memset(nil, 0, sizeof(ns##_RB_NODE)); \
         nil->flag = RBTREE_COLOR_BLACK | RBTREE_NIL_NODE; \
         \
@@ -154,6 +161,9 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
             } \
             \
             buf = LZH_MALLOC(2 * count * sizeof(ns##_RB_NODE *)); \
+            if (!buf) { \
+                return; \
+            } \
             memset(buf, 0, 2 * count * sizeof(ns##_RB_NODE *)); \
             \
             stack.elems = buf; \
@@ -225,6 +235,9 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
         } \
         \
         add = LZH_MALLOC(sizeof(ns##_RB_NODE)); \
+        if (!add) { \
+            return -1; \
+        } \
         memset(add, 0, sizeof(ns##_RB_NODE)); \
         \
         add->flag = RBTREE_COLOR_RED; \
@@ -340,6 +353,9 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
             } \
             \
             buf = LZH_MALLOC(2 * count * sizeof(ns##_RB_NODE *)); \
+            if (!buf) { \
+                return; \
+            } \
             memset(buf, 0, 2 * count * sizeof(ns##_RB_NODE *)); \
             \
             stack.elems = buf; \
@@ -429,6 +445,9 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
         } \
         \
         nodes = LZH_MALLOC(count * sizeof(ns##_RB_NODE *)); \
+        if (!nodes) { \
+            return -1; \
+        } \
         memset(nodes, 0, count * sizeof(ns##_RB_NODE *)); \
         \
         stack.elems = nodes; \
