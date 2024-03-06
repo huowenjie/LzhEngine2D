@@ -20,8 +20,7 @@ static void level_tree_visit(const LEVEL_RB_NODE *, void *);
 static void level_clear_visit(const LEVEL_RB_NODE *, void *);
 static void level_clear_objects(LEVEL *level, LEVEL_RB_VISIT visit);
 
-static LZH_UINT32 level_turtorials_update(LZH_ENGINE *eg, void *args);
-static void update_player(LZH_ENGINE *eg, TANK *player);
+static void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args);
 
 /*===========================================================================*/
 
@@ -49,6 +48,7 @@ LZH_BOOL level_add_object(LEVEL *level, const char *name, void *object)
 {
     char *key = NULL;
     int size = 0;
+    OBJ_WIDGET *widget = NULL;
 
     if (!level || !level->objtree) {
         return LZH_FALSE;
@@ -58,11 +58,18 @@ LZH_BOOL level_add_object(LEVEL *level, const char *name, void *object)
         return LZH_FALSE;
     }
 
+    if (!object) {
+        return LZH_FALSE;
+    }
+
+    widget = (OBJ_WIDGET *)object;
+
     size = (int)strlen(name) + 1;
     key = LZH_MALLOC(size);
     strcpy(key, name);
 
     level_rb_insert(level->objtree, key, object);
+    lzh_object_set_name(widget->object, name);
     return LZH_TRUE;
 }
 
@@ -134,9 +141,9 @@ void level_init_tutorials(LEVEL *level)
         if (!player) {
             return;
         }
-        tk_set_pos(player, 400.0f, 400.0f);
+        tk_set_pos(player, 0.0f, 0.0f);
         level_add_object(level, "player", player);
-        lzh_engine_set_update(level->engine, level_turtorials_update, level);
+        ow_set_update((OBJ_WIDGET *)player, update_player, player);
     }
 }
 
@@ -188,27 +195,17 @@ void level_clear_objects(LEVEL *level, LEVEL_RB_VISIT visit)
 
 /*===========================================================================*/
 
-LZH_UINT32 level_turtorials_update(LZH_ENGINE *eg, void *args)
-{
-    LEVEL *level = NULL;
-    TANK *player = NULL;
-
-    level = (LEVEL *)args;
-    player = (TANK *)level_find_object(level, "player");
-
-    update_player(eg, player);
-    return 0;
-}
-
-void update_player(LZH_ENGINE *eg, TANK *player)
+void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
 {
     float delta = 0.0f;
     float speed = 0.0f;
+    TANK *player = NULL;
 
-    if (!eg || !player) {
+    if (!eg || !args) {
         return;
     }
 
+    player = (TANK *)args;
     delta = lzh_engine_interval(eg);
     speed = 100.0f * delta;
 

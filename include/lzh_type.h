@@ -28,6 +28,7 @@ extern "C" {
 /* 基本数据类型 */
 typedef char                    LZH_INT8;
 typedef unsigned char           LZH_UINT8;
+typedef unsigned char           LZH_BYTE;
 typedef int                     LZH_INT32;
 typedef unsigned int            LZH_UINT32;
 typedef int                     LZH_BOOL;
@@ -39,6 +40,12 @@ typedef struct LZH_OBJECT       LZH_OBJECT;
 typedef struct LZH_SPRITE       LZH_SPRITE;
 typedef struct LZH_ENGINE       LZH_ENGINE;
 typedef struct LZH_QUAD_TREE    LZH_QUAD_TREE;
+
+/* 数据对象 */
+typedef struct {
+    LZH_UINT32 size;
+    LZH_BYTE *value;
+} LZH_DATA;
 
 /* 主循环更新回调 */
 typedef LZH_UINT32 (*LZH_LOOP_UPDATE)(LZH_ENGINE *, void *);

@@ -158,6 +158,7 @@ void lzh_engine_render(LZH_ENGINE *engine)
 
     while (run) {
         Uint64 start = 0;
+        Uint64 frequency = 0;
 
         while (SDL_PollEvent(&evt)) {
             if (evt.type == SDL_QUIT) {
@@ -193,12 +194,16 @@ void lzh_engine_render(LZH_ENGINE *engine)
         SDL_RenderPresent(renderer);
 
         start = SDL_GetPerformanceCounter();
-        engine->delta_time = ((start - prev_time) * 1000.0f) / (float)SDL_GetPerformanceFrequency();
+        frequency = SDL_GetPerformanceFrequency();
+        engine->delta_time = ((start - prev_time) * 1000.0f) / (float)frequency;
+
         prev_time = start;
         time_count += engine->delta_time;
 
         if (engine->delta_time < render_time) {
             SDL_Delay((Uint32)(render_time - engine->delta_time));
+        } else if (engine->delta_time > 250.0f) {
+            engine->delta_time = 250.0f;
         }
     }
 }

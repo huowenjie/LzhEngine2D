@@ -1,15 +1,19 @@
 #ifndef __TANK_H__
 #define __TANK_H__
 
-#include <lzh_type.h>
+#include "objwidget.h"
 
 /*===========================================================================*/
 /* tank */
 /*===========================================================================*/
 
 typedef struct {
-    LZH_OBJECT *object;
-    LZH_SPRITE *sprite;
+    OBJ_WIDGET widget;
+} TURRET;
+
+typedef struct {
+    OBJ_WIDGET widget;
+    TURRET *turret;
 } TANK;
 
 TANK *tk_create_tank(LZH_ENGINE *engine, float w, float h);

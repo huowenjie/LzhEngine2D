@@ -1,7 +1,16 @@
 #include <lzh_systool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include <SDL2/SDL.h>
+
+#ifdef _WINDOWS
+	#define _WIN32_WINNT 0x0502
+	#include <windows.h>
+	#include <process.h>
+#else /* Linux */
+	#include <unistd.h>
+#endif /* _WINDOWS & Linux */
 
 /*===========================================================================*/
 
@@ -63,6 +72,58 @@ float lzh_random_float(float min, float max)
 
     num = min + (a / b) * (max - min);
     return num;
+}
+
+LZH_PROCESS_ID lzh_getpid()
+{
+    /* 获取进程 ID */
+#ifdef _WINDOWS
+	return (LZH_PROCESS_ID)GetCurrentProcessId();
+#else
+	return (LZH_PROCESS_ID)getpid();
+#endif	/* _WINDOWS & Linux */
+}
+
+LZH_THREAD_ID lzh_gettid()
+{
+    return SDL_ThreadID();
+}
+
+LZH_BOOL lzh_get_curtime(const char *format, char *buf, int len)
+{
+	time_t lc_time = 0;
+	size_t ret = 0;
+	struct tm *lctm = NULL;
+
+	if (!format || !format[0])
+	{
+		return LZH_FALSE;
+	}
+
+	if (!buf)
+	{
+		return LZH_FALSE;
+	}
+
+	if (len <= 0)
+	{
+		return LZH_FALSE;
+	}
+
+	memset(buf, 0, len);
+
+	/* 获取本地时间 */
+	lc_time = time(NULL);
+	lctm = localtime(&lc_time);
+
+	if (!lctm)
+	{
+		return LZH_FALSE;
+	}
+
+	/* 转换时间信息为字符串 */
+	ret = strftime(buf, len, format, lctm);
+	return !ret ? LZH_FALSE : LZH_TRUE;
 }
 
 /*===========================================================================*/
