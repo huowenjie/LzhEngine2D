@@ -7,7 +7,6 @@
 #include <lzh_object.h>
 
 #include "tank.h"
-#include "level.h"
 
 /*===========================================================================*/
 
@@ -21,6 +20,7 @@ static void level_clear_visit(const LEVEL_RB_NODE *, void *);
 static void level_clear_objects(LEVEL *level, LEVEL_RB_VISIT visit);
 
 static void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args);
+static void update_bullet(LZH_ENGINE *eg, LZH_OBJECT *object, void *args);
 
 /*===========================================================================*/
 
@@ -48,7 +48,6 @@ LZH_BOOL level_add_object(LEVEL *level, const char *name, void *object)
 {
     char *key = NULL;
     int size = 0;
-    OBJ_WIDGET *widget = NULL;
 
     if (!level || !level->objtree) {
         return LZH_FALSE;
@@ -62,14 +61,11 @@ LZH_BOOL level_add_object(LEVEL *level, const char *name, void *object)
         return LZH_FALSE;
     }
 
-    widget = (OBJ_WIDGET *)object;
-
     size = (int)strlen(name) + 1;
     key = LZH_MALLOC(size);
     strcpy(key, name);
 
     level_rb_insert(level->objtree, key, object);
-    lzh_object_set_name(widget->object, name);
     return LZH_TRUE;
 }
 
@@ -141,9 +137,13 @@ void level_init_tutorials(LEVEL *level)
         if (!player) {
             return;
         }
+
         tk_set_pos(player, 0.0f, 0.0f);
-        level_add_object(level, "player", player);
+        ow_set_name((OBJ_WIDGET *)player, "player");
         ow_set_update((OBJ_WIDGET *)player, update_player, player);
+        ow_set_level((OBJ_WIDGET *)player, level);
+
+        level_add_object(level, "player", player);
     }
 }
 
@@ -179,9 +179,11 @@ void level_clear_visit(const LEVEL_RB_NODE *node, void *args)
     }
 
     if (node->value) {
-        TANK *player = (TANK *)node->value;
-        if (player) {
-            tk_destroy_tank(player);
+        OBJ_WIDGET *obj = (OBJ_WIDGET *)node->value;
+        if (obj->type == OBJ_TYPE_TANK) {
+            tk_destroy_tank((TANK *)obj);
+        } else if (obj->type == OBJ_TYPE_BULLET) {
+            blt_destroy_bullet((BULLET *)obj);
         }
     }
 }
@@ -200,6 +202,7 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
     float delta = 0.0f;
     float speed = 0.0f;
     TANK *player = NULL;
+    LEVEL *level = NULL;
 
     if (!eg || !args) {
         return;
@@ -208,6 +211,7 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
     player = (TANK *)args;
     delta = lzh_engine_interval(eg);
     speed = 100.0f * delta;
+    level = player->widget.level;
 
     if (lzh_get_key_status(KEY_CODE_W)) {
         tk_move_forward(player, speed);
@@ -224,6 +228,37 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
     if (lzh_get_key_status(KEY_CODE_D)) {
         tk_rotate_right(player, speed);
     }
+
+    if (lzh_get_key_status(KEY_CODE_SPACE)) {
+        const char *name = NULL;
+        BULLET *bullet = tk_fire(player);
+
+        if (!bullet) {
+            return;
+        }
+
+        ow_set_update((OBJ_WIDGET *)bullet, update_bullet, bullet);
+
+        name = lzh_object_get_name(bullet->widget.object);
+        level_add_object(level, name, bullet);
+    }
+}
+
+void update_bullet(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
+{
+    float delta = 0.0f;
+    float speed = 0.0f;
+    BULLET *bullet = NULL;
+
+    if (!eg || !args) {
+        return;
+    }
+
+    bullet = (BULLET *)args;
+    delta = lzh_engine_interval(eg);
+    speed = 100.0f * delta;
+
+    blt_move_forward(bullet, speed);
 }
 
 /*===========================================================================*/

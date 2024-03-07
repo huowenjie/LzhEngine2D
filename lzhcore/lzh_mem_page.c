@@ -93,8 +93,6 @@ typedef unsigned long MEM_UINTPTR;
  *      255 MEM_BLOCK
  * ----------------------
  *
- * 本结构继承自 LINK_NODE，见 link.h - LINK_NODE。
- *
  * 内存页面的管理遵循以下方式：
  *
  * 1.多个相同规格的内存页组成一个内存页链表，多个内存页链表组成一张
@@ -187,19 +185,19 @@ struct mem_block_dbg_st {
 
 /* 内存页链表，继承自 LINK */
 struct mem_page_link_st {
-    MEM_PAGE *head; /* 表头 */
-    MEM_PAGE *tail; /* 表尾 */
+    MEM_PAGE *head;             /* 表头 */
+    MEM_PAGE *tail;             /* 表尾 */
 
-    int count;      /* 节点总数 */
-    int idle_num;   /* 有空闲内存块的节点总数 */
+    int count;                  /* 节点总数 */
+    int idle_num;               /* 有空闲内存块的节点总数 */
 };
 
 /* 内存页信息 */
 typedef struct {
-    int page_type;  /* 内存页类型 */
-    int block_size; /* 单位内存块尺寸 */
-    int total_size; /* 所有内存块的大小之和 */
-    int block_num;  /* 每一页内存块的数量 */
+    int page_type;              /* 内存页类型 */
+    int block_size;             /* 单位内存块尺寸 */
+    int total_size;             /* 所有内存块的大小之和 */
+    int block_num;              /* 每一页内存块的数量 */
 } MEM_PAGE_INFO;
 
 /*===========================================================================*/
@@ -226,7 +224,7 @@ static const unsigned char mem_page_info_index[MEM_PAGE_MAP_INDEX_COUNT] = {
     10, 10, 10, 10, 10, 10, 10, 10,    /*  33 ~ 40  */
     11, 11, 11, 11, 11, 11, 11, 11,    /*  41 ~ 48  */
     12, 12, 12, 12, 12, 12, 12, 12,    /*  49 ~ 56  */
-    13, 13, 13, 13, 13, 13, 13, 13    /*  57 ~ 64  */
+    13, 13, 13, 13, 13, 13, 13, 13     /*  57 ~ 64  */
 };
 
 /* 内存页分类信息表 */

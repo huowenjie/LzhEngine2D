@@ -1,7 +1,7 @@
 #ifndef __TANK_H__
 #define __TANK_H__
 
-#include "objwidget.h"
+#include "bullet.h"
 
 /*===========================================================================*/
 /* tank */
@@ -27,6 +27,9 @@ void tk_move_forward(TANK *tank, float speed);
 void tk_move_backward(TANK *tank, float speed);
 void tk_rotate_left(TANK *tank, float speed);
 void tk_rotate_right(TANK *tank, float speed);
+
+/* fire! */
+BULLET *tk_fire(TANK *tank);
 
 /*===========================================================================*/
 

@@ -65,6 +65,14 @@ void lzh_object_destroy(LZH_OBJECT *object)
     }
 }
 
+LZH_ENGINE *lzh_object_get_engine(LZH_OBJECT *object)
+{
+    if (object) {
+        return object->engine;
+    }
+    return NULL;
+}
+
 void lzh_object_set_name(LZH_OBJECT *object, const char *name)
 {
     char *buf = NULL;

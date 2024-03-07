@@ -19,6 +19,9 @@ LZH_API LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine);
 /* 销毁对象 */
 LZH_API void lzh_object_destroy(LZH_OBJECT *object);
 
+/* 获取引擎对象 */
+LZH_API LZH_ENGINE *lzh_object_get_engine(LZH_OBJECT *object);
+
 /* 设置对象名称 */
 LZH_API void lzh_object_set_name(LZH_OBJECT *object, const char *name);
 

@@ -5,10 +5,13 @@
 
 /*===========================================================================*/
 
-static char cur_exe_path[256] = { 0 };
-static char res_path[256] = { 0 };
-static char tank_res[256] = { 0 };
-static char turret_res[256] = { 0 };
+#define BUFFER_LEN 256
+
+static char cur_exe_path[BUFFER_LEN] = { 0 };
+static char res_path[BUFFER_LEN] = { 0 };
+static char tank_res[BUFFER_LEN] = { 0 };
+static char turret_res[BUFFER_LEN] = { 0 };
+static char bullet_res[BUFFER_LEN] = { 0 };
 
 static char player_name[] = "player";
 
@@ -45,6 +48,11 @@ const char *get_tank_turret_path()
     return turret_res;
 }
 
+const char *get_tank_bullet_path()
+{
+    return bullet_res;
+}
+
 const char *get_player_name()
 {
     return player_name;
@@ -65,6 +73,9 @@ void init_global_res()
 
     strcpy(turret_res, res_path);
     strcat(turret_res, "turret.png");
+
+    strcpy(bullet_res, res_path);
+    strcat(bullet_res, "bullet.png");
 }
 
 /*===========================================================================*/

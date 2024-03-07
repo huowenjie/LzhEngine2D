@@ -47,12 +47,34 @@ void ow_set_pos(OBJ_WIDGET *widget, float x, float y)
     }
 }
 
+void ow_set_level(OBJ_WIDGET *widget, LEVEL *level)
+{
+    if (widget) {
+        widget->level = level;
+    }
+}
+
+void ow_set_name(OBJ_WIDGET *widget, const char *name)
+{
+    if (widget) {
+        lzh_object_set_name(widget->object, name);
+    }
+}
+
 void ow_set_update(
     OBJ_WIDGET *widget, LZH_OBJECT_UPDATE update, void *param)
 {
     if (widget) {
         lzh_object_set_update(widget->object, update, param);
     }
+}
+
+LZH_ENGINE *ow_get_engine(OBJ_WIDGET *widget)
+{
+    if (widget) {
+        return lzh_object_get_engine(widget->object);
+    }
+    return NULL;
 }
 
 /*===========================================================================*/

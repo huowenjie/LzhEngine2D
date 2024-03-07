@@ -3,13 +3,17 @@
 #include <lzh_object.h>
 #include <lzh_engine.h>
 #include <string.h>
-
+#include <stdio.h>
 #include "globalres.h"
 #include "tank.h"
 
 /*===========================================================================*/
 
+static char bullet_name[16] = { 0 };
+static int bullet_code = 1;
+
 static void update_turret_pos(TANK *tank);
+static void update_bullet_pos(TANK *tank, BULLET *bullet);
 
 /*===========================================================================*/
 
@@ -118,6 +122,34 @@ void tk_rotate_right(TANK *tank, float speed)
     }
 }
 
+BULLET *tk_fire(TANK *tank)
+{
+    BULLET *bullet = NULL;
+    LZH_ENGINE *engine = NULL;
+
+    if (!tank) {
+        return NULL;
+    }
+
+    engine = ow_get_engine((OBJ_WIDGET *)tank);
+    if (!engine) {
+        return NULL;
+    }
+
+    bullet = blt_create_bullet(engine, 5.0f, 10.0f);
+    if (!bullet) {
+        return NULL;
+    }
+
+    bullet->from = (OBJ_WIDGET *)tank;
+
+    ow_set_level((OBJ_WIDGET *)bullet, tank->widget.level);
+    sprintf(bullet_name, "bullet%d", bullet_code++);
+    ow_set_name((OBJ_WIDGET *)bullet, bullet_name);
+    update_bullet_pos(tank, bullet);
+    return bullet;
+}
+
 /*===========================================================================*/
 
 void update_turret_pos(TANK *tank)
@@ -151,6 +183,24 @@ void update_turret_pos(TANK *tank)
 
     angle = lzh_object_get_angle(tank->widget.object);
     lzh_object_set_angle(turret->widget.object, angle);
+}
+
+void update_bullet_pos(TANK *tank, BULLET *bullet)
+{
+    LZH_RECTF tk_rect;
+    //LZH_RECTF bl_rect;
+
+    LZH_VEC2F tk_pos;
+
+    if (!tank || !bullet) {
+        return;
+    }
+
+    tk_rect = lzh_object_get_rect(tank->widget.object);
+    //bl_rect = lzh_object_get_rect(bullet->widget.object);
+
+    tk_pos = lzh_vec2f_xy(tk_rect.x, tk_rect.y);
+    lzh_object_set_pos(bullet->widget.object, &tk_pos);
 }
 
 /*===========================================================================*/

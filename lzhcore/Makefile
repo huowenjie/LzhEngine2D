@@ -70,7 +70,7 @@ endif
 #------------------------------------------------------------------------------
 
 # ‘§∂®“Â∫Í
-DEF := LZH_MEMORY_DEBUG LZH_EXP
+DEF := LZH_MEMORY_DEBUG LZH_EXP LZH_ENABLE_TRACE
 
 CPP_FILES := $(foreach dir,$(SRC_DIR),$(wildcard $(dir)/*.cpp))
 C_FILES := $(foreach dir,$(SRC_DIR),$(wildcard $(dir)/*.c))

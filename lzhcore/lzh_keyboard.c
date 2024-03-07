@@ -46,6 +46,7 @@ LZH_BOOL lzh_get_key_status(LZH_KEYCODE code)
     case KEY_CODE_X: ret = (LZH_BOOL)status[SDL_SCANCODE_X]; break;
     case KEY_CODE_Y: ret = (LZH_BOOL)status[SDL_SCANCODE_Y]; break;
     case KEY_CODE_Z: ret = (LZH_BOOL)status[SDL_SCANCODE_Z]; break;
+    case KEY_CODE_SPACE: ret = (LZH_BOOL)status[SDL_SCANCODE_SPACE]; break;
     }
 
     return ret;

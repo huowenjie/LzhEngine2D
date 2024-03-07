@@ -50,7 +50,9 @@ typedef enum
     KEY_CODE_W = 0x20,
     KEY_CODE_X = 0x21,
     KEY_CODE_Y = 0x22,
-    KEY_CODE_Z = 0x23
+    KEY_CODE_Z = 0x23,
+
+    KEY_CODE_SPACE = 0x024
 } LZH_KEYCODE;
 
 /* 检测键盘按键否按下，（逐帧检测），按下返回 LZH_TRUE，未按下返回 LZH_FALSE */
