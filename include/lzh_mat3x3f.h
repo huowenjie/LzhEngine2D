@@ -51,6 +51,15 @@ LZH_API LZH_MAT3X3F lzh_mat3x3f_transpose(const LZH_MAT3X3F *mat);
 /* 逆矩阵 */
 LZH_API LZH_MAT3X3F lzh_mat3x3f_inverse(const LZH_MAT3X3F *mat);
 
+/* 绕 z 轴旋转 */
+LZH_API LZH_MAT3X3F lzh_mat3x3f_rotate(float theta);
+
+/* 平移 */
+LZH_API LZH_MAT3X3F lzh_mat3x3f_translate(float x, float y);
+
+/* 缩放 */
+LZH_API LZH_MAT3X3F lzh_mat3x3f_scale(float scale);
+
 /* 3 x 3 行列式值 */
 LZH_API float lzh_mat3x3f_determinant(const LZH_MAT3X3F *mat); 
 

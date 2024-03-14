@@ -123,6 +123,34 @@ LZH_MAT3X3F lzh_mat3x3f_inverse(const LZH_MAT3X3F *mat)
     return tmp;
 }
 
+LZH_MAT3X3F lzh_mat3x3f_rotate(float theta)
+{
+    LZH_MAT3X3F tmp = lzh_mat3x3f_unit();
+
+    tmp.m00 = cosf(theta);
+    tmp.m01 = -sinf(theta);
+    tmp.m10 = sinf(theta);
+    tmp.m11 = cosf(theta);
+    return tmp;
+}
+
+LZH_MAT3X3F lzh_mat3x3f_translate(float x, float y)
+{
+    LZH_MAT3X3F tmp = lzh_mat3x3f_unit();
+
+    tmp.m02 = x;
+    tmp.m12 = y;
+    return tmp;
+}
+
+LZH_MAT3X3F lzh_mat3x3f_scale(float scale)
+{
+    LZH_MAT3X3F tmp = lzh_mat3x3f_unit();
+    tmp.m00 = scale;
+    tmp.m11 = scale;
+    return tmp;
+}
+
 float lzh_mat3x3f_determinant(const LZH_MAT3X3F *mat)
 {
     float det = 0.0f;
