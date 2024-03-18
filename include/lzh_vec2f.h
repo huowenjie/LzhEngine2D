@@ -35,6 +35,9 @@ LZH_API LZH_VEC2F lzh_vec2f_div(const LZH_VEC2F *a, float t);
 /* 向量取反 */
 LZH_API LZH_VEC2F lzh_vec2f_reverse(const LZH_VEC2F *a);
 
+/* 向量旋转 */
+LZH_API LZH_VEC2F lzh_vec2f_rotate(const LZH_VEC2F *a, float theta);
+
 /* 向量归一化 */
 LZH_API LZH_VEC2F lzh_vec2f_normalize(const LZH_VEC2F *a);
 

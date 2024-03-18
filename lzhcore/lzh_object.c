@@ -1,7 +1,6 @@
 #include <string.h>
 #include <lzh_object.h>
 #include <lzh_sprite.h>
-#include <lzh_mat2x2f.h>
 
 #include "lzh_mem.h"
 #include "lzh_core_object.h"
@@ -257,12 +256,8 @@ void update_object_forward(LZH_OBJECT *obj)
         float angle = obj->angle;
         float theta = angle * (PI / 180.0f);
 
-        LZH_MAT2X2F mat = lzh_mat2x2f_rotate(theta);
         LZH_VEC2F forward = lzh_vec2f_xy(0.0f, -1.0f);
-
-        forward = lzh_mat2x2f_mul_vec(&mat, &forward);
-        forward = lzh_vec2f_normalize(&forward);
-        obj->forward = forward;
+        obj->forward = lzh_vec2f_rotate(&forward, theta);
     }
 }
 

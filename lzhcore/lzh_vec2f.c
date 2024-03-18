@@ -1,5 +1,5 @@
 #include <math.h>
-#include "lzh_vec2f.h"
+#include <lzh_mat2x2f.h>
 
 /*===========================================================================*/
 
@@ -65,6 +65,20 @@ LZH_VEC2F lzh_vec2f_reverse(const LZH_VEC2F *a)
         c.y = -a->y;
     }
     return c;
+}
+
+LZH_VEC2F lzh_vec2f_rotate(const LZH_VEC2F *a, float theta)
+{
+    LZH_VEC2F vec = { 0 };
+
+    if (a) {
+        LZH_MAT2X2F mat = lzh_mat2x2f_rotate(theta);
+        vec = *a;
+        vec = lzh_mat2x2f_mul_vec(&mat, &vec);
+        vec = lzh_vec2f_normalize(&vec);
+    }
+
+    return vec;
 }
 
 LZH_VEC2F lzh_vec2f_normalize(const LZH_VEC2F *a)

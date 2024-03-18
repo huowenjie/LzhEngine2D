@@ -4,10 +4,13 @@
 #include <lzh_engine.h>
 #include <string.h>
 #include <stdio.h>
+
 #include "globalres.h"
 #include "tank.h"
 
 /*===========================================================================*/
+
+#define PI (3.1415926536f)
 
 static char bullet_name[16] = { 0 };
 static int bullet_code = 1;
@@ -157,12 +160,16 @@ void update_turret_pos(TANK *tank)
     LZH_RECTF tk_rect;
     LZH_RECTF tr_rect;
 
-    LZH_VEC2F start;
-    LZH_VEC2F end;
+    LZH_VEC2F tk_center;
+    LZH_VEC2F tr_center;
+    LZH_VEC2F tr_start;
+    LZH_VEC2F tr_end;
     LZH_VEC2F offset;
     TURRET *turret = NULL;
 
     float angle = 0.0f;
+    float theta = 0.0f;
+    LZH_VEC2F forward;
 
     if (!tank || !tank->turret) {
         return;
@@ -172,16 +179,23 @@ void update_turret_pos(TANK *tank)
     tk_rect = lzh_object_get_rect(tank->widget.object);
     tr_rect = lzh_object_get_rect(turret->widget.object);
 
-    end = lzh_vec2f_xy(tk_rect.x + tk_rect.w / 2.0f, tk_rect.y + tk_rect.h);
-    start = lzh_vec2f_xy(tr_rect.x + tr_rect.w / 2.0f, tr_rect.y + tr_rect.h);
-    offset = lzh_vec2f_sub(&end, &start);
+    /* 起点相同，计算两个对象中心点的位移向量 */
+    tk_center = lzh_vec2f_xy(tk_rect.w / 2.0f, tk_rect.h / 2.0f);
+    tr_center = lzh_vec2f_xy(tr_rect.w / 2.0f, tr_rect.h / 2.0f);
+    offset = lzh_vec2f_sub(&tk_center, &tr_center);
 
-    start = lzh_vec2f_xy(tr_rect.x, tr_rect.y);
-    end = lzh_vec2f_add(&start, &offset);
-
-    lzh_object_set_pos(turret->widget.object, &end);
+    tr_start = lzh_vec2f_xy(tk_rect.x, tk_rect.y);
+    tr_end = lzh_vec2f_add(&tr_start, &offset);
 
     angle = lzh_object_get_angle(tank->widget.object);
+    theta = angle * (PI / 180.0f);
+
+    forward = lzh_vec2f_xy(0.0f, -1.0f);
+    forward = lzh_vec2f_rotate(&forward, theta);
+    forward = lzh_vec2f_mul(&forward, 6.0f);
+    tr_end = lzh_vec2f_add(&tr_end, &forward);
+
+    lzh_object_set_pos(turret->widget.object, &tr_end);
     lzh_object_set_angle(turret->widget.object, angle);
 }
 
