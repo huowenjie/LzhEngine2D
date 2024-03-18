@@ -202,19 +202,42 @@ void update_turret_pos(TANK *tank)
 void update_bullet_pos(TANK *tank, BULLET *bullet)
 {
     LZH_RECTF tk_rect;
-    //LZH_RECTF bl_rect;
+    LZH_RECTF bl_rect;
 
-    LZH_VEC2F tk_pos;
+    LZH_VEC2F tk_center;
+    LZH_VEC2F bl_center;
+    LZH_VEC2F bl_start;
+    LZH_VEC2F bl_end;
+    LZH_VEC2F offset;
+
+    float angle = 0.0f;
+    float theta = 0.0f;
+    LZH_VEC2F forward;
 
     if (!tank || !bullet) {
         return;
     }
 
     tk_rect = lzh_object_get_rect(tank->widget.object);
-    //bl_rect = lzh_object_get_rect(bullet->widget.object);
+    bl_rect = lzh_object_get_rect(bullet->widget.object);
 
-    tk_pos = lzh_vec2f_xy(tk_rect.x, tk_rect.y);
-    lzh_object_set_pos(bullet->widget.object, &tk_pos);
+    tk_center = lzh_vec2f_xy(tk_rect.w / 2.0f, tk_rect.h / 2.0f);
+    bl_center = lzh_vec2f_xy(bl_rect.w / 2.0f, bl_rect.h / 2.0f);
+    offset = lzh_vec2f_sub(&tk_center, &bl_center);
+
+    bl_start = lzh_vec2f_xy(tk_rect.x, tk_rect.y);
+    bl_end = lzh_vec2f_add(&bl_start, &offset);
+
+    angle = lzh_object_get_angle(tank->widget.object);
+    theta = angle * (PI / 180.0f);
+
+    forward = lzh_vec2f_xy(0.0f, -1.0f);
+    forward = lzh_vec2f_rotate(&forward, theta);
+    forward = lzh_vec2f_mul(&forward, 25.0f);
+    bl_end = lzh_vec2f_add(&bl_end, &forward);
+
+    lzh_object_set_pos(bullet->widget.object, &bl_end);
+    lzh_object_set_angle(bullet->widget.object, angle);
 }
 
 /*===========================================================================*/
