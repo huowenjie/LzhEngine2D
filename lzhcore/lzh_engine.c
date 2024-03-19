@@ -177,20 +177,22 @@ void lzh_engine_render(LZH_ENGINE *engine)
         if (engine->fixed_update) {
             while (time_count > fix_time) {
                 time_count -= fix_time;
-                engine->fixed_update(engine, engine->fixed_args);
 
                 render_tree_iterate(
                     engine->render_tree, render_objects_fixed, engine);
+
+                engine->fixed_update(engine, engine->fixed_args);
             }
         } else {
             time_count = 0.0f;
         }
 
+        render_tree_iterate(engine->render_tree, render_objects, engine);
+        
         if (engine->render_update) {
             engine->render_update(engine, engine->render_args);
         }
 
-        render_tree_iterate(engine->render_tree, render_objects, engine);
         SDL_RenderPresent(renderer);
 
         start = SDL_GetPerformanceCounter();

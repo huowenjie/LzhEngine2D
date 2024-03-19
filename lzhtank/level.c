@@ -21,6 +21,7 @@ static void level_clear_objects(LEVEL *level, LEVEL_RB_VISIT visit);
 
 static void level_tree_add_collider(const LEVEL_RB_NODE *, void *);
 
+static LZH_UINT32 update_tutorials_level(LZH_ENGINE *eg, void *args);
 static void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args);
 static void update_bullet(LZH_ENGINE *eg, LZH_OBJECT *object, void *args);
 
@@ -217,7 +218,11 @@ void level_init_tutorials(LEVEL *level)
     if (level) {
         TANK *dog = NULL;
         TANK *pig = NULL;
-        TANK *player = tk_create_tank(level->engine, 30.0f, 30.0f);
+        TANK *player = NULL;
+
+        lzh_engine_set_update(level->engine, update_tutorials_level, level);
+
+        player = tk_create_tank(level->engine, 10.0f, 10.0f);
         if (!player) {
             return;
         }
@@ -229,7 +234,7 @@ void level_init_tutorials(LEVEL *level)
 
         level_add_object(level, "player", player);
 
-        dog = tk_create_tank(level->engine, 30.0f, 30.0f);
+        dog = tk_create_tank(level->engine, 10.0f, 10.0f);
         if (!dog) {
             return;
         }
@@ -240,7 +245,7 @@ void level_init_tutorials(LEVEL *level)
 
         level_add_object(level, "dog", dog);
 
-        pig = tk_create_tank(level->engine, 30.0f, 30.0f);
+        pig = tk_create_tank(level->engine, 10.0f, 10.0f);
         if (!pig) {
             return;
         }
@@ -318,18 +323,43 @@ void level_tree_add_collider(const LEVEL_RB_NODE *node, void *args)
 
 /*===========================================================================*/
 
+LZH_UINT32 update_tutorials_level(LZH_ENGINE *eg, void *args)
+{
+#if 0
+    LEVEL *level = NULL;
+    LZH_OBJECT *collider = NULL;
+    OBJ_WIDGET *target = NULL;
+
+    if (!args) {
+        return 0;
+    }
+
+    level = (LEVEL *)args;
+    
+    level_add_colliders(level);
+    target = (OBJ_WIDGET *)level_find_object(level, "bullet1");
+    if (!target) {
+        return 0;
+    }
+
+    collider = level_get_collider(level, target->object);
+    if (collider && collider != target->object) {
+        const char *name = lzh_object_get_name(collider);
+        printf("collider!!! -- %s\n", name);
+    }
+
+    level_clear_colliders(level);
+#endif
+    return 0;
+}
+
 void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
 {
     float delta = 0.0f;
     float speed = 0.0f;
-    float x = 0.0f;
-    float y = 0.0f;
-    float angle = 0.0f;
 
     TANK *player = NULL;
     LEVEL *level = NULL;
-
-    LZH_OBJECT *collider = NULL;
 
     if (!eg || !args) {
         return;
@@ -339,9 +369,6 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
     delta = lzh_engine_interval(eg);
     speed = 100.0f * delta;
     level = player->widget.level;
-
-    tk_get_pos(player, &x, &y);
-    angle = tk_get_angle(player);
 
     if (lzh_get_key_status(KEY_CODE_W)) {
         tk_move_forward(player, speed);
@@ -372,24 +399,14 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
         name = lzh_object_get_name(bullet->widget.object);
         level_add_object(level, name, bullet);
     }
-
-    level_add_colliders(level);
-
-    collider = level_get_collider(level, player->widget.object);
-    if (collider) {
-        const char *name = lzh_object_get_name(collider);
-        printf("collider!!! -- %s\n", name);
-
-        /* »¹Ô­Î»ÖÃ */
-        tk_set_pos(player, x, y);
-        tk_set_angle(player, angle);
-    }
-
-    level_clear_colliders(level);
 }
 
 void update_bullet(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
-{
+{    
+    LEVEL *level = NULL;
+    LZH_OBJECT *collider = NULL;
+    OBJ_WIDGET *target = NULL;
+
     float delta = 0.0f;
     float speed = 0.0f;
     BULLET *bullet = NULL;
@@ -401,8 +418,20 @@ void update_bullet(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
     bullet = (BULLET *)args;
     delta = lzh_engine_interval(eg);
     speed = 100.0f * delta;
+    level = bullet->widget.level;
 
     blt_move_forward(bullet, speed);
+
+    level_add_colliders(level);
+    target = (OBJ_WIDGET *)bullet;
+
+    collider = level_get_collider(level, target->object);
+    if (collider) {
+        const char *name = lzh_object_get_name(collider);
+        printf("collider!!! -- %s\n", name);
+    }
+
+    level_clear_colliders(level);
 }
 
 /*===========================================================================*/

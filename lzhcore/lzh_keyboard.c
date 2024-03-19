@@ -52,4 +52,10 @@ LZH_BOOL lzh_get_key_status(LZH_KEYCODE code)
     return ret;
 }
 
+LZH_BOOL lzh_get_key_down(LZH_KEYCODE code)
+{
+    LZH_BOOL ret = LZH_FALSE;
+    return ret;
+}
+
 /*===========================================================================*/

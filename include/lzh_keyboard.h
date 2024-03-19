@@ -58,6 +58,9 @@ typedef enum
 /* 检测键盘按键否按下，（逐帧检测），按下返回 LZH_TRUE，未按下返回 LZH_FALSE */
 LZH_API LZH_BOOL lzh_get_key_status(LZH_KEYCODE code);
 
+/* 检测键盘是否按下，单次 */
+LZH_API LZH_BOOL lzh_get_key_down(LZH_KEYCODE code);
+
 #ifdef __cplusplus
 }
 #endif

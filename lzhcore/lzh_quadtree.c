@@ -11,6 +11,9 @@ typedef struct LZH_QUAD_NODE LZH_QUAD_NODE;
 /* 默认每个节点保存的最大对象数量 */
 #define MAX_OBJECT_COUNT 4
 
+/* 默认树最大高度 */
+#define MAX_HEIGHT 5
+
 /* 定义象限索引, 分别为第 1、2、3、4 象限节点 */
 #define QUAD_NODE_RT 0
 #define QUAD_NODE_LT 1
@@ -42,6 +45,9 @@ struct LZH_QUAD_NODE
 
     /* 当前节点的对象数量 */
     int obj_count;
+
+    /* 当前节点高度 */
+    int node_height;
 };
 
 struct LZH_QUAD_TREE
@@ -129,6 +135,7 @@ void lzh_quad_tree_init_root(LZH_QUAD_TREE *tree, const LZH_RECTF *region)
 
         tree->root = root;
         tree->count = 1;
+        root->node_height = 1;
     }
 
     root->bound = *region;
@@ -199,6 +206,7 @@ LZH_QUAD_NODE *create_quad_node()
 
     node->objects = objects;
     node->obj_count = 0;
+    node->node_height = 0;
     return node;
 err:
     if (objects) {
@@ -302,7 +310,9 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
 
     /* 首先判断是否分裂，如果未分裂，直接在当前节点上操作 */
     if (!node->child[0]) {
-        if (node->obj_count >= tree->obj_max_count) {
+        insert_object(node, object);
+
+        if ((node->obj_count >= tree->obj_max_count) && (node->node_height < MAX_HEIGHT)) {
             int i = 0;
             int count = node->obj_count;
             LZH_OBJECT **objs = node->objects;
@@ -315,9 +325,6 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
                 objs[i] = NULL;
                 node->obj_count--;
             }
-            add_quad_node(node, object);
-        } else {
-            insert_object(node, object);
         }
         return;
     }
@@ -386,6 +393,11 @@ void split_quad_node(LZH_QUAD_NODE *node)
     node->child[QUAD_NODE_LT]->tree = tree;
     node->child[QUAD_NODE_LB]->tree = tree;
     node->child[QUAD_NODE_RB]->tree = tree;
+
+    node->child[QUAD_NODE_RT]->node_height = node->node_height + 1;
+    node->child[QUAD_NODE_LT]->node_height = node->node_height + 1;
+    node->child[QUAD_NODE_LB]->node_height = node->node_height + 1;
+    node->child[QUAD_NODE_RB]->node_height = node->node_height + 1;
 
     tree->count += 4;
 }
