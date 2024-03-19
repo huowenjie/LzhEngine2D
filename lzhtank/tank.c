@@ -72,6 +72,37 @@ void tk_set_pos(TANK *tank, float x, float y)
     }
 }
 
+void tk_set_angle(TANK *tank, float angle)
+{
+    if (tank) {
+        lzh_object_set_angle(tank->widget.object, angle);
+        update_turret_pos(tank);
+    }
+}
+
+void tk_get_pos(TANK *tank, float *x, float *y)
+{
+    if (tank) {
+        LZH_VEC2F pos = lzh_object_get_pos(tank->widget.object);
+
+        if (x) {
+            *x = pos.x;
+        }
+
+        if (y) {
+            *y = pos.y;
+        }
+    }
+}
+
+float tk_get_angle(TANK *tank)
+{
+    if (tank) {
+        return lzh_object_get_angle(tank->widget.object);
+    }
+    return 0.0f;
+}
+
 void tk_move_forward(TANK *tank, float speed)
 {
     if (tank) {

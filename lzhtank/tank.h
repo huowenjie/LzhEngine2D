@@ -21,6 +21,9 @@ void tk_destroy_tank(TANK *tank);
 
 /* 设置位置 */
 void tk_set_pos(TANK *tank, float x, float y);
+void tk_set_angle(TANK *tank, float angle);
+void tk_get_pos(TANK *tank, float *x, float *y);
+float tk_get_angle(TANK *tank);
 
 /* 移动和旋转 */
 void tk_move_forward(TANK *tank, float speed);

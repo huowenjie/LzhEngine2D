@@ -216,6 +216,7 @@ void level_init_tutorials(LEVEL *level)
 {
     if (level) {
         TANK *dog = NULL;
+        TANK *pig = NULL;
         TANK *player = tk_create_tank(level->engine, 30.0f, 30.0f);
         if (!player) {
             return;
@@ -238,6 +239,17 @@ void level_init_tutorials(LEVEL *level)
         ow_set_level((OBJ_WIDGET *)dog, level);
 
         level_add_object(level, "dog", dog);
+
+        pig = tk_create_tank(level->engine, 30.0f, 30.0f);
+        if (!pig) {
+            return;
+        }
+
+        tk_set_pos(pig, 0.0f, 100.0f);
+        ow_set_name((OBJ_WIDGET *)pig, "pig");
+        ow_set_level((OBJ_WIDGET *)pig, level);
+
+        level_add_object(level, "pig", pig);
     }
 }
 
@@ -310,6 +322,10 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
 {
     float delta = 0.0f;
     float speed = 0.0f;
+    float x = 0.0f;
+    float y = 0.0f;
+    float angle = 0.0f;
+
     TANK *player = NULL;
     LEVEL *level = NULL;
 
@@ -324,14 +340,8 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
     speed = 100.0f * delta;
     level = player->widget.level;
 
-    level_add_colliders(level);
-    collider = level_get_collider(level, player->widget.object);
-    if (collider) {
-        /* TODO */
-        const char *name = lzh_object_get_name(collider);
-        printf("collider!!! -- %s\n", name);
-        goto end;
-    }
+    tk_get_pos(player, &x, &y);
+    angle = tk_get_angle(player);
 
     if (lzh_get_key_status(KEY_CODE_W)) {
         tk_move_forward(player, speed);
@@ -363,7 +373,18 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
         level_add_object(level, name, bullet);
     }
 
-end:
+    level_add_colliders(level);
+
+    collider = level_get_collider(level, player->widget.object);
+    if (collider) {
+        const char *name = lzh_object_get_name(collider);
+        printf("collider!!! -- %s\n", name);
+
+        /* ªπ‘≠Œª÷√ */
+        tk_set_pos(player, x, y);
+        tk_set_angle(player, angle);
+    }
+
     level_clear_colliders(level);
 }
 
