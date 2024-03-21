@@ -76,6 +76,7 @@ void blt_explode(BULLET *bullet)
     ow_init_widget_images(
         (OBJ_WIDGET *)bullet, eg, 20.0f, 20.0f,
         OBJ_TYPE_EXPLODE, get_tank_explode_path(), get_tank_explode_count());
+    // TODO
 }
 
 /*===========================================================================*/
