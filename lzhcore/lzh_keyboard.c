@@ -1,6 +1,8 @@
 #include <lzh_keyboard.h>
 #include <SDL2/SDL_keyboard.h>
 
+#include "lzh_core_engine.h"
+
 /*===========================================================================*/
 
 LZH_BOOL lzh_get_key_status(LZH_KEYCODE code)
@@ -52,9 +54,17 @@ LZH_BOOL lzh_get_key_status(LZH_KEYCODE code)
     return ret;
 }
 
-LZH_BOOL lzh_get_key_down(LZH_KEYCODE code)
+LZH_BOOL lzh_get_key_down(LZH_ENGINE *engine, LZH_KEYCODE code)
 {
     LZH_BOOL ret = LZH_FALSE;
+
+    if (!engine) {
+        return LZH_FALSE;
+    }
+
+    if ((engine->engine_event & LZH_EVT_KEY_DOWN) == LZH_EVT_KEY_DOWN) {
+        ret = lzh_get_key_status(code);
+    }
     return ret;
 }
 

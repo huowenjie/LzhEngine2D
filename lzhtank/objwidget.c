@@ -28,6 +28,28 @@ void ow_init_widget(
     widget->type = type;
 }
 
+void ow_init_widget_images(
+    OBJ_WIDGET *widget, LZH_ENGINE *engine,
+    float w, float h, int type, const char *res[], int count)
+{
+    LZH_OBJECT *object = NULL;
+    LZH_SPRITE *sprite = NULL;
+
+    if (!widget || !engine) {
+        return;
+    }
+
+    object = lzh_object_create(engine);
+    sprite = lzh_sprite_create_from_images(engine, res, count);
+
+    lzh_object_set_size(object, w, h);
+    lzh_object_set_sprite(object, sprite);
+
+    widget->object = object;
+    widget->sprite = sprite;
+    widget->type = type;
+}
+
 void ow_quit_widget(OBJ_WIDGET *widget)
 {
     if (widget) {

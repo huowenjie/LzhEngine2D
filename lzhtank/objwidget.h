@@ -12,6 +12,7 @@
 #define OBJ_TYPE_TANK 1
 #define OBJ_TYPE_TURRET 2
 #define OBJ_TYPE_BULLET 3
+#define OBJ_TYPE_EXPLODE 4
 
 typedef struct {
     int type;
@@ -24,6 +25,11 @@ typedef struct {
 void ow_init_widget(
     OBJ_WIDGET *widget, LZH_ENGINE *engine,
     float w, float h, int type, const char *res);
+
+/* 初始化多图精灵 */
+void ow_init_widget_images(
+    OBJ_WIDGET *widget, LZH_ENGINE *engine,
+    float w, float h, int type, const char *res[], int count);
 
 /* 终止 */
 void ow_quit_widget(OBJ_WIDGET *widget);

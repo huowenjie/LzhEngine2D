@@ -16,6 +16,10 @@ const char *get_tank_res_path();
 const char *get_tank_turret_path();
 const char *get_tank_bullet_path();
 
+/* explode 资源 */
+const char **get_tank_explode_path();
+int get_tank_explode_count();
+
 /* 控制对象名称 */
 const char *get_player_name();
 

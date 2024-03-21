@@ -386,7 +386,7 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
         tk_rotate_right(player, speed);
     }
 
-    if (lzh_get_key_status(KEY_CODE_SPACE)) {
+    if (lzh_get_key_down(eg, KEY_CODE_SPACE)) {
         const char *name = NULL;
         BULLET *bullet = tk_fire(player);
 

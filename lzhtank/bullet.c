@@ -49,7 +49,33 @@ void blt_move_forward(BULLET *bullet, float speed)
 
 void blt_explode(BULLET *bullet)
 {
+    OBJ_WIDGET *explode = NULL;
+    LZH_ENGINE *eg = NULL;
+    LEVEL *level = NULL;
 
+    if (!bullet) {
+        return;
+    }
+
+    eg = lzh_object_get_engine(bullet->widget.object);
+    if (!eg) {
+        return;
+    }
+
+    level = bullet->widget.level;
+    if (!level) {
+        return;
+    }
+
+    explode = LZH_MALLOC(sizeof(OBJ_WIDGET));
+    if (!explode) {
+        return;
+    }
+    memset(explode, 0, sizeof(OBJ_WIDGET));
+    
+    ow_init_widget_images(
+        (OBJ_WIDGET *)bullet, eg, 20.0f, 20.0f,
+        OBJ_TYPE_EXPLODE, get_tank_explode_path(), get_tank_explode_count());
 }
 
 /*===========================================================================*/

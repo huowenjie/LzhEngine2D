@@ -165,6 +165,15 @@ void lzh_engine_render(LZH_ENGINE *engine)
                 run = 0;
                 break;
             }
+
+            switch (evt.type) {
+                case SDL_KEYDOWN:
+                    engine->engine_event |= LZH_EVT_KEY_DOWN;
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         SDL_RenderClear(renderer);
@@ -201,6 +210,9 @@ void lzh_engine_render(LZH_ENGINE *engine)
 
         prev_time = start;
         time_count += engine->delta_time;
+
+        /* Çå¿ÕÊÂ¼þ */
+        engine->engine_event = LZH_EVT_NONE;
 
         if (engine->delta_time < render_time) {
             SDL_Delay((Uint32)(render_time - engine->delta_time));

@@ -59,7 +59,7 @@ typedef enum
 LZH_API LZH_BOOL lzh_get_key_status(LZH_KEYCODE code);
 
 /* 检测键盘是否按下，单次 */
-LZH_API LZH_BOOL lzh_get_key_down(LZH_KEYCODE code);
+LZH_API LZH_BOOL lzh_get_key_down(LZH_ENGINE *engine, LZH_KEYCODE code);
 
 #ifdef __cplusplus
 }
