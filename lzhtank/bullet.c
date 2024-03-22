@@ -1,9 +1,14 @@
 #include <lzh_mem.h>
 #include <lzh_object.h>
+#include <lzh_sprite.h>
 #include <string.h>
 
 #include "globalres.h"
 #include "bullet.h"
+
+/*===========================================================================*/
+
+LZH_UINT32 explode_destroy_cb(void *args);
 
 /*===========================================================================*/
 
@@ -52,6 +57,10 @@ void blt_explode(BULLET *bullet)
     OBJ_WIDGET *explode = NULL;
     LZH_ENGINE *eg = NULL;
     LEVEL *level = NULL;
+    LZH_VEC2F pos;
+
+    int count = 0;
+    const char **res = NULL;
 
     if (!bullet) {
         return;
@@ -72,11 +81,35 @@ void blt_explode(BULLET *bullet)
         return;
     }
     memset(explode, 0, sizeof(OBJ_WIDGET));
-    
+
+    count = get_tank_explode_count();
+    res = get_tank_explode_path();
+
     ow_init_widget_images(
-        (OBJ_WIDGET *)bullet, eg, 20.0f, 20.0f,
-        OBJ_TYPE_EXPLODE, get_tank_explode_path(), get_tank_explode_count());
-    // TODO
+        explode, eg, 20.0f, 20.0f, OBJ_TYPE_EXPLODE, res, count);
+
+    pos = lzh_object_get_pos(bullet->widget.object);
+    ow_set_pos(explode, pos.x, pos.y);
+
+    lzh_sprite_show(explode->sprite, LZH_TRUE);
+    lzh_sprite_enable_play(explode->sprite, LZH_TRUE);
+
+    /* 播放完毕后在最后一帧销毁 */
+    lzh_sprite_set_keyframe(explode->sprite, count - 1, explode_destroy_cb, explode);
+}
+
+LZH_UINT32 explode_destroy_cb(void *args)
+{
+    OBJ_WIDGET *explode = NULL;
+
+    if (!args) {
+        return 0;
+    }
+
+    explode = (OBJ_WIDGET *)args;
+    ow_quit_widget(explode);
+    LZH_FREE(explode);
+    return 0;
 }
 
 /*===========================================================================*/

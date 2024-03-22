@@ -34,6 +34,9 @@ void ow_init_widget_images(
 /* 终止 */
 void ow_quit_widget(OBJ_WIDGET *widget);
 
+/* 销毁组件 */
+void ow_destroy_widget(OBJ_WIDGET *widget);
+
 /* 设置位置 */
 void ow_set_pos(OBJ_WIDGET *widget, float x, float y);
 

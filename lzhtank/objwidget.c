@@ -3,6 +3,8 @@
 #include <stddef.h>
 
 #include "objwidget.h"
+#include "tank.h"
+#include "bullet.h"
 
 /*===========================================================================*/
 
@@ -58,6 +60,20 @@ void ow_quit_widget(OBJ_WIDGET *widget)
 
         widget->sprite = NULL;
         widget->object = NULL;
+    }
+}
+
+void ow_destroy_widget(OBJ_WIDGET *widget)
+{
+    if (widget) {
+        if (widget->type == OBJ_TYPE_TANK) {
+            tk_destroy_tank((TANK *)widget);
+        } else if (widget->type == OBJ_TYPE_BULLET) {
+            blt_destroy_bullet((BULLET *)widget);
+        } else if (widget->type == OBJ_TYPE_EXPLODE) {
+            ow_quit_widget(widget);
+            LZH_FREE(widget);
+        }
     }
 }
 

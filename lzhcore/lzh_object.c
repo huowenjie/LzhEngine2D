@@ -216,6 +216,13 @@ void lzh_object_set_sprite(LZH_OBJECT *object, LZH_SPRITE *sp)
     }
 }
 
+void lzh_object_show_object(LZH_OBJECT *object, LZH_BOOL show)
+{
+    if (object) {
+        lzh_sprite_show(object->sprite, show);
+    }
+}
+
 /*===========================================================================*/
 
 void lzh_object_update(LZH_OBJECT *object)

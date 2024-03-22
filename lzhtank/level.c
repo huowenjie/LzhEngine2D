@@ -290,12 +290,7 @@ void level_clear_visit(const LEVEL_RB_NODE *node, void *args)
     }
 
     if (node->value) {
-        OBJ_WIDGET *obj = (OBJ_WIDGET *)node->value;
-        if (obj->type == OBJ_TYPE_TANK) {
-            tk_destroy_tank((TANK *)obj);
-        } else if (obj->type == OBJ_TYPE_BULLET) {
-            blt_destroy_bullet((BULLET *)obj);
-        }
+        ow_destroy_widget((OBJ_WIDGET *)node->value);
     }
 }
 
@@ -427,8 +422,19 @@ void update_bullet(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
 
     collider = level_get_collider(level, target->object);
     if (collider) {
-        const char *name = lzh_object_get_name(collider);
+        const char *name = lzh_object_get_name(bullet->widget.object);
+        OBJ_WIDGET *widget = NULL;
+
+        /* explode，然后bullet销毁 */
+        blt_explode(bullet);
+        blt_destroy_bullet((BULLET *)bullet);
+        level_del_object(level, name);
+
+        /* 目标被击中然后销毁 TODO ，后期可以添加限定条件 */
+        name = lzh_object_get_name(collider);
         printf("collider!!! -- %s\n", name);
+        widget = (OBJ_WIDGET *)level_del_object(level, name);
+        ow_destroy_widget(widget);
     }
 
     level_clear_colliders(level);

@@ -62,6 +62,9 @@ LZH_API LZH_VEC2F lzh_object_get_forward(LZH_OBJECT *object);
 /* 设置精灵组件 */
 LZH_API void lzh_object_set_sprite(LZH_OBJECT *object, LZH_SPRITE *sp);
 
+/* 隐藏/显示对象 */
+LZH_API void lzh_object_show_object(LZH_OBJECT *object, LZH_BOOL show);
+
 #ifdef __cplusplus
 }
 #endif
