@@ -432,7 +432,6 @@ void update_bullet(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
 
         /* 目标被击中然后销毁 TODO ，后期可以添加限定条件 */
         name = lzh_object_get_name(collider);
-        printf("collider!!! -- %s\n", name);
         widget = (OBJ_WIDGET *)level_del_object(level, name);
         ow_destroy_widget(widget);
     }
