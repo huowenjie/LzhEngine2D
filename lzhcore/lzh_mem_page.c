@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <lzh_link.h>
 
 #include "lzh_mem.h"
-#include "lzh_link.h"
 #include "lzh_mem_page.h"
 
 /*===========================================================================*/
@@ -183,7 +183,7 @@ struct mem_block_dbg_st {
     char func[FUNC_INFO_LENGTH]; /* 所属函数 */
 };
 
-/* 内存页链表，继承自 LINK */
+/* 内存页链表，继承自 LZH_LINK */
 struct mem_page_link_st {
     MEM_PAGE *head;             /* 表头 */
     MEM_PAGE *tail;             /* 表尾 */
@@ -272,7 +272,7 @@ static const char *get_block_status_name(int status);
 static int print_leak_info(MEM_PAGE *page, int dbg, char *buff);
 
 /* 打印链表信息 */
-static void print_link_info(
+static void print_lzh_link_info(
     MEM_PAGE_LINK *link, int index, char *buff);
 
 /* 打印内存页信息 */
@@ -371,10 +371,10 @@ int mem_page_malloc(int index, int dbg)
      * 或者节点状态均为 FULL，则以新节点作为链表头结点。
      */
     if (!link->head || link->head->status == MEM_PAGE_STATUS_FULL) {
-        ret = link_insert((LINK *)link, 0, (LINK_NODE *)idle_page);
+        ret = lzh_link_insert((LZH_LINK *)link, 0, (LZH_LINK_NODE *)idle_page) ? MEM_SUCCESS : MEM_FAILED;
     } else {
-        ret = link_insert_after(
-            (LINK *)link, (LINK_NODE *)link->head, (LINK_NODE *)idle_page);
+        ret = lzh_link_insert_after(
+            (LZH_LINK *)link, (LZH_LINK_NODE *)link->head, (LZH_LINK_NODE *)idle_page) ? MEM_SUCCESS : MEM_FAILED;
     }
 
     if (ret == MEM_SUCCESS) {
@@ -399,8 +399,8 @@ int mem_page_free(MEM_PAGE *page)
     }
 
     link = mem_page_map + index;
-    link_remove_force(
-            (LINK *)link, (LINK_NODE *)page);
+    lzh_link_remove_force(
+            (LZH_LINK *)link, (LZH_LINK_NODE *)page);
 
     if (page->status == MEM_PAGE_STATUS_IDLE) {
         link->idle_num--;
@@ -440,7 +440,7 @@ void clear_mem_pages()
         }
 
         link->idle_num = 0;
-        link_reset((LINK *)link);
+        lzh_link_reset((LZH_LINK *)link);
     }
 }
 
@@ -478,8 +478,8 @@ void *alloc_block(size_t len)
      */
     if (page->using_count == (page->block_num - 1)) {
         if (link->count > 1 && link->tail != page) {
-            link_remove_force((LINK *)link, (LINK_NODE *)page);
-            link_push((LINK *)link, (LINK_NODE *)page);
+            lzh_link_remove_force((LZH_LINK *)link, (LZH_LINK_NODE *)page);
+            lzh_link_push((LZH_LINK *)link, (LZH_LINK_NODE *)page);
         }
 
         page->status = MEM_PAGE_STATUS_FULL;
@@ -672,8 +672,8 @@ void free_block(void *address, int dbg)
      * 内存链表的头结点。
      */
     if (link->count > 1 && link->head != page) {
-        link_remove_force((LINK *)link, (LINK_NODE *)page);
-        link_insert((LINK *)link, 0, (LINK_NODE *)page);
+        lzh_link_remove_force((LZH_LINK *)link, (LZH_LINK_NODE *)page);
+        lzh_link_insert((LZH_LINK *)link, 0, (LZH_LINK_NODE *)page);
     }
 
     /* 更改内存页的状态 */
@@ -712,7 +712,7 @@ void page_print_basic_info(int dbg)
             output_mem_info_std(buff);
 
             /* 打印链表信息 */
-            print_link_info(link, i, buff);
+            print_lzh_link_info(link, i, buff);
             page = link->head;
 
             for (j = 0; j < link->count; j++) {
@@ -766,7 +766,7 @@ void page_print_block_list(int index, int dbg)
     sprintf(buff, "<----------------------link %02d---------------------->\n", index);
     output_mem_info_std(buff);
 
-    print_link_info(link, index, buff);
+    print_lzh_link_info(link, index, buff);
 
     for (i = 0; i < link->count; i++) {
         if (!page) {
@@ -1131,7 +1131,7 @@ int print_leak_info(MEM_PAGE *page, int dbg, char *buff)
     return page->alloc_size;
 }
 
-void print_link_info(MEM_PAGE_LINK *link, int index, char *buff)
+void print_lzh_link_info(MEM_PAGE_LINK *link, int index, char *buff)
 {
     if (!link || !buff) {
         return;

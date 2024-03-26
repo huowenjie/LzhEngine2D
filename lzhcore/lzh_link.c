@@ -1,9 +1,9 @@
 #include <stddef.h>
-#include "lzh_link.h"
+#include <lzh_link.h>
 
 /*===========================================================================*/
 
-void link_reset(LINK *link)
+void lzh_link_reset(LZH_LINK *link)
 {
     if (!link) {
         return;
@@ -37,10 +37,10 @@ void link_reset(LINK *link)
 
 /*-------------------------------------------------------*/
 
-int link_push(LINK *link, LINK_NODE *node)
+LZH_BOOL lzh_link_push(LZH_LINK *link, LZH_LINK_NODE *node)
 {
     if (!link || !node) {
-        return LINK_FAILED;
+        return LZH_FALSE;
     }
 
     if (link->head) {
@@ -55,20 +55,20 @@ int link_push(LINK *link, LINK_NODE *node)
     }
 
     link->count++;
-    return LINK_SUCCESS;
+    return LZH_TRUE;
 }
 
-int link_insert(LINK *link, int index, LINK_NODE *node)
+LZH_BOOL lzh_link_insert(LZH_LINK *link, int index, LZH_LINK_NODE *node)
 {
     int i;
-    LINK_NODE *add_node = NULL;
+    LZH_LINK_NODE *add_node = NULL;
 
     if (!link || !node) {
-        return LINK_FAILED;
+        return LZH_FALSE;
     }
 
     if (index > link->count) {
-        return LINK_FAILED;
+        return LZH_FALSE;
     }
 
     if (!link->count) {
@@ -98,13 +98,13 @@ int link_insert(LINK *link, int index, LINK_NODE *node)
     }
 
     link->count++;
-    return LINK_SUCCESS;
+    return LZH_TRUE;
 }
 
-int link_insert_before(LINK *link, LINK_NODE *target, LINK_NODE *node)
+LZH_BOOL lzh_link_insert_before(LZH_LINK *link, LZH_LINK_NODE *target, LZH_LINK_NODE *node)
 {
     if (!link || !target || !node) {
-        return LINK_FAILED;
+        return LZH_FALSE;
     }
 
     INSERT_BEFORE(target, node);
@@ -112,13 +112,13 @@ int link_insert_before(LINK *link, LINK_NODE *target, LINK_NODE *node)
         link->head = node;
     }
 
-    return LINK_SUCCESS;
+    return LZH_TRUE;
 }
 
-int link_insert_after(LINK *link, LINK_NODE *target, LINK_NODE *node)
+LZH_BOOL lzh_link_insert_after(LZH_LINK *link, LZH_LINK_NODE *target, LZH_LINK_NODE *node)
 {
     if (!link || !target || !node) {
-        return LINK_FAILED;
+        return LZH_FALSE;
     }
 
     INSERT_AFTER(target, node);
@@ -126,12 +126,12 @@ int link_insert_after(LINK *link, LINK_NODE *target, LINK_NODE *node)
         link->tail = node;
     }
 
-    return LINK_SUCCESS;
+    return LZH_TRUE;
 }
 
-LINK_NODE *link_pop(LINK *link)
+LZH_LINK_NODE *lzh_link_pop(LZH_LINK *link)
 {
-    LINK_NODE *ret = NULL;
+    LZH_LINK_NODE *ret = NULL;
 
     if (!link) {
         return NULL;
@@ -154,10 +154,10 @@ LINK_NODE *link_pop(LINK *link)
     return ret;
 }
 
-LINK_NODE *link_remove(LINK *link, int index)
+LZH_LINK_NODE *lzh_link_remove(LZH_LINK *link, int index)
 {
     int i;
-    LINK_NODE *ret = NULL;
+    LZH_LINK_NODE *ret = NULL;
 
     if (!link) {
         return NULL;
@@ -196,10 +196,10 @@ LINK_NODE *link_remove(LINK *link, int index)
     return ret;
 }
 
-LINK_NODE *link_remove_node(LINK *link, LINK_NODE *target)
+LZH_LINK_NODE *lzh_link_remove_node(LZH_LINK *link, LZH_LINK_NODE *target)
 {
     int i;
-    LINK_NODE *ret = NULL;
+    LZH_LINK_NODE *ret = NULL;
 
     if (!link || !target) {
         return NULL;
@@ -243,9 +243,9 @@ LINK_NODE *link_remove_node(LINK *link, LINK_NODE *target)
     return ret;
 }
 
-LINK_NODE *link_remove_force(LINK *link, LINK_NODE *target)
+LZH_LINK_NODE *lzh_link_remove_force(LZH_LINK *link, LZH_LINK_NODE *target)
 {
-    LINK_NODE *ret = NULL;
+    LZH_LINK_NODE *ret = NULL;
 
     if (!link || !target) {
         return NULL;

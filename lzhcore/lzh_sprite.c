@@ -5,7 +5,6 @@
 #include "lzh_core_sprite.h"
 #include "lzh_core_engine.h"
 #include "lzh_mem.h"
-#include "lzh_link.h"
 
 /*===========================================================================*/
 

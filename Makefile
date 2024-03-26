@@ -4,7 +4,7 @@ SHELL = /bin/sh
 BIN_DIR := ../bin
 
 # 项目列表
-PROJ := lzhcore lzhtank
+PROJ := lzhcore lzhtank lzhadttest
 
 ifeq ($(MAKECMDGOALS),)
 all: $(PROJ)
