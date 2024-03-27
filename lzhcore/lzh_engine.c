@@ -187,6 +187,15 @@ void lzh_engine_render(LZH_ENGINE *engine)
             while (time_count > fix_time) {
                 time_count -= fix_time;
 
+               /*
+                * 1.scences fixed update 更新 TODO
+                *   |
+                *   |
+                * 2.objects fixed update 更新
+                *   |
+                *   |
+                * 3.components fixed update 更新
+                */
                 render_tree_iterate(
                     engine->render_tree, render_objects_fixed, engine);
 
@@ -196,6 +205,18 @@ void lzh_engine_render(LZH_ENGINE *engine)
             time_count = 0.0f;
         }
 
+        /*
+         * 1.scences update 更新 TODO
+         *   |
+         *   |
+         * 2.objects update 更新
+         *   |
+         *   |
+         * 3.components update 更新
+         *   |
+         *   |
+         * 4.最终将 sprites tree 调用图形 API 迭代绘制
+         */
         render_tree_iterate(engine->render_tree, render_objects, engine);
         
         if (engine->render_update) {
@@ -249,16 +270,16 @@ void lzh_engine_win_size(LZH_ENGINE *engine, int *w, int *h)
 
 void render_objects(int layer, int order, LZH_OBJECT *object, void *args)
 {
-    if (object) {
-        lzh_object_update(object);
+    if (object && object->context.update) {
+        object->context.update(&object->context, object->context.update_param);
     }
 }
 
 void render_objects_fixed(
     int layer, int order, LZH_OBJECT *object, void *args)
 {
-    if (object) {
-        lzh_object_fixedupdate(object);
+    if (object && object->context.fixed_update) {
+        object->context.fixed_update(&object->context, object->context.fixed_update_param);
     }
 }
 

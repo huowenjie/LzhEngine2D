@@ -16,6 +16,7 @@ static void add_sprite_texture(
 LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
 {
     LZH_SPRITE *sprite = NULL;
+    LZH_COMPONENT *base = NULL;
 
     if (!engine) {
         return NULL;
@@ -29,6 +30,11 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
     if (!sprite) {
         return NULL;
     }
+    memset(sprite, 0, sizeof(LZH_SPRITE));
+
+    base = &sprite->base;
+    base->context.engine = engine;
+    base->type = LZH_CPNT_SPRITE;
 
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW;
     sprite->frame_count = 1;
@@ -45,6 +51,7 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     LZH_ENGINE *engine, const char *res_list[], int count)
 {
     LZH_SPRITE *sprite = NULL;
+    LZH_COMPONENT *base = NULL;
 
     if (!engine) {
         return NULL;
@@ -58,6 +65,11 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     if (!sprite) {
         return NULL;
     }
+    memset(sprite, 0, sizeof(LZH_SPRITE));
+
+    base = &sprite->base;
+    base->context.engine = engine;
+    base->type = LZH_CPNT_SPRITE;
 
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW | SSC_PLAY;
     sprite->frame_count = count;

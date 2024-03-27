@@ -2,7 +2,9 @@
 #define __LZH_CORE_SPRITE_H__
 
 #include <SDL2/SDL.h>
+
 #include "lzh_type.h"
+#include "lzh_component.h"
 
 /*===========================================================================*/
 /* 精灵(内部) */
@@ -27,6 +29,8 @@ struct LZH_KEYFRAME {
 
 /* 精灵对象 */
 struct LZH_SPRITE {
+    LZH_COMPONENT base;             /* 基本组件信息 */
+
     LZH_UINT32 state;               /* 精灵状态 */
 
     SDL_Texture **textures;         /* 纹理列表 */

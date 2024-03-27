@@ -10,13 +10,14 @@ static int calc_images_frame(LZH_SPRITE *sprite);
 
 void lzh_sprite_render(LZH_OBJECT *object, LZH_SPRITE *sprite)
 {
+#if 0
     LZH_ENGINE *engine = NULL;
 
     int cur_frame = 0;
     SDL_FRect target;
     SDL_FPoint center;
 
-    if (!object || !sprite || !object->engine) {
+    if (!object || !sprite || !object->context.engine) {
         return;
     }
 
@@ -24,7 +25,7 @@ void lzh_sprite_render(LZH_OBJECT *object, LZH_SPRITE *sprite)
         return;
     }
 
-    engine = object->engine;
+    engine = object->context.engine;
 
     target.x = object->x;
     target.y = object->y;
@@ -59,6 +60,7 @@ void lzh_sprite_render(LZH_OBJECT *object, LZH_SPRITE *sprite)
             kf->kf_cb(kf->args);
         }
     }
+#endif
 }
 
 int calc_images_frame(LZH_SPRITE *sprite)

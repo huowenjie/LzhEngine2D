@@ -16,11 +16,19 @@ static int global_order = 0;
 static void update_object_center(LZH_OBJECT *obj);
 static void update_object_forward(LZH_OBJECT *obj);
 
+static void lzh_object_update(LZH_CONTEXT *ctx, void *args);
+static void lzh_object_fixedupdate(LZH_CONTEXT *ctx, void *args);
+
+/*===========================================================================*/
+
+LINK_IMPLEMENT(LZH_OBJ, lzh_obj, LZH_OBJECT *)
+
 /*===========================================================================*/
 
 LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
 {
     LZH_OBJECT *obj = NULL;
+    LZH_CONTEXT *ctx = NULL;
 
     if (!engine) {
         return NULL;
@@ -30,26 +38,24 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     if (!obj) {
         return NULL;
     }
+    memset(obj, 0, sizeof(LZH_OBJECT));
+    ctx = &obj->context;
 
     render_tree_push(engine->render_tree, 0, global_order++, obj);
 
-    obj->engine = engine;
+    ctx->invoker = obj;
+    ctx->engine = engine;
+    ctx->update = lzh_object_update;
+    ctx->update_param = NULL;
+    ctx->fixed_update = lzh_object_fixedupdate;
+    ctx->fixed_update_param = NULL;
+
     obj->name = NULL;
-    obj->x = 0.0f;
-    obj->y = 0.0f;
-    obj->offset_x = 0.0f;
-    obj->offset_y = 0.0f;
-    obj->w = 0;
-    obj->h = 0;
-    obj->angle = 0.0f;
-    obj->rx = 0.0f;
-    obj->ry = 0.0f;
-    obj->forward = lzh_vec2f_xy(0.0f, -1.0f);
-    obj->sprite = NULL;
     obj->update = NULL;
     obj->update_param = NULL;
     obj->fixed_update = NULL;
-    obj->fixed_param = NULL;
+    obj->fixed_update_param = NULL;
+
     return obj;
 }
 
@@ -67,7 +73,7 @@ void lzh_object_destroy(LZH_OBJECT *object)
 LZH_ENGINE *lzh_object_get_engine(LZH_OBJECT *object)
 {
     if (object) {
-        return object->engine;
+        return object->context.engine;
     }
     return NULL;
 }
@@ -121,37 +127,44 @@ void lzh_object_set_fixedupdate(
 {
     if (object) {
         object->fixed_update = update;
-        object->fixed_param = param;
+        object->fixed_update_param = param;
     }
 }
 
 void lzh_object_set_size(LZH_OBJECT *object, float w, float h)
 {
+#if 0
     if (object) {
         object->w = w;
         object->h = h;
         update_object_center(object);
     }
+#endif
 }
 
 void lzh_object_set_pos(LZH_OBJECT *object, const LZH_VEC2F *pos)
 {
+#if 0
     if (object && pos) {
         object->x = pos->x;
         object->y = pos->y;
     }
+#endif
 }
 
 void lzh_object_set_angle(LZH_OBJECT *object, float angle)
 {
+#if 0
     if (object) {
         object->angle = angle;
         update_object_forward(object);
     }
+#endif
 }
 
 LZH_VEC2F lzh_object_get_pos(LZH_OBJECT *object)
 {
+#if 0
     LZH_VEC2F pos = lzh_vec2f_xy(0.0f, 0.0f);
 
     if (object) {
@@ -159,90 +172,108 @@ LZH_VEC2F lzh_object_get_pos(LZH_OBJECT *object)
         pos.y = object->y;
     }
     return pos;
+#endif
+    return lzh_vec2f_xy(0.0f, 0.0f);
 }
 
 float lzh_object_get_x(LZH_OBJECT *object)
 {
+#if 0
     float x = 0.0f;
     if (object) {
         x = object->x;
     }
     return x;
+#endif
+    return 0.0f;
 }
 
 float lzh_object_get_y(LZH_OBJECT *object)
 {
+#if 0
     float y = 0.0f;
     if (object) {
         y = object->y;
     }
     return y;
+#endif
+    return 0.0f;
 }
 
 LZH_RECTF lzh_object_get_rect(const LZH_OBJECT *object)
 {
     LZH_RECTF rect = { 0.0f, 0.0f, 0.0f, 0.0f };
+#if 0
     if (object) {
         rect.x = object->x;
         rect.y = object->y;
         rect.w = object->w;
         rect.h = object->h;
     }
+#endif
     return rect;
 }
 
 float lzh_object_get_angle(LZH_OBJECT *object)
 {
     float angle = 0.0f;
+#if 0
     if (object) {
         angle = object->angle;
     }
+#endif
     return angle;
 }
 
 LZH_VEC2F lzh_object_get_forward(LZH_OBJECT *object)
 {
     LZH_VEC2F vec = lzh_vec2f_xy(0.0f, 0.0f);
+#if 0
     if (object) {
         vec = object->forward;
     }
+#endif
     return vec;
 }
 
 void lzh_object_set_sprite(LZH_OBJECT *object, LZH_SPRITE *sp)
 {
     if (object && sp) {
-        object->sprite = sp;
+        // object->sprite = sp;
     }
 }
 
 void lzh_object_show_object(LZH_OBJECT *object, LZH_BOOL show)
 {
     if (object) {
-        lzh_sprite_show(object->sprite, show);
+        // lzh_sprite_show(object->sprite, show);
     }
 }
 
 /*===========================================================================*/
 
-void lzh_object_update(LZH_OBJECT *object)
+void lzh_object_update(LZH_CONTEXT *ctx, void *args)
 {
-    if (object) {
+    if (ctx) {
+        LZH_OBJECT *object = (LZH_OBJECT *)ctx;
+
         if (object->update) {
-            object->update(object->engine, object, object->update_param);
+            object->update(ctx->engine, object, object->update_param);
         }
 
-        if (object->sprite) {
-            lzh_sprite_render(object, object->sprite);
-        }
+        // if (object->sprite) {
+        //     lzh_sprite_render(object, object->sprite);
+        // }
     }
 }
 
-void lzh_object_fixedupdate(LZH_OBJECT *object)
+void lzh_object_fixedupdate(LZH_CONTEXT *ctx, void *args)
 {
-    if (object) {
+    if (ctx) {
+        LZH_OBJECT *object = (LZH_OBJECT *)ctx;
+
         if (object->fixed_update) {
-            object->fixed_update(object->engine, object, object->fixed_param);
+            object->fixed_update(ctx->engine, object, object->fixed_update_param);
         }
     }
 }
@@ -252,19 +283,19 @@ void lzh_object_fixedupdate(LZH_OBJECT *object)
 void update_object_center(LZH_OBJECT *obj)
 {
     if (obj) {
-        obj->rx = obj->x + (obj->w / 2.0f);
-        obj->ry = obj->y + (obj->h / 2.0f);
+        // obj->rx = obj->x + (obj->w / 2.0f);
+        // obj->ry = obj->y + (obj->h / 2.0f);
     }
 }
 
 void update_object_forward(LZH_OBJECT *obj)
 {
     if (obj) {
-        float angle = obj->angle;
-        float theta = angle * (PI / 180.0f);
+        // float angle = obj->angle;
+        // float theta = angle * (PI / 180.0f);
 
-        LZH_VEC2F forward = lzh_vec2f_xy(0.0f, -1.0f);
-        obj->forward = lzh_vec2f_rotate(&forward, theta);
+        // LZH_VEC2F forward = lzh_vec2f_xy(0.0f, -1.0f);
+        // obj->forward = lzh_vec2f_rotate(&forward, theta);
     }
 }
 
