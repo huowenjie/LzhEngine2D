@@ -16,8 +16,23 @@ extern "C" {
 /* 创建对象 */
 LZH_API LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine);
 
-/* 销毁对象 */
+/* 创建子对象 */
+LZH_API LZH_OBJECT *lzh_object_create_child(LZH_ENGINE *engine, LZH_OBJECT *parent);
+
+/* 设置父对象 */
+LZH_API LZH_OBJECT *lzh_object_set_parent(LZH_ENGINE *engine, LZH_OBJECT *parent);
+
+/* 添加子对象 */
+LZH_API void lzh_object_add_child(LZH_ENGINE *engine, LZH_OBJECT *child);
+
+/* 移除子对象 */
+LZH_API void lzh_object_del_child(LZH_ENGINE *engine, LZH_HASH_CODE hash);
+
+/* 销毁对象，销毁时将子对象全部删除 */
 LZH_API void lzh_object_destroy(LZH_OBJECT *object);
+
+/* 获取对象唯一编码 */
+LZH_API LZH_HASH_CODE lzh_object_hash_code(LZH_OBJECT *object);
 
 /* 获取引擎对象 */
 LZH_API LZH_ENGINE *lzh_object_get_engine(LZH_OBJECT *object);

@@ -1,7 +1,7 @@
 #include <lzh_keyboard.h>
 #include <SDL2/SDL_keyboard.h>
 
-#include "lzh_core_engine.h"
+#include "engine/lzh_core_engine.h"
 
 /*===========================================================================*/
 

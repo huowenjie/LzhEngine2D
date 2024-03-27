@@ -42,6 +42,7 @@ typedef struct LZH_SPRITE       LZH_SPRITE;
 typedef struct LZH_TRANSFORM    LZH_TRANSFORM;
 typedef struct LZH_ENGINE       LZH_ENGINE;
 typedef struct LZH_QUAD_TREE    LZH_QUAD_TREE;
+typedef LZH_UINT32              LZH_HASH_CODE;
 
 /* 数据对象 */
 typedef struct {

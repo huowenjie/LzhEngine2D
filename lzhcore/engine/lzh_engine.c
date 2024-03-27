@@ -1,13 +1,14 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <time.h>
-#include <lzh_engine.h>
-#include <lzh_object.h>
 #include <SDL2/SDL_image.h>
 
+#include <lzh_engine.h>
+#include <lzh_object.h>
+#include <lzh_mem.h>
+
 #include "lzh_core_engine.h"
-#include "lzh_core_object.h"
-#include "lzh_mem.h"
+#include "../object/lzh_core_object.h"
 
 /*===========================================================================*/
 

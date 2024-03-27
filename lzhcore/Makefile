@@ -35,7 +35,7 @@ REL_DIR := ../..
 BIN_DIR := $(REL_DIR)/bin
 LIB_DIR := $(REL_DIR)/lib
 INC_DIR := . ../include
-SRC_DIR := .
+SRC_DIR := . component container log math mem scene tool object engine
 
 OBJ_DIR := $(REL_DIR)/obj/$(PROJ)
 

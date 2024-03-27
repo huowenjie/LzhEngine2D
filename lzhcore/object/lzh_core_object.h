@@ -1,10 +1,8 @@
 #ifndef __LZH_CORE_OBJECT_H__
 #define __LZH_CORE_OBJECT_H__
 
-#include <lzh_vec2f.h>
-
-#include "lzh_core_engine.h"
-#include "lzh_core_sprite.h"
+#include <lzh_type.h>
+#include "../component/lzh_component.h"
 
 /*===========================================================================*/
 /* 对象(内部) */

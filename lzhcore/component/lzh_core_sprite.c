@@ -1,5 +1,5 @@
 #include "lzh_core_sprite.h"
-#include "lzh_core_object.h"
+#include "../object/lzh_core_object.h"
 
 /*===========================================================================*/
 

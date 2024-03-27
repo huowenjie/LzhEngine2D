@@ -1,10 +1,11 @@
 #include <string.h>
 #include <lzh_object.h>
 #include <lzh_sprite.h>
+#include <lzh_mem.h>
 
-#include "lzh_mem.h"
-#include "lzh_core_object.h"
-#include "lzh_core_sprite.h"
+#include "../engine/lzh_core_engine.h"
+#include "../object/lzh_core_object.h"
+#include "../component/lzh_core_sprite.h"
 
 /*===========================================================================*/
 
@@ -59,6 +60,26 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     return obj;
 }
 
+LZH_OBJECT *lzh_object_create_child(LZH_ENGINE *engine, LZH_OBJECT *parent)
+{
+    return NULL;
+}
+
+LZH_OBJECT *lzh_object_set_parent(LZH_ENGINE *engine, LZH_OBJECT *parent)
+{
+    return NULL;
+}
+
+void lzh_object_add_child(LZH_ENGINE *engine, LZH_OBJECT *child)
+{
+
+}
+
+void lzh_object_del_child(LZH_ENGINE *engine, LZH_HASH_CODE hash)
+{
+
+}
+
 void lzh_object_destroy(LZH_OBJECT *object)
 {
     if (object) {
@@ -68,6 +89,11 @@ void lzh_object_destroy(LZH_OBJECT *object)
         }
         LZH_FREE(object);
     }
+}
+
+LZH_HASH_CODE lzh_object_hash_code(LZH_OBJECT *object)
+{
+    return 0;
 }
 
 LZH_ENGINE *lzh_object_get_engine(LZH_OBJECT *object)

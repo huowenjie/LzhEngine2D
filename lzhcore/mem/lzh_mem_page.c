@@ -4,9 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include <lzh_link.h>
 
-#include "lzh_mem.h"
+#include <lzh_link.h>
+#include <lzh_mem.h>
+
 #include "lzh_mem_page.h"
 
 /*===========================================================================*/

@@ -11,6 +11,11 @@
 typedef void (*LZH_CTX_UPDATE)(LZH_CONTEXT *ctx, void *args);
 typedef void (*LZH_CTX_FIXED_UPDATE)(LZH_CONTEXT *ctx, void *args);
 
+struct LZH_HASH_CODE
+{
+    
+};
+
 /* 定义上下文 */
 struct LZH_CONTEXT {
     /* 所属者对象 */
