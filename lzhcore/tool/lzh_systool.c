@@ -126,4 +126,22 @@ LZH_BOOL lzh_get_curtime(const char *format, char *buf, int len)
 	return !ret ? LZH_FALSE : LZH_TRUE;
 }
 
+LZH_HASH_CODE lzh_gen_hash_code(const char *src)
+{
+    /* BKDRHash Ëã·¨ */
+    LZH_UINT32 seed = 131; /* 31 131 1313 13131 131313 etc.. */
+    LZH_UINT32 hash = 0;
+
+    if (!src || !*src) {
+        return 0;
+    }
+
+    while (*src) {
+        hash = hash * seed + (*src++);
+    }
+
+    hash = (hash & 0x7FFFFFFFU);
+    return hash;
+}
+
 /*===========================================================================*/

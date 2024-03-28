@@ -33,7 +33,7 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
     memset(sprite, 0, sizeof(LZH_SPRITE));
 
     base = &sprite->base;
-    base->context.engine = engine;
+    base->base.engine = engine;
     base->type = LZH_CPNT_SPRITE;
 
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW;
@@ -68,7 +68,7 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     memset(sprite, 0, sizeof(LZH_SPRITE));
 
     base = &sprite->base;
-    base->context.engine = engine;
+    base->base.engine = engine;
     base->type = LZH_CPNT_SPRITE;
 
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW | SSC_PLAY;

@@ -4,7 +4,7 @@
 #include <lzh_type.h>
 #include <lzh_link.h>
 
-#include "lzh_context.h"
+#include "../lzh_base.h"
 
 /*===========================================================================*/
 /* 组件 */
@@ -15,8 +15,8 @@
 #define LZH_CPNT_SPRITE     0x00000002U /* 精灵组件 */
 
 typedef struct LZH_COMPONENT {
-    /* 组件上下文 */
-    LZH_CONTEXT context;
+    /* 基类 */
+    LZH_BASE base;
 
     /* 组件类型 */
     LZH_UINT32 type;
@@ -26,6 +26,10 @@ typedef struct LZH_COMPONENT {
 } LZH_COMPONENT;
 
 LINK_DECLARE(LZH_CPNT, lzh_cpnt, LZH_COMPONENT *)
+
+/* 子组件的回调函数 */
+int lzh_link_cpnts_comp(const void *str1, const void *str2);
+void lzh_link_cpnts_visit(const LZH_CPNT_LINK_NODE *node, void *args);
 
 /*===========================================================================*/
 

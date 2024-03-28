@@ -271,16 +271,16 @@ void lzh_engine_win_size(LZH_ENGINE *engine, int *w, int *h)
 
 void render_objects(int layer, int order, LZH_OBJECT *object, void *args)
 {
-    if (object && object->context.update) {
-        object->context.update(&object->context, object->context.update_param);
+    if (object && object->base.update) {
+        object->base.update(&object->base, object->base.update_param);
     }
 }
 
 void render_objects_fixed(
     int layer, int order, LZH_OBJECT *object, void *args)
 {
-    if (object && object->context.fixed_update) {
-        object->context.fixed_update(&object->context, object->context.fixed_update_param);
+    if (object && object->base.fixed_update) {
+        object->base.fixed_update(&object->base, object->base.fixed_update_param);
     }
 }
 

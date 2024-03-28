@@ -35,6 +35,9 @@ LZH_API LZH_THREAD_ID lzh_gettid();
 /* 获取当前时间文本 */
 LZH_API LZH_BOOL lzh_get_curtime(const char *format, char *buf, int len);
 
+/* 根据文本生成 hash code */
+LZH_API LZH_HASH_CODE lzh_gen_hash_code(const char *src);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,35 +1,34 @@
+#include <stdio.h>
 #include <string.h>
 #include <lzh_object.h>
 #include <lzh_sprite.h>
 #include <lzh_mem.h>
 
+#include "lzh_core_object.h"
 #include "../engine/lzh_core_engine.h"
-#include "../object/lzh_core_object.h"
 #include "../component/lzh_core_sprite.h"
 
 /*===========================================================================*/
 
 #define PI 3.141592654f
 
-static int global_order = 0;
-
 /* 更新内部参数 */
 static void update_object_center(LZH_OBJECT *obj);
 static void update_object_forward(LZH_OBJECT *obj);
 
-static void lzh_object_update(LZH_CONTEXT *ctx, void *args);
-static void lzh_object_fixedupdate(LZH_CONTEXT *ctx, void *args);
+/* 场景渲染队列渲染回调 */
+static void lzh_object_update(LZH_BASE *base, void *args);
+static void lzh_object_fixedupdate(LZH_BASE *base, void *args);
 
-/*===========================================================================*/
-
-LINK_IMPLEMENT(LZH_OBJ, lzh_obj, LZH_OBJECT *)
+/* 生成新名称 */
+const char *lzh_gen_new_name();
 
 /*===========================================================================*/
 
 LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
 {
     LZH_OBJECT *obj = NULL;
-    LZH_CONTEXT *ctx = NULL;
+    LZH_BASE *base = NULL;
 
     if (!engine) {
         return NULL;
@@ -40,101 +39,112 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
         return NULL;
     }
     memset(obj, 0, sizeof(LZH_OBJECT));
-    ctx = &obj->context;
+    base = &obj->base;
+    lzh_base_init(base);
 
-    render_tree_push(engine->render_tree, 0, global_order++, obj);
+    base->type = LZH_BT_OBJECT;
+    base->name = NULL;
+    base->hash = 0;
+    base->engine = engine;
+    base->update = lzh_object_update;
+    base->update_param = NULL;
+    base->fixed_update = lzh_object_fixedupdate;
+    base->fixed_update_param = NULL;
 
-    ctx->invoker = obj;
-    ctx->engine = engine;
-    ctx->update = lzh_object_update;
-    ctx->update_param = NULL;
-    ctx->fixed_update = lzh_object_fixedupdate;
-    ctx->fixed_update_param = NULL;
+    obj->parent = NULL;
+    obj->children = lzh_obj_link_create(lzh_link_object_comp);
+    obj->components = lzh_cpnt_link_create(lzh_link_cpnts_comp);
 
-    obj->name = NULL;
     obj->update = NULL;
     obj->update_param = NULL;
     obj->fixed_update = NULL;
     obj->fixed_update_param = NULL;
 
+    /* 设置默认名称 */
+    lzh_base_set_name(base, lzh_gen_new_name());
     return obj;
 }
 
-LZH_OBJECT *lzh_object_create_child(LZH_ENGINE *engine, LZH_OBJECT *parent)
+void lzh_object_set_parent(LZH_OBJECT *object, LZH_OBJECT *parent)
 {
-    return NULL;
+    if (!object) {
+        return;
+    }
+
+    if (object->parent) {
+        LZH_OBJECT *pobj = object->parent;
+        lzh_obj_link_remove_value(pobj->children, object);
+        object->parent = NULL;
+    }
+
+    if (parent) {
+        lzh_obj_link_push(parent->children, object);
+        object->parent = parent;
+    }
 }
 
-LZH_OBJECT *lzh_object_set_parent(LZH_ENGINE *engine, LZH_OBJECT *parent)
+void lzh_object_add_child(LZH_OBJECT *object, LZH_OBJECT *child)
 {
-    return NULL;
+    lzh_object_set_parent(child, object);
 }
 
-void lzh_object_add_child(LZH_ENGINE *engine, LZH_OBJECT *child)
+LZH_OBJECT *lzh_object_del_child(LZH_OBJECT *object, LZH_OBJECT *child)
 {
+    if (!object || !child) {
+        return NULL;
+    }
 
-}
+    if (object != child->parent) {
+        return NULL;
+    }
 
-void lzh_object_del_child(LZH_ENGINE *engine, LZH_HASH_CODE hash)
-{
-
+    lzh_object_set_parent(child, NULL);
+    return child;
 }
 
 void lzh_object_destroy(LZH_OBJECT *object)
 {
-    if (object) {
-        if (object->name) {
-            LZH_FREE(object->name);
-            object->name = NULL;
+    if (object) {        
+        if (object->parent) {
+            /* 移除父节点中缓存的子对象 */
+            LZH_OBJECT *parent = object->parent;
+            int index = lzh_obj_link_index(parent->children, object);
+
+            if (index >= 0) {
+                lzh_obj_link_remove(parent->children, index, NULL);
+            }
         }
-        LZH_FREE(object);
+        lzh_object_remove(object);
     }
 }
 
 LZH_HASH_CODE lzh_object_hash_code(LZH_OBJECT *object)
 {
+    if (object) {
+        return object->base.hash;
+    }
     return 0;
 }
 
 LZH_ENGINE *lzh_object_get_engine(LZH_OBJECT *object)
 {
     if (object) {
-        return object->context.engine;
+        return object->base.engine;
     }
     return NULL;
 }
 
 void lzh_object_set_name(LZH_OBJECT *object, const char *name)
 {
-    char *buf = NULL;
-    size_t size = 0;
-
-    if (!object) {
-        return;   
+    if (object) {
+        lzh_base_set_name((LZH_BASE *)object, name);
     }
-
-    if (!name || !*name) {
-        return;
-    }
-
-    size = strlen(name) + 1;
-    buf = LZH_MALLOC(size);
-    if (!buf) {
-        return;
-    }
-    memset(buf, 0, size);
-    strcpy(buf, name);
-
-    if (object->name) {
-        LZH_FREE(object->name);
-    }
-    object->name = buf;
 }
 
 const char *lzh_object_get_name(LZH_OBJECT *object)
 {
     if (object) {
-        return object->name;
+        return object->base.name;
     }
     return NULL;
 }
@@ -278,34 +288,6 @@ void lzh_object_show_object(LZH_OBJECT *object, LZH_BOOL show)
 
 /*===========================================================================*/
 
-void lzh_object_update(LZH_CONTEXT *ctx, void *args)
-{
-    if (ctx) {
-        LZH_OBJECT *object = (LZH_OBJECT *)ctx;
-
-        if (object->update) {
-            object->update(ctx->engine, object, object->update_param);
-        }
-
-        // if (object->sprite) {
-        //     lzh_sprite_render(object, object->sprite);
-        // }
-    }
-}
-
-void lzh_object_fixedupdate(LZH_CONTEXT *ctx, void *args)
-{
-    if (ctx) {
-        LZH_OBJECT *object = (LZH_OBJECT *)ctx;
-
-        if (object->fixed_update) {
-            object->fixed_update(ctx->engine, object, object->fixed_update_param);
-        }
-    }
-}
-
-/*===========================================================================*/
-
 void update_object_center(LZH_OBJECT *obj)
 {
     if (obj) {
@@ -323,6 +305,111 @@ void update_object_forward(LZH_OBJECT *obj)
         // LZH_VEC2F forward = lzh_vec2f_xy(0.0f, -1.0f);
         // obj->forward = lzh_vec2f_rotate(&forward, theta);
     }
+}
+
+void lzh_object_update(LZH_BASE *base, void *args)
+{
+    if (base) {
+        LZH_OBJECT *object = (LZH_OBJECT *)base;
+
+        /* 更新子树 */
+        if (object->children) {
+            LZH_OBJ_LINK *link = object->children;
+            LZH_OBJ_LINK_NODE *node = link->head;
+
+            int count = link->count;
+            int i = 0;
+
+            while (i++ < count) {
+                LZH_OBJECT *child = node->value;
+
+                if (child && child->base.update) {
+                    child->base.update((LZH_BASE *)child, child->base.update_param);
+                }
+                node = node->next;
+            }
+        }
+
+        /* 更新组件 */
+        if (object->components) {
+            LZH_CPNT_LINK *link = object->components;
+            LZH_CPNT_LINK_NODE *node = link->head;
+
+            int count = link->count;
+            int i = 0;
+
+            while (i++ < count) {
+                LZH_COMPONENT *cpnt = node->value;
+
+                if (cpnt && cpnt->base.update) {
+                    cpnt->base.update((LZH_BASE *)cpnt, cpnt->base.update_param);
+                }
+                node = node->next;
+            }
+        }
+
+        /* 用户层更新 */
+        if (object->update) {
+            object->update(base->engine, object, object->update_param);
+        }
+    }
+}
+
+void lzh_object_fixedupdate(LZH_BASE *base, void *args)
+{
+    if (base) {
+        LZH_OBJECT *object = (LZH_OBJECT *)base;
+
+        /* 更新子树 */
+        if (object->children) {
+            LZH_OBJ_LINK *link = object->children;
+            LZH_OBJ_LINK_NODE *node = link->head;
+
+            int count = link->count;
+            int i = 0;
+
+            while (i++ < count) {
+                LZH_OBJECT *child = node->value;
+
+                if (child && child->base.fixed_update) {
+                    child->base.fixed_update((LZH_BASE *)child, child->base.fixed_update_param);
+                }
+                node = node->next;
+            }
+        }
+
+        /* 更新组件 */
+        if (object->components) {
+            LZH_CPNT_LINK *link = object->components;
+            LZH_CPNT_LINK_NODE *node = link->head;
+
+            int count = link->count;
+            int i = 0;
+
+            while (i++ < count) {
+                LZH_COMPONENT *cpnt = node->value;
+
+                if (cpnt && cpnt->base.fixed_update) {
+                    cpnt->base.fixed_update((LZH_BASE *)cpnt, cpnt->base.fixed_update_param);
+                }
+                node = node->next;
+            }
+        }
+
+        /* 用户层更新 */
+        if (object->fixed_update) {
+            object->fixed_update(base->engine, object, object->fixed_update_param);
+        }
+    }
+}
+
+const char *lzh_gen_new_name()
+{
+    static int global_order = 1;
+    static char default_name[32] = "";
+
+    sprintf(default_name, "New Object%d", global_order++);
+    return default_name;
 }
 
 /*===========================================================================*/

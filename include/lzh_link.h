@@ -96,6 +96,7 @@ LZH_API LZH_LINK_NODE *lzh_link_remove_force(LZH_LINK *link, LZH_LINK_NODE *targ
     LZH_BOOL fns##_link_pop(ns##_LINK *link, valuetype *value); \
     LZH_BOOL fns##_link_insert(ns##_LINK *link, int index, valuetype value); \
     LZH_BOOL fns##_link_remove(ns##_LINK *link, int index, valuetype *value); \
+    LZH_BOOL fns##_link_remove_value(ns##_LINK *link, const valuetype value); \
     void fns##_link_clear(ns##_LINK *link, ns##_LINK_VISIT visit, void *args); \
     LZH_BOOL fns##_link_value(ns##_LINK *link, int index, valuetype *value); \
     LZH_BOOL fns##_link_exist(ns##_LINK *link, const valuetype value); \
@@ -185,6 +186,31 @@ LZH_API LZH_LINK_NODE *lzh_link_remove_force(LZH_LINK *link, LZH_LINK_NODE *targ
         } \
         LZH_FREE(node); \
         return LZH_TRUE; \
+    } \
+    LZH_BOOL fns##_link_remove_value(ns##_LINK *link, const valuetype value) { \
+        ns##_LINK_NODE *node = NULL; \
+        int index = 0; \
+        \
+        if (!link) { \
+            return LZH_FALSE; \
+        } \
+        \
+        for (node = link->head; node != NULL && index < link->count; node = node->next) { \
+            if (link->comp) { \
+                ns##_LINK_COMP comp = link->comp; \
+                if (!comp(&node->value, &value)) { \
+                    lzh_link_remove_node((LZH_LINK *)link, (LZH_LINK_NODE *)node); \
+                    LZH_FREE(node); \
+                    return LZH_TRUE; \
+                } \
+            } else if (node->value == value) { \
+                lzh_link_remove_node((LZH_LINK *)link, (LZH_LINK_NODE *)node); \
+                LZH_FREE(node); \
+                return LZH_TRUE; \
+            } \
+            index++; \
+        } \
+        return LZH_FALSE; \
     } \
     void fns##_link_clear(ns##_LINK *link, ns##_LINK_VISIT visit, void *args) { \
         ns##_LINK_NODE *node = NULL; \

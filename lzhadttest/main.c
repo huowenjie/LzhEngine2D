@@ -57,6 +57,9 @@ int main(int argc, char *argv[])
         printf("%s not exist\n", str);
     }
 
+    str_link_remove_value(link, str);
+    show_link(link);
+
     str_link_destroy(link);
     return 0;
 }
