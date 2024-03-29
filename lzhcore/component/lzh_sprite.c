@@ -4,6 +4,7 @@
 #include <lzh_mem.h>
 
 #include "lzh_core_sprite.h"
+#include "../object/lzh_core_object.h"
 #include "../engine/lzh_core_engine.h"
 
 /*===========================================================================*/
@@ -35,6 +36,7 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
     base = &sprite->base;
     base->base.engine = engine;
     base->type = LZH_CPNT_SPRITE;
+    base->remove_component = lzh_sprite_remove;
 
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW;
     sprite->frame_count = 1;
@@ -70,6 +72,7 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     base = &sprite->base;
     base->base.engine = engine;
     base->type = LZH_CPNT_SPRITE;
+    base->remove_component = lzh_sprite_remove;
 
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW | SSC_PLAY;
     sprite->frame_count = count;
@@ -93,24 +96,14 @@ LZH_SPRITE *lzh_sprite_create_from_sheets(
 void lzh_sprite_destroy(LZH_SPRITE *sprite)
 {
     if (sprite) {
-        if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
-            SDL_Texture **textures = sprite->textures;
-            if (textures) {
-                int i;
-                for (i = 0; i < sprite->tex_count; i++) {
-                    if (textures[i]) {
-                        SDL_DestroyTexture(textures[i]);
-                    }
-                }
-                LZH_FREE(textures);
-            }
+        /* 从所属对象组件表中移除组件对象 */
+        if (sprite->base.object) {
+            LZH_OBJECT *obj = sprite->base.object;
+            lzh_cpnt_link_remove_value(obj->components, (const LZH_COMPONENT *)sprite);
+            sprite->base.object = NULL;
         }
 
-        if (sprite->kf_list) {
-            LZH_FREE(sprite->kf_list);
-        }
-
-        LZH_FREE(sprite);
+        lzh_sprite_remove((LZH_COMPONENT *)sprite);
     }
 }
 

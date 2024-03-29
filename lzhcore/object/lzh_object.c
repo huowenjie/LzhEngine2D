@@ -10,6 +10,7 @@
 
 /*===========================================================================*/
 
+static int global_order = 1;
 #define PI 3.141592654f
 
 /* 更新内部参数 */
@@ -21,7 +22,7 @@ static void lzh_object_update(LZH_BASE *base, void *args);
 static void lzh_object_fixedupdate(LZH_BASE *base, void *args);
 
 /* 生成新名称 */
-const char *lzh_gen_new_name();
+static const char *lzh_gen_new_name(int order);
 
 /*===========================================================================*/
 
@@ -53,7 +54,7 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
 
     obj->parent = NULL;
     obj->children = lzh_obj_link_create(lzh_link_object_comp);
-    obj->components = lzh_cpnt_link_create(lzh_link_cpnts_comp);
+    obj->components = lzh_cpnt_link_create(lzh_link_cpnt_comp);
 
     obj->update = NULL;
     obj->update_param = NULL;
@@ -61,7 +62,7 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->fixed_update_param = NULL;
 
     /* 设置默认名称 */
-    lzh_base_set_name(base, lzh_gen_new_name());
+    lzh_base_set_name(base, lzh_gen_new_name(global_order++));
     return obj;
 }
 
@@ -104,7 +105,7 @@ LZH_OBJECT *lzh_object_del_child(LZH_OBJECT *object, LZH_OBJECT *child)
 
 void lzh_object_destroy(LZH_OBJECT *object)
 {
-    if (object) {        
+    if (object) {
         if (object->parent) {
             /* 移除父节点中缓存的子对象 */
             LZH_OBJECT *parent = object->parent;
@@ -116,6 +117,58 @@ void lzh_object_destroy(LZH_OBJECT *object)
         }
         lzh_object_remove(object);
     }
+}
+
+void lzh_object_add_component(LZH_OBJECT *object, void *cpnt)
+{
+    if (object && object->components && cpnt) {
+        LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
+
+        lzh_cpnt_link_push(object->components, elem);
+    }
+}
+
+void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt)
+{
+    if (object && object->components && cpnt) {
+        LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
+
+        if (lzh_cpnt_link_remove_value(object->components, elem)) {
+            return cpnt;
+        }
+    }
+    return NULL;
+}
+
+LZH_SPRITE *lzh_object_get_sprite(LZH_OBJECT *object)
+{
+    LZH_CPNT_LINK *link = NULL;
+    LZH_CPNT_LINK_NODE *node = NULL;
+    int count = 0;
+    int i = 0;
+
+    LZH_SPRITE *sp = NULL;
+    
+    if (!object || !object->components) {
+        return NULL;
+    }
+
+    link = object->components;
+    node = link->head;
+    count = link->count;
+    i = 0;
+
+    while (i++ < count) {
+        LZH_COMPONENT *cpnt = node->value;
+
+        if (cpnt && cpnt->type == LZH_CPNT_SPRITE) {
+            sp = (LZH_SPRITE *)cpnt;
+            break;
+        }
+        node = node->next;
+    }
+
+    return sp;
 }
 
 LZH_HASH_CODE lzh_object_hash_code(LZH_OBJECT *object)
@@ -403,12 +456,11 @@ void lzh_object_fixedupdate(LZH_BASE *base, void *args)
     }
 }
 
-const char *lzh_gen_new_name()
+const char *lzh_gen_new_name(int order)
 {
-    static int global_order = 1;
     static char default_name[32] = "";
 
-    sprintf(default_name, "New Object%d", global_order++);
+    sprintf(default_name, "New Object%d", order);
     return default_name;
 }
 

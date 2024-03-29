@@ -28,6 +28,15 @@ LZH_API LZH_OBJECT *lzh_object_del_child(LZH_OBJECT *object, LZH_OBJECT *child);
 /* 销毁对象，销毁时将子对象全部删除 */
 LZH_API void lzh_object_destroy(LZH_OBJECT *object);
 
+/* 添加组件 */
+LZH_API void lzh_object_add_component(LZH_OBJECT *object, void *cpnt);
+
+/* 移除组件并返回组件指针 */
+LZH_API void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt);
+
+/* 获取精灵组件 */
+LZH_API LZH_SPRITE *lzh_object_get_sprite(LZH_OBJECT *object);
+
 /* 获取对象唯一编码 */
 LZH_API LZH_HASH_CODE lzh_object_hash_code(LZH_OBJECT *object);
 

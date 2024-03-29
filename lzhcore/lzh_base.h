@@ -10,6 +10,7 @@
 #define LZH_BT_NONE         0x00000000U /* 未定义 */
 #define LZH_BT_OBJECT       0x00000001U /* 对象 */
 #define LZH_BT_COMPONENT    0x00000002U /* 组件 */
+#define LZH_BT_SCENE        0x00000003U /* 场景 */
 
 typedef struct LZH_BASE LZH_BASE;
 

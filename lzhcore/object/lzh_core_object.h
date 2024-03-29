@@ -1,7 +1,6 @@
 #ifndef __LZH_CORE_OBJECT_H__
 #define __LZH_CORE_OBJECT_H__
 
-#include <lzh_type.h>
 #include "../component/lzh_component.h"
 
 /*===========================================================================*/
@@ -23,6 +22,12 @@ struct LZH_OBJECT {
 
     /* 组件链表 */
     LZH_CPNT_LINK *components;
+
+    /* 渲染层级 */
+    int render_layer;
+
+    /* 渲染顺序 */
+    int render_sort;
 
     /*---------------------------------------------------*/
     /* 用于业务 */

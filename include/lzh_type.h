@@ -37,6 +37,7 @@ typedef int                     LZH_BOOL;
 #define LZH_FALSE               0
 
 typedef struct LZH_OBJECT       LZH_OBJECT;
+typedef struct LZH_SCENE        LZH_SCENE;
 typedef struct LZH_SPRITE       LZH_SPRITE;
 typedef struct LZH_TRANSFORM    LZH_TRANSFORM;
 typedef struct LZH_ENGINE       LZH_ENGINE;

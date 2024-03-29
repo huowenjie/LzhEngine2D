@@ -12,7 +12,7 @@ void lzh_object_remove(LZH_OBJECT *object)
         lzh_base_quit((LZH_BASE *)object);
 
         if (object->components) {
-            lzh_cpnt_link_clear(object->components, lzh_link_cpnts_visit, NULL);
+            lzh_cpnt_link_clear(object->components, lzh_link_cpnt_visit, NULL);
             lzh_cpnt_link_destroy(object->components);
             object->components = NULL;
         }
@@ -34,15 +34,15 @@ int lzh_link_object_comp(const void *obj1, const void *obj2)
     LZH_OBJECT *object1 = *((LZH_OBJECT **)obj1);
     LZH_OBJECT *object2 = *((LZH_OBJECT **)obj2);
 
-    if (!object1 && object1) {
+    if (!object1 && object2) {
         return -1;
-    } else if (object1 && !object1) {
+    } else if (object1 && !object2) {
         return 1;
-    } else if (!object1 && !object1) {
+    } else if (!object1 && !object2) {
         return 0;
     }
 
-    return strcmp(object1->base.name, object2->base.name);;
+    return strcmp(object1->base.name, object2->base.name);
 }
 
 void lzh_link_object_visit(const LZH_OBJ_LINK_NODE *node, void *args)

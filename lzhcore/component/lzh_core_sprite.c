@@ -1,3 +1,5 @@
+#include <lzh_sprite.h>
+
 #include "lzh_core_sprite.h"
 #include "../object/lzh_core_object.h"
 
@@ -62,6 +64,36 @@ void lzh_sprite_render(LZH_OBJECT *object, LZH_SPRITE *sprite)
     }
 #endif
 }
+
+/*===========================================================================*/
+
+void lzh_sprite_remove(LZH_COMPONENT *cpnt)
+{
+    if (cpnt) {
+        LZH_SPRITE *sprite = (LZH_SPRITE *)cpnt;
+
+        if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
+            SDL_Texture **textures = sprite->textures;
+            if (textures) {
+                int i;
+                for (i = 0; i < sprite->tex_count; i++) {
+                    if (textures[i]) {
+                        SDL_DestroyTexture(textures[i]);
+                    }
+                }
+                LZH_FREE(textures);
+            }
+        }
+
+        if (sprite->kf_list) {
+            LZH_FREE(sprite->kf_list);
+        }
+
+        LZH_FREE(sprite);
+    }
+}
+
+/*===========================================================================*/
 
 int calc_images_frame(LZH_SPRITE *sprite)
 {
