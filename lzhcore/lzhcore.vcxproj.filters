@@ -1,28 +1,75 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="lzh_maindll.c" />
-    <ClCompile Include="lzh_link.c" />
-    <ClCompile Include="lzh_mem.c" />
-    <ClCompile Include="lzh_mem_page.c" />
-    <ClCompile Include="lzh_engine.c" />
-    <ClCompile Include="lzh_sprite.c" />
+    <ClCompile Include="component\lzh_component.c">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="component\lzh_core_sprite.c">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="component\lzh_quadtree.c">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="component\lzh_sprite.c">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="container\lzh_link.c">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\lzh_rbtree.c">
+      <Filter>container</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\lzh_engine.c">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="log\lzh_log.c">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="log\lzh_tracer.c">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="math\lzh_mat2x2f.c">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\lzh_mat3x3f.c">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\lzh_vec2f.c">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\lzh_vec3f.c">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\lzh_mem.c">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="mem\lzh_mem_page.c">
+      <Filter>mem</Filter>
+    </ClCompile>
+    <ClCompile Include="tool\lzh_rectf.c">
+      <Filter>tool</Filter>
+    </ClCompile>
+    <ClCompile Include="tool\lzh_systool.c">
+      <Filter>tool</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\lzh_core_scene.c">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\lzh_scene.c">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="object\lzh_core_object.c">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="object\lzh_object.c">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="lzh_base.c" />
     <ClCompile Include="lzh_keyboard.c" />
-    <ClCompile Include="lzh_object.c" />
-    <ClCompile Include="lzh_core_sprite.c" />
-    <ClCompile Include="lzh_rbtree.c" />
+    <ClCompile Include="lzh_maindll.c" />
     <ClCompile Include="lzh_render_tree.c" />
-    <ClCompile Include="lzh_mat2x2f.c" />
-    <ClCompile Include="lzh_mat3x3f.c" />
-    <ClCompile Include="lzh_quadtree.c" />
-    <ClCompile Include="lzh_systool.c" />
-    <ClCompile Include="lzh_vec2f.c" />
-    <ClCompile Include="lzh_vec3f.c" />
-    <ClCompile Include="lzh_rectf.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lzh_link.h" />
-    <ClInclude Include="lzh_mem_page.h" />
     <ClInclude Include="..\include\lzh_engine.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -47,10 +94,6 @@
     <ClInclude Include="..\include\lzh_stack.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="lzh_core_engine.h" />
-    <ClInclude Include="lzh_core_object.h" />
-    <ClInclude Include="lzh_core_sprite.h" />
-    <ClInclude Include="lzh_render_tree.h" />
     <ClInclude Include="..\include\lzh_mat2x2f.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -339,6 +382,29 @@
     <ClInclude Include="..\include\lzh_rectf.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="component\lzh_component.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="component\lzh_core_sprite.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\lzh_core_engine.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="log\lzh_tracer.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="mem\lzh_mem_page.h">
+      <Filter>mem</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\lzh_core_scene.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="object\lzh_core_object.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="lzh_base.h" />
+    <ClInclude Include="lzh_render_tree.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -346,6 +412,33 @@
     </Filter>
     <Filter Include="include\SDL2">
       <UniqueIdentifier>{94ee0f2d-fd23-4fd2-b3ef-f072f319906c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="component">
+      <UniqueIdentifier>{27f3da8f-8efa-43ba-ac46-3d0904ac248d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="container">
+      <UniqueIdentifier>{f19caff8-1213-4575-a85a-768dd584af44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{e7e8de97-2620-41cb-a59d-8b438480b235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{5b2f6f90-86a5-4213-97e4-cd498be88430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{8e10f721-6732-4f83-8c11-3d1a6cbf22f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mem">
+      <UniqueIdentifier>{5e268160-3492-4df6-bb77-147047b80062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object">
+      <UniqueIdentifier>{2202b4a7-c260-4b4f-9343-987095699359}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{00b891b8-7a9c-4711-8033-39f96121a50f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tool">
+      <UniqueIdentifier>{75f14afa-85b3-47ad-990a-d04805b55d69}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

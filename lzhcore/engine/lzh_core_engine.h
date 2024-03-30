@@ -4,7 +4,6 @@
 #include <SDL2/SDL.h>
 
 #include "lzh_type.h"
-#include "lzh_render_tree.h"
 
 /*===========================================================================*/
 /* 引擎(内部) */
@@ -17,8 +16,6 @@
 struct LZH_ENGINE {
     SDL_Window *window;
     SDL_Renderer *renderer;
-
-    RT_RB_TREE *render_tree;        /* 渲染树对象 */
 
     LZH_LOOP_UPDATE render_update;
     LZH_LOOP_UPDATE fixed_update;

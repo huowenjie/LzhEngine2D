@@ -46,7 +46,6 @@ LZH_ENGINE *lzh_engine_create(
 {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-    RT_RB_TREE *render_tree = NULL;
 
     LZH_ENGINE *engine = LZH_MALLOC(sizeof(LZH_ENGINE));
     if (!engine) {
@@ -68,14 +67,8 @@ LZH_ENGINE *lzh_engine_create(
         goto err;
     }
 
-    render_tree = create_render_tree();
-    if (!render_tree) {
-        goto err;
-    }
-
     engine->window = window;
     engine->renderer = renderer;
-    engine->render_tree = render_tree;
     engine->logic_fps = 30.0f;
     engine->render_fps = 60.0f;
     engine->pause_delay = 250.0f;
@@ -83,10 +76,6 @@ LZH_ENGINE *lzh_engine_create(
     return engine;
 
 err:
-    if (render_tree) {
-        destroy_render_tree(render_tree);
-    }
-
     if (engine) {
         LZH_FREE(engine);
     }
@@ -104,10 +93,6 @@ err:
 void lzh_engine_destroy(LZH_ENGINE *engine)
 {
     if (engine) {
-        if (engine->render_tree) {
-            destroy_render_tree(engine->render_tree);
-        }
-
         if (engine->renderer) {
             SDL_DestroyRenderer(engine->renderer);
         }
@@ -197,9 +182,6 @@ void lzh_engine_render(LZH_ENGINE *engine)
                 *   |
                 * 3.components fixed update 更新
                 */
-                render_tree_iterate(
-                    engine->render_tree, render_objects_fixed, engine);
-
                 engine->fixed_update(engine, engine->fixed_args);
             }
         } else {
@@ -218,8 +200,6 @@ void lzh_engine_render(LZH_ENGINE *engine)
          *   |
          * 4.最终将 sprites tree 调用图形 API 迭代绘制
          */
-        render_tree_iterate(engine->render_tree, render_objects, engine);
-        
         if (engine->render_update) {
             engine->render_update(engine, engine->render_args);
         }

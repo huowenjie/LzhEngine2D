@@ -5,6 +5,8 @@
     <ClCompile Include="globalres.c" />
     <ClCompile Include="level.c" />
     <ClCompile Include="tank.c" />
+    <ClCompile Include="bullet.c" />
+    <ClCompile Include="objwidget.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
@@ -13,5 +15,7 @@
     <ClInclude Include="globalres.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="tank.h" />
+    <ClInclude Include="bullet.h" />
+    <ClInclude Include="objwidget.h" />
   </ItemGroup>
 </Project>
