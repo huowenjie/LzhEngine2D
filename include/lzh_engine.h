@@ -24,14 +24,6 @@ LZH_API LZH_ENGINE *lzh_engine_create(
 /* 销毁引擎 */
 LZH_API void lzh_engine_destroy(LZH_ENGINE *engine);
 
-/* 设置更新回调 */
-LZH_API void lzh_engine_set_update(
-    LZH_ENGINE *engine, LZH_LOOP_UPDATE callback, void *args);
-
-/* 设置固定帧率更新回调 */
-LZH_API void lzh_engine_set_fixed_update(
-    LZH_ENGINE *engine, LZH_LOOP_UPDATE callback, void *args);
-
 /* 启动主循环渲染 */
 LZH_API void lzh_engine_render(LZH_ENGINE *engine);
 

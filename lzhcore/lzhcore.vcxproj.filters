@@ -405,6 +405,18 @@
     </ClInclude>
     <ClInclude Include="lzh_base.h" />
     <ClInclude Include="lzh_render_tree.h" />
+    <ClInclude Include="..\include\lzh_link.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lzh_log.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lzh_scene.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lzh_transform.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">

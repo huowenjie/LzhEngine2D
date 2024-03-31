@@ -105,24 +105,6 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
     }
 }
 
-void lzh_engine_set_update(
-    LZH_ENGINE *engine, LZH_LOOP_UPDATE callback, void *args)
-{
-    if (engine) {
-        engine->render_update = callback;
-        engine->render_args = args;
-    }
-}
-
-void lzh_engine_set_fixed_update(
-    LZH_ENGINE *engine, LZH_LOOP_UPDATE callback, void *args)
-{
-    if (engine) {
-        engine->fixed_update = callback;
-        engine->fixed_args = args;
-    }
-}
-
 void lzh_engine_render(LZH_ENGINE *engine)
 {
     int run = 1;
@@ -169,23 +151,19 @@ void lzh_engine_render(LZH_ENGINE *engine)
          * 逻辑帧时间，则直接放弃这一帧的渲染，按照逻辑帧速率来追赶
          * 进度
          */
-        if (engine->fixed_update) {
-            while (time_count > fix_time) {
-                time_count -= fix_time;
+        while (time_count > fix_time) {
+            time_count -= fix_time;
 
-               /*
-                * 1.scences fixed update 更新 TODO
-                *   |
-                *   |
-                * 2.objects fixed update 更新
-                *   |
-                *   |
-                * 3.components fixed update 更新
-                */
-                engine->fixed_update(engine, engine->fixed_args);
-            }
-        } else {
-            time_count = 0.0f;
+            /*
+             * 1.scences fixed update 更新 TODO
+             *   |
+             *   |
+             * 2.objects fixed update 更新
+             *   |
+             *   |
+             * 3.components fixed update 更新
+             */
+             // TODO
         }
 
         /*
@@ -200,9 +178,7 @@ void lzh_engine_render(LZH_ENGINE *engine)
          *   |
          * 4.最终将 sprites tree 调用图形 API 迭代绘制
          */
-        if (engine->render_update) {
-            engine->render_update(engine, engine->render_args);
-        }
+        // TODO
 
         SDL_RenderPresent(renderer);
 

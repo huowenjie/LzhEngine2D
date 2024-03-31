@@ -17,11 +17,6 @@ struct LZH_ENGINE {
     SDL_Window *window;
     SDL_Renderer *renderer;
 
-    LZH_LOOP_UPDATE render_update;
-    LZH_LOOP_UPDATE fixed_update;
-    void *render_args;
-    void *fixed_args;
-
     float logic_fps;                /* Âß¼­Ö¡Ö¡Êý */
     float render_fps;               /* äÖÈ¾Ö¡Ö¡Êý */
     float pause_delay;              /* ÔÝÍ£ÑÓÊ± ms */

@@ -215,6 +215,7 @@ void level_end(LEVEL *level)
 
 void level_init_tutorials(LEVEL *level)
 {
+#if 0
     if (level) {
         TANK *dog = NULL;
         TANK *pig = NULL;
@@ -256,14 +257,17 @@ void level_init_tutorials(LEVEL *level)
 
         level_add_object(level, "pig", pig);
     }
+#endif
 }
 
 void level_quit_tutorials(LEVEL *level)
 {
+#if 0
     if (level) {
         level_clear_objects(level, level_clear_visit);
         lzh_engine_set_update(level->engine, NULL, NULL);
     }
+#endif
 }
 
 /*===========================================================================*/
