@@ -79,10 +79,12 @@ void lzh_scene_objs_visit_free(const SCENE_OBJ_RB_NODE *node, void *args);
 /* 层级树迭代 */
 void lzh_scene_layer_visit_update(const SCENE_LAYER_RB_NODE *node, void *args);
 void lzh_scene_layer_visit_fixedupdate(const SCENE_LAYER_RB_NODE *node, void *args);
+void lzh_scene_layer_visit_draw(const SCENE_LAYER_RB_NODE *node, void *args);
 
 /* 对象树迭代 */
 void lzh_scene_objs_visit_update(const SCENE_OBJ_RB_NODE *node, void *args);
 void lzh_scene_objs_visit_fixedupdate(const SCENE_OBJ_RB_NODE *node, void *args);
+void lzh_scene_objs_visit_draw(const SCENE_OBJ_RB_NODE *node, void *args);
 
 /*===========================================================================*/
 

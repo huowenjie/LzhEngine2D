@@ -17,6 +17,7 @@ typedef struct LZH_BASE LZH_BASE;
 /* 上下文更新回调定义 */
 typedef void (*LZH_BASE_UPDATE)(LZH_BASE *base, void *args);
 typedef void (*LZH_BASE_FIXED_UPDATE)(LZH_BASE *base, void *args);
+typedef void (*LZH_BASE_DRAW)(LZH_BASE *base, void *args);
 
 /* 定义基类 */
 struct LZH_BASE {
@@ -36,9 +37,13 @@ struct LZH_BASE {
     LZH_BASE_UPDATE update;
     LZH_BASE_FIXED_UPDATE fixed_update;
 
+    /* 绘制回调 */
+    LZH_BASE_DRAW draw;
+
     /* 回调参数缓存 */
     void *update_param;
     void *fixed_update_param;
+    void *draw_param;
 };
 
 /* 初始化终止 */

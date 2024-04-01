@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "lzh_type.h"
+#include "../scene/lzh_scene_manager.h"
 
 /*===========================================================================*/
 /* 引擎(内部) */
@@ -17,12 +18,14 @@ struct LZH_ENGINE {
     SDL_Window *window;
     SDL_Renderer *renderer;
 
-    float logic_fps;                /* 逻辑帧帧数 */
-    float render_fps;               /* 渲染帧帧数 */
-    float pause_delay;              /* 暂停延时 ms */
-    float delta_time;               /* 帧间隔时间 ms */
+    float logic_fps;                    /* 逻辑帧帧数 */
+    float render_fps;                   /* 渲染帧帧数 */
+    float pause_delay;                  /* 暂停延时 ms */
+    float delta_time;                   /* 帧间隔时间 ms */
 
-    LZH_UINT32 engine_event;        /* 引擎状态事件 */
+    LZH_UINT32 engine_event;            /* 引擎状态事件 */
+
+    LZH_SCENE_MANAGER *scene_manager;   /* 场景管理 */
 };
 
 /*===========================================================================*/

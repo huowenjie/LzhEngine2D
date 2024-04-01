@@ -72,6 +72,16 @@ void lzh_scene_layer_visit_fixedupdate(const SCENE_LAYER_RB_NODE *node, void *ar
     }
 }
 
+void lzh_scene_layer_visit_draw(const SCENE_LAYER_RB_NODE *node, void *args)
+{
+    if (node) {
+        SCENE_OBJ_RB_TREE *tree = node->value;
+        if (tree) {
+            scene_obj_rb_iterate(tree, lzh_scene_objs_visit_draw, NULL);
+        }
+    }
+}
+
 void lzh_scene_objs_visit_update(const SCENE_OBJ_RB_NODE *node, void *args)
 {
     if (node) {
@@ -88,6 +98,16 @@ void lzh_scene_objs_visit_fixedupdate(const SCENE_OBJ_RB_NODE *node, void *args)
         LZH_BASE *base = (LZH_BASE *)node->value;
         if (base && base->fixed_update) {
             base->fixed_update(base, base->fixed_update_param);
+        }
+    }
+}
+
+void lzh_scene_objs_visit_draw(const SCENE_OBJ_RB_NODE *node, void *args)
+{
+    if (node) {
+        LZH_BASE *base = (LZH_BASE *)node->value;
+        if (base && base->draw) {
+            base->draw(base, base->draw_param);
         }
     }
 }

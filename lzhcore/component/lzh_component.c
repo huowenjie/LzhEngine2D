@@ -2,6 +2,24 @@
 
 /*===========================================================================*/
 
+void lzh_cpnt_init(LZH_COMPONENT *cpnt)
+{
+    lzh_base_init((LZH_BASE *)cpnt);
+    cpnt->object = NULL;
+    cpnt->remove_component = NULL;
+    cpnt->type = 0;
+}
+
+void lzh_cpnt_quit(LZH_COMPONENT *cpnt)
+{
+    cpnt->object = NULL;
+    cpnt->remove_component = NULL;
+    cpnt->type = 0;
+    lzh_base_quit((LZH_BASE *)cpnt);
+}
+
+/*===========================================================================*/
+
 int lzh_cpnt_rb_comp(const void *cpnt1, const void *cpnt2)
 {
     LZH_UINT32 *i1 = *((LZH_UINT32 **)cpnt1);
@@ -51,6 +69,16 @@ void lzh_cpnt_rb_visit_fixedupdate(const LZH_CPNT_RB_NODE *node, void *args)
         LZH_BASE *base = (LZH_BASE *)node->value;
         if (base->fixed_update) {
             base->fixed_update(base, base->fixed_update_param);
+        }
+    }
+}
+
+void lzh_cpnt_rb_visit_draw(const LZH_CPNT_RB_NODE *node, void *args)
+{
+    if (node && node->value) {
+        LZH_BASE *base = (LZH_BASE *)node->value;
+        if (base->draw) {
+            base->draw(base, base->draw_param);
         }
     }
 }

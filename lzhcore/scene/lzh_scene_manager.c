@@ -11,15 +11,9 @@ static void scene_visit_free(const LZH_SCENE_RB_NODE *node, void *args);
 
 /*===========================================================================*/
 
-LZH_SCENE_MANAGER *lzh_scene_manager_create(LZH_ENGINE *engine)
+LZH_SCENE_MANAGER *lzh_scene_manager_create()
 {
-    LZH_SCENE_MANAGER *manager = NULL;
-
-    if (!engine) {
-        return NULL;
-    }
-
-    manager = LZH_MALLOC(sizeof(LZH_SCENE_MANAGER));
+    LZH_SCENE_MANAGER *manager = LZH_MALLOC(sizeof(LZH_SCENE_MANAGER));
     if (!manager) {
         return NULL;
     }
@@ -57,7 +51,29 @@ void lzh_sm_add_scene(LZH_SCENE_MANAGER *manager, LZH_SCENE *scene)
     lzh_scene_rb_insert(manager->scene_tree, hash, scene);
 }
 
-void lzh_sm_remove_scene(LZH_SCENE_MANAGER *manager, const char *name)
+LZH_SCENE *lzh_sm_get_scene(LZH_SCENE_MANAGER *manager, const char *name)
+{
+    LZH_HASH_CODE hash = 0;
+    LZH_SCENE *scene = NULL;
+
+    if (!manager) {
+        return scene;
+    }
+
+    if (!name || !*name) {
+        return scene;
+    }
+
+    hash = lzh_gen_hash_code(name);
+
+    if (scene) {
+        lzh_scene_rb_find(manager->scene_tree, hash, &scene);
+    }
+    return scene;
+}
+
+void lzh_sm_remove_scene(
+    LZH_SCENE_MANAGER *manager, const char *name, LZH_SCENE **scene)
 {
     LZH_HASH_CODE hash = 0;
 
@@ -70,7 +86,11 @@ void lzh_sm_remove_scene(LZH_SCENE_MANAGER *manager, const char *name)
     }
 
     hash = lzh_gen_hash_code(name);
-    lzh_scene_rb_delete(manager->scene_tree, hash, scene_visit_free, NULL);
+
+    if (scene) {
+        lzh_scene_rb_find(manager->scene_tree, hash, scene);
+    }
+    lzh_scene_rb_delete(manager->scene_tree, hash, NULL, NULL);
 }
 
 void lzh_sm_set_active_scene(LZH_SCENE_MANAGER *manager, const char *name)
@@ -110,6 +130,16 @@ void lzh_sm_fixedupdate(LZH_SCENE_MANAGER *manager)
         LZH_BASE *active = (LZH_BASE *)manager->scene_active;
         if (active->fixed_update) {
             active->fixed_update(active, active->fixed_update_param);
+        }
+    }
+}
+
+void lzh_sm_draw(LZH_SCENE_MANAGER *manager)
+{
+    if (manager && manager->scene_active) {
+        LZH_BASE *active = (LZH_BASE *)manager->scene_active;
+        if (active->draw) {
+            active->draw(active, active->draw_param);
         }
     }
 }

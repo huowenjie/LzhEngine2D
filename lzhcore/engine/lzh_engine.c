@@ -46,6 +46,7 @@ LZH_ENGINE *lzh_engine_create(
 {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
+    LZH_SCENE_MANAGER *manager = NULL;
 
     LZH_ENGINE *engine = LZH_MALLOC(sizeof(LZH_ENGINE));
     if (!engine) {
@@ -67,17 +68,23 @@ LZH_ENGINE *lzh_engine_create(
         goto err;
     }
 
+    manager = lzh_scene_manager_create();
+    if (!manager) {
+        goto err;
+    }
+
     engine->window = window;
     engine->renderer = renderer;
     engine->logic_fps = 30.0f;
     engine->render_fps = 60.0f;
     engine->pause_delay = 250.0f;
     engine->delta_time = 0.0f;
+    engine->scene_manager = manager;
     return engine;
 
 err:
-    if (engine) {
-        LZH_FREE(engine);
+    if (manager) {
+        lzh_scene_manager_destroy(manager);
     }
 
     if (renderer) {
@@ -87,12 +94,20 @@ err:
     if (window) {
         SDL_DestroyWindow(window);
     }
+
+    if (engine) {
+        LZH_FREE(engine);
+    }
     return NULL;
 }
 
 void lzh_engine_destroy(LZH_ENGINE *engine)
 {
     if (engine) {
+        if (engine->scene_manager) {
+            lzh_scene_manager_destroy(engine->scene_manager);
+        }
+
         if (engine->renderer) {
             SDL_DestroyRenderer(engine->renderer);
         }
@@ -155,7 +170,7 @@ void lzh_engine_update(LZH_ENGINE *engine)
             time_count -= fix_time;
 
             /*
-             * 1.scences fixed update 更新 TODO
+             * 1.scences fixed update 更新
              *   |
              *   |
              * 2.objects fixed update 更新
@@ -163,11 +178,11 @@ void lzh_engine_update(LZH_ENGINE *engine)
              *   |
              * 3.components fixed update 更新
              */
-             // TODO
+             lzh_sm_fixedupdate(engine->scene_manager);
         }
 
         /*
-         * 1.scences update 更新 TODO
+         * 1.scences update 更新
          *   |
          *   |
          * 2.objects update 更新
@@ -178,8 +193,10 @@ void lzh_engine_update(LZH_ENGINE *engine)
          *   |
          * 4.最终将 sprites tree 调用图形 API 迭代绘制
          */
-        // TODO
+        lzh_sm_update(engine->scene_manager);
 
+        /* 场景绘制，调用所有对象的 draw 方法绘制 */
+        lzh_sm_draw(engine->scene_manager);
         SDL_RenderPresent(renderer);
 
         start = SDL_GetPerformanceCounter();
@@ -221,6 +238,14 @@ void lzh_engine_win_size(LZH_ENGINE *engine, int *w, int *h)
     if (engine) {
         SDL_GetWindowSize(engine->window, w, h);
     }
+}
+
+LZH_SCENE *lzh_engine_get_scene(LZH_ENGINE *engine, const char *name)
+{
+    if (engine) {
+        return lzh_sm_get_scene(engine->scene_manager, name);
+    }
+    return NULL;
 }
 
 /*===========================================================================*/

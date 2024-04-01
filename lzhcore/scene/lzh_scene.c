@@ -4,13 +4,15 @@
 #include <lzh_scene.h>
 #include <lzh_systool.h>
 
-#include "lzh_core_scene.h"
+#include "../engine/lzh_core_engine.h"
+#include "lzh_scene_manager.h"
 
 /*===========================================================================*/
 
 /* 场景渲染队列渲染回调 */
 static void lzh_scene_update(LZH_BASE *base, void *args);
 static void lzh_scene_fixedupdate(LZH_BASE *base, void *args);
+static void lzh_scene_draw(LZH_BASE *base, void *args);
 
 /* 生成新名称 */
 static const char *lzh_gen_new_name();
@@ -39,9 +41,11 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     base->hash = 0;
     base->engine = engine;
     base->update = lzh_scene_update;
-    base->update_param = NULL;
     base->fixed_update = lzh_scene_fixedupdate;
+    base->draw = lzh_scene_draw;
+    base->update_param = NULL;
     base->fixed_update_param = NULL;
+    base->draw_param = NULL;
 
     /* 创建层级渲染树 */
     scene->layer_tree = scene_layer_rb_create(lzh_scene_layer_comp);
@@ -51,24 +55,37 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
 
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name());
+
+    /* 添加场景至全局场景树 */
+    lzh_sm_add_scene(engine->scene_manager, scene);
     return scene;
 }
 
 void lzh_scene_destroy(LZH_SCENE *scene)
 {
     if (scene) {
-        lzh_base_quit((LZH_BASE *)scene);
+        LZH_ENGINE *engine = scene->base.engine;
 
-        if (scene->layer_tree) {
-            scene_layer_rb_destroy(scene->layer_tree, lzh_scene_layer_visit_free, NULL);
-            scene->layer_tree = NULL;
+        if (!engine) {
+            return;
         }
 
+        /* 从场景树删除场景 */
+        lzh_sm_remove_scene(engine->scene_manager, scene->base.name, NULL);
+
+        /* 移除映射表 */
         if (scene->object_map) {
             object_map_rb_destroy(scene->object_map, NULL, NULL);
             scene->object_map = NULL;
         }
 
+        /* 移除层级渲染树 */
+        if (scene->layer_tree) {
+            scene_layer_rb_destroy(scene->layer_tree, lzh_scene_layer_visit_free, NULL);
+            scene->layer_tree = NULL;
+        }
+
+        lzh_base_quit((LZH_BASE *)scene);
         LZH_FREE(scene);
     }
 }
@@ -194,6 +211,21 @@ void lzh_scene_fixedupdate(LZH_BASE *base, void *args)
     layer_tree = scene->layer_tree;
 
     scene_layer_rb_iterate(layer_tree, lzh_scene_layer_visit_fixedupdate, NULL);
+}
+
+void lzh_scene_draw(LZH_BASE *base, void *args)
+{
+    LZH_SCENE *scene = NULL;
+    SCENE_LAYER_RB_TREE *layer_tree = NULL;
+
+    if (!base) {
+        return;
+    }
+
+    scene = (LZH_SCENE *)base;
+    layer_tree = scene->layer_tree;
+
+    scene_layer_rb_iterate(layer_tree, lzh_scene_layer_visit_draw, NULL);
 }
 
 const char *lzh_gen_new_name()

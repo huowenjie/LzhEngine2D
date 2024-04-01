@@ -74,6 +74,16 @@ void lzh_object_rb_visit_fixedupdate(const LZH_OBJ_RB_NODE *node, void *args)
     }
 }
 
+void lzh_object_rb_visit_draw(const LZH_OBJ_RB_NODE *node, void *args)
+{
+    if (node && node->value) {
+        LZH_BASE *base = (LZH_BASE *)node->value;
+        if (base->draw) {
+            base->draw(base, base->draw_param);
+        }
+    }
+}
+
 /*===========================================================================*/
 
 RBTREE_IMPLEMENT(LZH_OBJ, lzh_obj, LZH_HASH_CODE, LZH_OBJECT *)

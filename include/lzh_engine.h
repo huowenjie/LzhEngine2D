@@ -36,6 +36,9 @@ LZH_API float lzh_engine_interval_msec(LZH_ENGINE *engine);
 /* 获取窗口尺寸 */
 LZH_API void lzh_engine_win_size(LZH_ENGINE *engine, int *w, int *h);
 
+/* 获取场景对象 */
+LZH_API LZH_SCENE *lzh_engine_get_scene(LZH_ENGINE *engine, const char *name);
+
 #ifdef __cplusplus
 }
 #endif

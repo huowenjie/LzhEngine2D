@@ -23,6 +23,7 @@ static void update_object_forward(LZH_OBJECT *obj);
 /* 场景渲染队列渲染回调 */
 static void lzh_object_update(LZH_BASE *base, void *args);
 static void lzh_object_fixedupdate(LZH_BASE *base, void *args);
+static void lzh_object_draw(LZH_BASE *base, void *args);
 
 /* 生成新名称 */
 static const char *lzh_gen_new_name(int order);
@@ -51,9 +52,11 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     base->hash = 0;
     base->engine = engine;
     base->update = lzh_object_update;
-    base->update_param = NULL;
     base->fixed_update = lzh_object_fixedupdate;
+    base->draw = lzh_object_draw;
+    base->update_param = NULL;
     base->fixed_update_param = NULL;
+    base->draw_param = NULL;
 
     obj->parent = NULL;
     obj->children = lzh_obj_rb_create(lzh_object_rb_comp);
@@ -284,6 +287,23 @@ void lzh_object_fixedupdate(LZH_BASE *base, void *args)
         /* 用户层更新 */
         if (object->fixed_update) {
             object->fixed_update(base->engine, object, object->fixed_update_param);
+        }
+    }
+}
+
+void lzh_object_draw(LZH_BASE *base, void *args)
+{
+    if (base) {
+        LZH_OBJECT *object = (LZH_OBJECT *)base;
+
+        /* 绘制子树 */
+        if (object->children) {
+            lzh_obj_rb_iterate(object->children, lzh_object_rb_visit_draw, NULL);
+        }
+
+        /* 绘制组件 */
+        if (object->components) {
+            lzh_cpnt_rb_iterate(object->components, lzh_cpnt_rb_visit_draw, NULL);
         }
     }
 }

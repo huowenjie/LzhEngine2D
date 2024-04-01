@@ -30,14 +30,18 @@ typedef struct LZH_SCENE_MANAGER {
 } LZH_SCENE_MANAGER;
 
 /* 创建、销毁场景管理器 */
-LZH_SCENE_MANAGER *lzh_scene_manager_create(LZH_ENGINE *engine);
+LZH_SCENE_MANAGER *lzh_scene_manager_create();
 void lzh_scene_manager_destroy(LZH_SCENE_MANAGER *manager);
 
 /* 添加场景 */
 void lzh_sm_add_scene(LZH_SCENE_MANAGER *manager, LZH_SCENE *scene);
 
-/* 移除场景 */
-void lzh_sm_remove_scene(LZH_SCENE_MANAGER *manager, const char *name);
+/* 获取场景对象 */
+LZH_SCENE *lzh_sm_get_scene(LZH_SCENE_MANAGER *manager, const char *name);
+
+/* 移除并返回场景 */
+void lzh_sm_remove_scene(
+    LZH_SCENE_MANAGER *manager, const char *name, LZH_SCENE **scene);
 
 /* 设置当前场景 */
 void lzh_sm_set_active_scene(LZH_SCENE_MANAGER *manager, const char *name);
@@ -47,6 +51,9 @@ void lzh_sm_update(LZH_SCENE_MANAGER *manager);
 
 /* 固定时间更新 */
 void lzh_sm_fixedupdate(LZH_SCENE_MANAGER *manager);
+
+/* 场景绘制 */
+void lzh_sm_draw(LZH_SCENE_MANAGER *manager);
 
 /*===========================================================================*/
 

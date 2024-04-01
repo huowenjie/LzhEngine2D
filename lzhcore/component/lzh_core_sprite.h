@@ -49,12 +49,6 @@ struct LZH_SPRITE {
     struct LZH_KEYFRAME *kf_list;   /* 关键帧回调列表 */
 };
 
-/* 精灵渲染 */
-void lzh_sprite_render(LZH_OBJECT *object, LZH_SPRITE *sprite);
-
-/* 移除子组件，不更改所属对象的信息 */
-void lzh_sprite_remove(LZH_COMPONENT *cpnt);
-
 /*===========================================================================*/
 
 #endif /* __LZH_CORE_SPRITE_H__ */
