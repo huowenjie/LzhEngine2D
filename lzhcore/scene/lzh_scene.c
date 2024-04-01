@@ -45,6 +45,9 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     /* 创建层级渲染树 */
     scene->layer_tree = scene_layer_rb_create(lzh_scene_layer_comp);
 
+    /* 创建层级映射表 */
+    scene->layer_map = layer_map_rb_create(lzh_scene_layer_map_comp);
+
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name());
     return scene;
@@ -52,7 +55,7 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
 
 void lzh_scene_destroy(LZH_SCENE *scene)
 {
-    if (scene) {        
+    if (scene) {
         lzh_base_quit((LZH_BASE *)scene);
 
         if (scene->layer_tree) {
@@ -60,16 +63,48 @@ void lzh_scene_destroy(LZH_SCENE *scene)
             scene->layer_tree = NULL;
         }
 
+        if (scene->layer_map) {
+            layer_map_rb_destroy(scene->layer_map, NULL, NULL);
+            scene->layer_map = NULL;
+        }
+
         LZH_FREE(scene);
     }
 }
 
-LZH_BOOL lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
-{
-    return LZH_FALSE;
+void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
+{    
+    SCENE_OBJ_RB_TREE *obj_tree = NULL;
+    SCENE_LAYER_RB_TREE *layer_tree = NULL;
+    LAYER_MAP_RB_TREE *layer_map = NULL;
+
+    if (!scene || !object) {
+        return;
+    }
+
+    layer_tree = scene->layer_tree;
+    if (!layer_tree) {
+        return;
+    }
+
+    layer_map = scene->layer_map;
+    if (!layer_map) {
+        return;
+    }
+
+    if (scene_layer_rb_find(layer_tree, object->render_layer, &obj_tree) != 0) {
+        obj_tree = scene_obj_rb_create(lzh_scene_objs_comp);
+        if (!obj_tree) {
+            return;
+        }
+        scene_layer_rb_insert(layer_tree, object->render_layer, obj_tree);
+    }
+
+    scene_obj_rb_insert(obj_tree, object->render_sort, object);
+    layer_map_rb_insert(layer_map, object->base.hash, object->render_sort);
 }
 
-void lzh_scene_del_object(LZH_SCENE *scene, LZH_OBJECT *object)
+void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
 {
 
 }

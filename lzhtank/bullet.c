@@ -40,6 +40,7 @@ void blt_destroy_bullet(BULLET *bullet)
 
 void blt_move_forward(BULLET *bullet, float speed)
 {
+    #if 0
     if (bullet) {
         LZH_OBJECT *object = bullet->widget.object;
 
@@ -50,10 +51,12 @@ void blt_move_forward(BULLET *bullet, float speed)
         pos = lzh_vec2f_add(&pos, &forward);
         lzh_object_set_pos(object, &pos);
     }
+    #endif
 }
 
 void blt_explode(BULLET *bullet)
 {
+#if 0
     OBJ_WIDGET *explode = NULL;
     LZH_ENGINE *eg = NULL;
     LEVEL *level = NULL;
@@ -96,6 +99,7 @@ void blt_explode(BULLET *bullet)
 
     /* 播放完毕后在最后一帧销毁 */
     lzh_sprite_set_keyframe(explode->sprite, count - 1, explode_destroy_cb, explode);
+#endif
 }
 
 LZH_UINT32 explode_destroy_cb(void *args)

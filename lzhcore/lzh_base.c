@@ -53,4 +53,20 @@ void lzh_base_set_name(LZH_BASE *base, const char *name)
     base->hash = lzh_gen_hash_code(buf);
 }
 
+const char *lzh_base_get_name(LZH_BASE *base)
+{
+    if (base) {
+        return base->name;
+    }
+    return NULL;
+}
+
+LZH_HASH_CODE lzh_base_get_hash(LZH_BASE *base)
+{
+    if (base) {
+        return base->hash;
+    }
+    return 0;
+}
+
 /*===========================================================================*/

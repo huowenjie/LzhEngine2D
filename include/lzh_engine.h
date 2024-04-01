@@ -25,7 +25,7 @@ LZH_API LZH_ENGINE *lzh_engine_create(
 LZH_API void lzh_engine_destroy(LZH_ENGINE *engine);
 
 /* 启动主循环渲染 */
-LZH_API void lzh_engine_render(LZH_ENGINE *engine);
+LZH_API void lzh_engine_update(LZH_ENGINE *engine);
 
 /* 获取当前帧间隔时间 ms */
 LZH_API float lzh_engine_interval(LZH_ENGINE *engine);

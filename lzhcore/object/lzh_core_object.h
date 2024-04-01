@@ -23,10 +23,8 @@ struct LZH_OBJECT {
     /* 组件链表 */
     LZH_CPNT_LINK *components;
 
-    /* 渲染层级 */
+    /* 渲染层级和顺序 */
     int render_layer;
-
-    /* 渲染顺序 */
     int render_sort;
 
     /*---------------------------------------------------*/

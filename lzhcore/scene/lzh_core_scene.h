@@ -9,7 +9,7 @@
 /*===========================================================================*/
 
 /**
- * 定义子渲染树
+ * 定义渲染树
  * 
  * SCENE_OBJ_RB_NODE
  * SCENE_OBJ_RB_TREE
@@ -24,7 +24,7 @@
 RBTREE_DECLARE(SCENE_OBJ, scene_obj, int, LZH_OBJECT *)
 
 /**
- * 定义渲染树
+ * 定义层级树
  * 
  * SCENE_LAYER_RB_NODE
  * SCENE_LAYER_RB_TREE
@@ -38,6 +38,21 @@ RBTREE_DECLARE(SCENE_OBJ, scene_obj, int, LZH_OBJECT *)
  */
 RBTREE_DECLARE(SCENE_LAYER, scene_layer, int, SCENE_OBJ_RB_TREE *)
 
+/**
+ * 定义Hash-层级映射表，用户快速定位对象
+ * 
+ * LAYER_MAP_RB_NODE
+ * LAYER_MAP_RB_TREE
+ * 
+ * layer_map_rb_create
+ * layer_map_rb_destroy
+ * layer_map_rb_insert
+ * layer_map_rb_delete
+ * layer_map_rb_find
+ * layer_map_rb_iterate
+ */
+RBTREE_DECLARE(LAYER_MAP, layer_map, LZH_HASH_CODE, int)
+
 struct LZH_SCENE
 {
     /* 基类 */
@@ -45,11 +60,19 @@ struct LZH_SCENE
 
     /* 层级对象渲染树 */
     SCENE_LAYER_RB_TREE *layer_tree;
+
+    /* 层级对象映射表 */
+    LAYER_MAP_RB_TREE *layer_map;
 };
 
 /* 对象树树回调 */
+
+int lzh_scene_layer_map_comp(const void *a, const void *b);
+
 int lzh_scene_layer_comp(const void *a, const void *b);
 void lzh_scene_layer_visit_free(const SCENE_LAYER_RB_NODE *node, void *args);
+
+int lzh_scene_objs_comp(const void *a, const void *b);
 void lzh_scene_objs_visit_free(const SCENE_OBJ_RB_NODE *node, void *args);
 
 /*===========================================================================*/

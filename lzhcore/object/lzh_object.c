@@ -11,6 +11,8 @@
 /*===========================================================================*/
 
 static int global_order = 1;
+static int global_sort = 0;
+
 #define PI 3.141592654f
 
 /* 更新内部参数 */
@@ -55,6 +57,8 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->parent = NULL;
     obj->children = lzh_obj_link_create(lzh_link_object_comp);
     obj->components = lzh_cpnt_link_create(lzh_link_cpnt_comp);
+    obj->render_layer = 0;
+    obj->render_sort = global_sort++;
 
     obj->update = NULL;
     obj->update_param = NULL;
@@ -202,6 +206,21 @@ const char *lzh_object_get_name(LZH_OBJECT *object)
     return NULL;
 }
 
+void lzh_object_set_layer(LZH_OBJECT *object, int layer)
+{
+    if (object) {
+        object->render_layer = layer;
+    }
+}
+
+int lzh_object_get_layer(LZH_OBJECT *object)
+{
+    if (object) {
+        return object->render_layer;
+    }
+    return 0;
+}
+
 void lzh_object_set_update(
     LZH_OBJECT *object, LZH_OBJECT_UPDATE update, void *param)
 {
@@ -217,118 +236,6 @@ void lzh_object_set_fixedupdate(
     if (object) {
         object->fixed_update = update;
         object->fixed_update_param = param;
-    }
-}
-
-void lzh_object_set_size(LZH_OBJECT *object, float w, float h)
-{
-#if 0
-    if (object) {
-        object->w = w;
-        object->h = h;
-        update_object_center(object);
-    }
-#endif
-}
-
-void lzh_object_set_pos(LZH_OBJECT *object, const LZH_VEC2F *pos)
-{
-#if 0
-    if (object && pos) {
-        object->x = pos->x;
-        object->y = pos->y;
-    }
-#endif
-}
-
-void lzh_object_set_angle(LZH_OBJECT *object, float angle)
-{
-#if 0
-    if (object) {
-        object->angle = angle;
-        update_object_forward(object);
-    }
-#endif
-}
-
-LZH_VEC2F lzh_object_get_pos(LZH_OBJECT *object)
-{
-#if 0
-    LZH_VEC2F pos = lzh_vec2f_xy(0.0f, 0.0f);
-
-    if (object) {
-        pos.x = object->x;
-        pos.y = object->y;
-    }
-    return pos;
-#endif
-    return lzh_vec2f_xy(0.0f, 0.0f);
-}
-
-float lzh_object_get_x(LZH_OBJECT *object)
-{
-#if 0
-    float x = 0.0f;
-    if (object) {
-        x = object->x;
-    }
-    return x;
-#endif
-    return 0.0f;
-}
-
-float lzh_object_get_y(LZH_OBJECT *object)
-{
-#if 0
-    float y = 0.0f;
-    if (object) {
-        y = object->y;
-    }
-    return y;
-#endif
-    return 0.0f;
-}
-
-LZH_RECTF lzh_object_get_rect(const LZH_OBJECT *object)
-{
-    LZH_RECTF rect = { 0.0f, 0.0f, 0.0f, 0.0f };
-#if 0
-    if (object) {
-        rect.x = object->x;
-        rect.y = object->y;
-        rect.w = object->w;
-        rect.h = object->h;
-    }
-#endif
-    return rect;
-}
-
-float lzh_object_get_angle(LZH_OBJECT *object)
-{
-    float angle = 0.0f;
-#if 0
-    if (object) {
-        angle = object->angle;
-    }
-#endif
-    return angle;
-}
-
-LZH_VEC2F lzh_object_get_forward(LZH_OBJECT *object)
-{
-    LZH_VEC2F vec = lzh_vec2f_xy(0.0f, 0.0f);
-#if 0
-    if (object) {
-        vec = object->forward;
-    }
-#endif
-    return vec;
-}
-
-void lzh_object_set_sprite(LZH_OBJECT *object, LZH_SPRITE *sp)
-{
-    if (object && sp) {
-        // object->sprite = sp;
     }
 }
 

@@ -11,6 +11,7 @@
 /* 关卡 */
 /*===========================================================================*/
 
+#if 0
 RBTREE_DECLARE(LEVEL, level, char *, void *)
 
 typedef struct
@@ -60,6 +61,7 @@ void level_init_tutorials(LEVEL *level);
 
 /* 退出教学关卡 */
 void level_quit_tutorials(LEVEL *level);
+#endif
 
 /*===========================================================================*/
 

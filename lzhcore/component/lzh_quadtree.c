@@ -329,7 +329,8 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
         return;
     }
 
-    objrect = lzh_object_get_rect(object);
+    //objrect = lzh_object_get_rect(object);
+    /* TODO */
 
     /* 获取象限索引 */
     index = get_quad_node_index(node, &objrect);
@@ -475,7 +476,8 @@ void find_quad_node(
         return;
     }
 
-    objrect = lzh_object_get_rect(target);
+    //objrect = lzh_object_get_rect(target);
+    /* TODO */
 
     /* 获取象限索引 */
     index = get_quad_node_index(node, &objrect);

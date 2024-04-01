@@ -8,6 +8,7 @@
 
 #include "tank.h"
 
+#if 0
 /*===========================================================================*/
 
 RBTREE_IMPLEMENT(LEVEL, level, char *, void *)
@@ -442,5 +443,7 @@ void update_bullet(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
 
     level_clear_colliders(level);
 }
+
+#endif
 
 /*===========================================================================*/

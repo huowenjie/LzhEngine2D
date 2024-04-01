@@ -18,7 +18,7 @@ typedef struct {
     int type;
     LZH_OBJECT *object;
     LZH_SPRITE *sprite;
-    LEVEL *level;
+    //LEVEL *level;
 } OBJ_WIDGET;
 
 /* 初始化 */
@@ -44,7 +44,7 @@ void ow_set_pos(OBJ_WIDGET *widget, float x, float y);
 void ow_set_name(OBJ_WIDGET *widget, const char *name);
 
 /* 设置当前关卡 */
-void ow_set_level(OBJ_WIDGET *widget, LEVEL *level);
+// void ow_set_level(OBJ_WIDGET *widget, LEVEL *level);
 
 /* 设置更新回调 */
 void ow_set_update(

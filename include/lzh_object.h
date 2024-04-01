@@ -49,6 +49,12 @@ LZH_API void lzh_object_set_name(LZH_OBJECT *object, const char *name);
 /* 获取对象名称 */
 LZH_API const char *lzh_object_get_name(LZH_OBJECT *object);
 
+/* 设置对象渲染层级 */
+LZH_API void lzh_object_set_layer(LZH_OBJECT *object, int layer);
+
+/* 获取对象渲染层级 */
+LZH_API int lzh_object_get_layer(LZH_OBJECT *object);
+
 /* 设置对象更新回调 */
 LZH_API void lzh_object_set_update(
     LZH_OBJECT *object, LZH_OBJECT_UPDATE update, void *param);
@@ -56,32 +62,6 @@ LZH_API void lzh_object_set_update(
 /* 设置对象固定时间更新回调 */
 LZH_API void lzh_object_set_fixedupdate(
     LZH_OBJECT *object, LZH_OBJECT_FIXEDUPDATE update, void *param);
-
-/* 设置尺寸 */
-LZH_API void lzh_object_set_size(LZH_OBJECT *object, float w, float h);
-
-/* 设置位置 */
-LZH_API void lzh_object_set_pos(LZH_OBJECT *object, const LZH_VEC2F *pos);
-
-/* 设置旋转角度，单位是角度 */
-LZH_API void lzh_object_set_angle(LZH_OBJECT *object, float angle);
-
-/* 获取位置 */
-LZH_API LZH_VEC2F lzh_object_get_pos(LZH_OBJECT *object);
-LZH_API float lzh_object_get_x(LZH_OBJECT *object);
-LZH_API float lzh_object_get_y(LZH_OBJECT *object);
-
-/* 获取包围盒 */
-LZH_API LZH_RECTF lzh_object_get_rect(const LZH_OBJECT *object);
-
-/* 获取旋转角度，单位是角度 */
-LZH_API float lzh_object_get_angle(LZH_OBJECT *object);
-
-/* 获取前进向量 */
-LZH_API LZH_VEC2F lzh_object_get_forward(LZH_OBJECT *object);
-
-/* 设置精灵组件 */
-LZH_API void lzh_object_set_sprite(LZH_OBJECT *object, LZH_SPRITE *sp);
 
 /* 隐藏/显示对象 */
 LZH_API void lzh_object_show_object(LZH_OBJECT *object, LZH_BOOL show);

@@ -48,6 +48,12 @@ void lzh_base_quit(LZH_BASE *base);
 /* 设置名称 */
 void lzh_base_set_name(LZH_BASE *base, const char *name);
 
+/* 获取名称 */
+const char *lzh_base_get_name(LZH_BASE *base);
+
+/* 获取hash值 */
+LZH_HASH_CODE lzh_base_get_hash(LZH_BASE *base);
+
 /*===========================================================================*/
 
 #endif /* __LZH_BASE_H__ */

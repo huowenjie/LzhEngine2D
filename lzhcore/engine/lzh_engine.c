@@ -105,7 +105,7 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
     }
 }
 
-void lzh_engine_render(LZH_ENGINE *engine)
+void lzh_engine_update(LZH_ENGINE *engine)
 {
     int run = 1;
     SDL_Event evt;
