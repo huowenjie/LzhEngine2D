@@ -99,10 +99,9 @@ void lzh_sprite_destroy(LZH_SPRITE *sprite)
         /* 从所属对象组件表中移除组件对象 */
         if (sprite->base.object) {
             LZH_OBJECT *obj = sprite->base.object;
-            lzh_cpnt_link_remove_value(obj->components, (const LZH_COMPONENT *)sprite);
+            lzh_cpnt_rb_delete(obj->components, LZH_CPNT_SPRITE, NULL, NULL);
             sprite->base.object = NULL;
         }
-
         lzh_sprite_remove((LZH_COMPONENT *)sprite);
     }
 }

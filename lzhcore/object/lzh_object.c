@@ -3,6 +3,7 @@
 #include <lzh_object.h>
 #include <lzh_sprite.h>
 #include <lzh_mem.h>
+#include <lzh_systool.h>
 
 #include "lzh_core_object.h"
 #include "../engine/lzh_core_engine.h"
@@ -55,8 +56,8 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     base->fixed_update_param = NULL;
 
     obj->parent = NULL;
-    obj->children = lzh_obj_link_create(lzh_link_object_comp);
-    obj->components = lzh_cpnt_link_create(lzh_link_cpnt_comp);
+    obj->children = lzh_obj_rb_create(lzh_object_rb_comp);
+    obj->components = lzh_cpnt_rb_create(lzh_cpnt_rb_comp);
     obj->render_layer = 0;
     obj->render_sort = global_sort++;
 
@@ -78,12 +79,12 @@ void lzh_object_set_parent(LZH_OBJECT *object, LZH_OBJECT *parent)
 
     if (object->parent) {
         LZH_OBJECT *pobj = object->parent;
-        lzh_obj_link_remove_value(pobj->children, object);
+        lzh_obj_rb_delete(pobj->children, object->base.hash, NULL, NULL);
         object->parent = NULL;
     }
 
-    if (parent) {
-        lzh_obj_link_push(parent->children, object);
+    if (parent && object != parent) {
+        lzh_obj_rb_insert(parent->children, object->base.hash, object);
         object->parent = parent;
     }
 }
@@ -93,18 +94,20 @@ void lzh_object_add_child(LZH_OBJECT *object, LZH_OBJECT *child)
     lzh_object_set_parent(child, object);
 }
 
-LZH_OBJECT *lzh_object_del_child(LZH_OBJECT *object, LZH_OBJECT *child)
+void lzh_object_del_child(LZH_OBJECT *object, const char *name)
 {
-    if (!object || !child) {
-        return NULL;
+    LZH_HASH_CODE code = 0;
+
+    if (!object || !object->children) {
+        return;
     }
 
-    if (object != child->parent) {
-        return NULL;
+    if (!name || !*name) {
+        return;
     }
 
-    lzh_object_set_parent(child, NULL);
-    return child;
+    code = lzh_gen_hash_code(name);
+    lzh_obj_rb_delete(object->children, code, lzh_object_rb_visit, NULL);
 }
 
 void lzh_object_destroy(LZH_OBJECT *object)
@@ -113,11 +116,7 @@ void lzh_object_destroy(LZH_OBJECT *object)
         if (object->parent) {
             /* 移除父节点中缓存的子对象 */
             LZH_OBJECT *parent = object->parent;
-            int index = lzh_obj_link_index(parent->children, object);
-
-            if (index >= 0) {
-                lzh_obj_link_remove(parent->children, index, NULL);
-            }
+            lzh_obj_rb_delete(parent->children, object->base.hash, lzh_object_rb_visit, NULL);
         }
         lzh_object_remove(object);
     }
@@ -127,8 +126,7 @@ void lzh_object_add_component(LZH_OBJECT *object, void *cpnt)
 {
     if (object && object->components && cpnt) {
         LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
-
-        lzh_cpnt_link_push(object->components, elem);
+        lzh_cpnt_rb_insert(object->components, elem->type, elem);
     }
 }
 
@@ -136,42 +134,21 @@ void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt)
 {
     if (object && object->components && cpnt) {
         LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
-
-        if (lzh_cpnt_link_remove_value(object->components, elem)) {
-            return cpnt;
-        }
+        lzh_cpnt_rb_delete(object->components, elem->type, NULL, NULL);
+        return cpnt;
     }
     return NULL;
 }
 
 LZH_SPRITE *lzh_object_get_sprite(LZH_OBJECT *object)
 {
-    LZH_CPNT_LINK *link = NULL;
-    LZH_CPNT_LINK_NODE *node = NULL;
-    int count = 0;
-    int i = 0;
-
     LZH_SPRITE *sp = NULL;
     
     if (!object || !object->components) {
         return NULL;
     }
 
-    link = object->components;
-    node = link->head;
-    count = link->count;
-    i = 0;
-
-    while (i++ < count) {
-        LZH_COMPONENT *cpnt = node->value;
-
-        if (cpnt && cpnt->type == LZH_CPNT_SPRITE) {
-            sp = (LZH_SPRITE *)cpnt;
-            break;
-        }
-        node = node->next;
-    }
-
+    lzh_cpnt_rb_find(object->components, LZH_CPNT_SPRITE, (LZH_COMPONENT **)&sp);
     return sp;
 }
 
@@ -274,38 +251,12 @@ void lzh_object_update(LZH_BASE *base, void *args)
 
         /* 更新子树 */
         if (object->children) {
-            LZH_OBJ_LINK *link = object->children;
-            LZH_OBJ_LINK_NODE *node = link->head;
-
-            int count = link->count;
-            int i = 0;
-
-            while (i++ < count) {
-                LZH_OBJECT *child = node->value;
-
-                if (child && child->base.update) {
-                    child->base.update((LZH_BASE *)child, child->base.update_param);
-                }
-                node = node->next;
-            }
+            lzh_obj_rb_iterate(object->children, lzh_object_rb_visit_update, NULL);
         }
 
         /* 更新组件 */
         if (object->components) {
-            LZH_CPNT_LINK *link = object->components;
-            LZH_CPNT_LINK_NODE *node = link->head;
-
-            int count = link->count;
-            int i = 0;
-
-            while (i++ < count) {
-                LZH_COMPONENT *cpnt = node->value;
-
-                if (cpnt && cpnt->base.update) {
-                    cpnt->base.update((LZH_BASE *)cpnt, cpnt->base.update_param);
-                }
-                node = node->next;
-            }
+            lzh_cpnt_rb_iterate(object->components,lzh_cpnt_rb_visit_update, NULL);
         }
 
         /* 用户层更新 */
@@ -322,38 +273,12 @@ void lzh_object_fixedupdate(LZH_BASE *base, void *args)
 
         /* 更新子树 */
         if (object->children) {
-            LZH_OBJ_LINK *link = object->children;
-            LZH_OBJ_LINK_NODE *node = link->head;
-
-            int count = link->count;
-            int i = 0;
-
-            while (i++ < count) {
-                LZH_OBJECT *child = node->value;
-
-                if (child && child->base.fixed_update) {
-                    child->base.fixed_update((LZH_BASE *)child, child->base.fixed_update_param);
-                }
-                node = node->next;
-            }
+            lzh_obj_rb_iterate(object->children, lzh_object_rb_visit_fixedupdate, NULL);
         }
 
         /* 更新组件 */
         if (object->components) {
-            LZH_CPNT_LINK *link = object->components;
-            LZH_CPNT_LINK_NODE *node = link->head;
-
-            int count = link->count;
-            int i = 0;
-
-            while (i++ < count) {
-                LZH_COMPONENT *cpnt = node->value;
-
-                if (cpnt && cpnt->base.fixed_update) {
-                    cpnt->base.fixed_update((LZH_BASE *)cpnt, cpnt->base.fixed_update_param);
-                }
-                node = node->next;
-            }
+            lzh_cpnt_rb_iterate(object->components,lzh_cpnt_rb_visit_fixedupdate, NULL);
         }
 
         /* 用户层更新 */

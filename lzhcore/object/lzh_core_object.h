@@ -7,7 +7,20 @@
 /* 对象(内部) */
 /*===========================================================================*/
 
-LINK_DECLARE(LZH_OBJ, lzh_obj, LZH_OBJECT *)
+/**
+ * 定义子对象树
+ * 
+ * LZH_OBJ_RB_NODE
+ * LZH_OBJ_RB_TREE
+ * 
+ * lzh_obj_rb_create
+ * lzh_obj_rb_destroy
+ * lzh_obj_rb_insert
+ * lzh_obj_rb_delete
+ * lzh_obj_rb_find
+ * lzh_obj_rb_iterate
+ */
+RBTREE_DECLARE(LZH_OBJ, lzh_obj, LZH_HASH_CODE, LZH_OBJECT *)
 
 /* 对象结构 */
 struct LZH_OBJECT {
@@ -17,11 +30,11 @@ struct LZH_OBJECT {
     /* 父对象 */
     LZH_OBJECT *parent;
 
-    /* 子对象链表 */
-    LZH_OBJ_LINK *children;
+    /* 子对象树 */
+    LZH_OBJ_RB_TREE *children;
 
     /* 组件链表 */
-    LZH_CPNT_LINK *components;
+    LZH_CPNT_RB_TREE *components;
 
     /* 渲染层级和顺序 */
     int render_layer;
@@ -43,8 +56,12 @@ struct LZH_OBJECT {
 void lzh_object_remove(LZH_OBJECT *object);
 
 /* 子对象的回调函数 */
-int lzh_link_object_comp(const void *obj1, const void *obj2);
-void lzh_link_object_visit(const LZH_OBJ_LINK_NODE *node, void *args);
+int lzh_object_rb_comp(const void *obj1, const void *obj2);
+void lzh_object_rb_visit(const LZH_OBJ_RB_NODE *node, void *args);
+
+/* 子对象更新回调 */
+void lzh_object_rb_visit_update(const LZH_OBJ_RB_NODE *node, void *args);
+void lzh_object_rb_visit_fixedupdate(const LZH_OBJ_RB_NODE *node, void *args);
 
 /*===========================================================================*/
 

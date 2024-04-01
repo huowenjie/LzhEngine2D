@@ -2,7 +2,7 @@
 #define __LZH_COMPONENT_H__
 
 #include <lzh_type.h>
-#include <lzh_link.h>
+#include <lzh_rbtree.h>
 
 #include "../lzh_base.h"
 
@@ -30,14 +30,31 @@ struct LZH_COMPONENT {
     void (*remove_component)(LZH_COMPONENT *);
 };
 
-LINK_DECLARE(LZH_CPNT, lzh_cpnt, LZH_COMPONENT *)
+/**
+ * 定义组件树
+ * 
+ * LZH_CPNT_RB_NODE
+ * LZH_CPNT_RB_TREE
+ * 
+ * lzh_cpnt_rb_create
+ * lzh_cpnt_rb_destroy
+ * lzh_cpnt_rb_insert
+ * lzh_cpnt_rb_delete
+ * lzh_cpnt_rb_find
+ * lzh_cpnt_rb_iterate
+ */
+RBTREE_DECLARE(LZH_CPNT, lzh_cpnt, LZH_UINT32, LZH_COMPONENT *)
 
 /* 精灵组件的回调函数 */
-int lzh_link_cpnt_comp(const void *cpnt1, const void *cpnt2);
-void lzh_link_cpnt_visit(const LZH_CPNT_LINK_NODE *node, void *args);
+int lzh_cpnt_rb_comp(const void *cpnt1, const void *cpnt2);
+void lzh_cpnt_rb_visit(const LZH_CPNT_RB_NODE *node, void *args);
+
+/* 组件更新回调 */
+void lzh_cpnt_rb_visit_update(const LZH_CPNT_RB_NODE *node, void *args);
+void lzh_cpnt_rb_visit_fixedupdate(const LZH_CPNT_RB_NODE *node, void *args);
 
 /* 从组件表中获取对应类型的组件 */
-LZH_COMPONENT *lzh_link_cpnt_get_type(LZH_CPNT_LINK *link, LZH_UINT32 type);
+LZH_COMPONENT *lzh_cpnt_get_type(LZH_CPNT_RB_TREE *tree, LZH_UINT32 type);
 
 /*===========================================================================*/
 

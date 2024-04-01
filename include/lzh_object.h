@@ -23,7 +23,7 @@ LZH_API void lzh_object_set_parent(LZH_OBJECT *object, LZH_OBJECT *parent);
 LZH_API void lzh_object_add_child(LZH_OBJECT *object, LZH_OBJECT *child);
 
 /* 移除子对象，移除后返回该对象 */
-LZH_API LZH_OBJECT *lzh_object_del_child(LZH_OBJECT *object, LZH_OBJECT *child);
+LZH_API void lzh_object_del_child(LZH_OBJECT *object, const char *name);
 
 /* 销毁对象，销毁时将子对象全部删除 */
 LZH_API void lzh_object_destroy(LZH_OBJECT *object);
