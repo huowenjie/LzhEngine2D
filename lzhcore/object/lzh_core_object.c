@@ -1,4 +1,5 @@
 #include "lzh_core_object.h"
+#include "../component/lzh_core_transform.h"
 
 /*===========================================================================*/
 
@@ -15,6 +16,10 @@ void lzh_object_remove(LZH_OBJECT *object)
         if (object->children) {
             lzh_obj_rb_destroy(object->children, lzh_object_rb_visit, NULL);
             object->children = NULL;
+        }
+
+        if (object->transform) {
+            lzh_transform_destroy(object->transform);
         }
 
         LZH_FREE(object);

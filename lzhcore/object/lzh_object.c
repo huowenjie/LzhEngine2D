@@ -35,7 +35,6 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
 {
     LZH_OBJECT *obj = NULL;
     LZH_BASE *base = NULL;
-    LZH_TRANSFORM *transform = NULL;
 
     if (!engine) {
         return NULL;
@@ -64,6 +63,8 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->children = lzh_obj_rb_create(lzh_object_rb_comp);
     obj->components = lzh_cpnt_rb_create(lzh_cpnt_rb_comp);
     obj->render_sort = global_sort++;
+    obj->transform = lzh_transform_create(engine);
+    obj->transform->base.object = obj;
 
     obj->update = NULL;
     obj->update_param = NULL;
@@ -72,10 +73,6 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
 
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name(global_order++));
-
-    /* 默认挂载变换组件 */
-    transform = lzh_transform_create(engine);
-    lzh_object_add_component(obj, transform);
     return obj;
 }
 
@@ -135,6 +132,10 @@ void lzh_object_add_component(LZH_OBJECT *object, void *cpnt)
     if (object && object->components && cpnt) {
         LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
 
+        if (elem->type == LZH_CPNT_TRANSFORM) {
+            return;
+        }
+
         elem->object = object;
         lzh_cpnt_rb_insert(object->components, elem->type, elem);
     }
@@ -148,6 +149,14 @@ void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt)
         elem->object = NULL;
         lzh_cpnt_rb_delete(object->components, elem->type, NULL, NULL);
         return cpnt;
+    }
+    return NULL;
+}
+
+LZH_TRANSFORM *lzh_object_get_transform(LZH_OBJECT *object)
+{    
+    if (object) {
+        return object->transform;
     }
     return NULL;
 }
@@ -245,15 +254,24 @@ void lzh_object_update(LZH_BASE *base, void *args)
 {
     if (base) {
         LZH_OBJECT *object = (LZH_OBJECT *)base;
+        LZH_TRANSFORM *transform = object->transform;
 
         /* 更新子树 */
         if (object->children) {
             lzh_obj_rb_iterate(object->children, lzh_object_rb_visit_update, NULL);
         }
 
+        /* 更新变换组件 */
+        if (transform) {
+            LZH_BASE *base = (LZH_BASE *)transform;
+            if (base->update) {
+                base->update(base, base->update_param);
+            }
+        }
+
         /* 更新组件 */
         if (object->components) {
-            lzh_cpnt_rb_iterate(object->components,lzh_cpnt_rb_visit_update, NULL);
+            lzh_cpnt_rb_iterate(object->components, lzh_cpnt_rb_visit_update, NULL);
         }
 
         /* 用户层更新 */
@@ -267,10 +285,19 @@ void lzh_object_fixedupdate(LZH_BASE *base, void *args)
 {
     if (base) {
         LZH_OBJECT *object = (LZH_OBJECT *)base;
+        LZH_TRANSFORM *transform = object->transform;
 
         /* 更新子树 */
         if (object->children) {
             lzh_obj_rb_iterate(object->children, lzh_object_rb_visit_fixedupdate, NULL);
+        }
+
+        /* 更新变换组件 */
+        if (transform) {
+            LZH_BASE *base = (LZH_BASE *)transform;
+            if (base->update) {
+                base->update(base, base->update_param);
+            }
         }
 
         /* 更新组件 */

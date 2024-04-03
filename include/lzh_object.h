@@ -34,6 +34,9 @@ LZH_API void lzh_object_add_component(LZH_OBJECT *object, void *cpnt);
 /* 移除组件并返回组件指针 */
 LZH_API void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt);
 
+/* 获取变换组件 */
+LZH_API LZH_TRANSFORM *lzh_object_get_transform(LZH_OBJECT *object);
+
 /* 获取精灵组件 */
 LZH_API LZH_SPRITE *lzh_object_get_sprite(LZH_OBJECT *object);
 

@@ -39,6 +39,9 @@ struct LZH_OBJECT {
     /* 渲染层级和顺序 */
     int render_sort;
 
+    /* 变换组件 */
+    LZH_TRANSFORM *transform;
+
     /*---------------------------------------------------*/
     /* 用于业务 */
 

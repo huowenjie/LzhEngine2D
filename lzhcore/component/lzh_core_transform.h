@@ -32,6 +32,10 @@ LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine);
 /* 销毁组件 */
 void lzh_transform_destroy(LZH_TRANSFORM *transform);
 
+/* 刷新变换数据 */
+void lzh_transform_flush(LZH_TRANSFORM *transform);
+void lzh_transform_sync_world(LZH_TRANSFORM *transform);
+
 /*===========================================================================*/
 
 #endif /* __LZH_CORE_TRANSFORM_H__ */
