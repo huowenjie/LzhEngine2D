@@ -49,12 +49,6 @@ LZH_API void lzh_object_set_name(LZH_OBJECT *object, const char *name);
 /* 获取对象名称 */
 LZH_API const char *lzh_object_get_name(LZH_OBJECT *object);
 
-/* 设置对象渲染层级 */
-LZH_API void lzh_object_set_layer(LZH_OBJECT *object, int layer);
-
-/* 获取对象渲染层级 */
-LZH_API int lzh_object_get_layer(LZH_OBJECT *object);
-
 /* 设置对象更新回调 */
 LZH_API void lzh_object_set_update(
     LZH_OBJECT *object, LZH_OBJECT_UPDATE update, void *param);

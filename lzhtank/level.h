@@ -4,12 +4,24 @@
 #include <lzh_rbtree.h>
 #include <lzh_type.h>
 #include <lzh_quadtree.h>
+#include <lzh_scene.h>
 
 #include "objwidget.h"
 
 /*===========================================================================*/
 /* 关卡 */
 /*===========================================================================*/
+
+#define LEVEL_INDEX_TUTORIAL 0
+#define LEVEL_INDEX_FIRST    1
+#define LEVEL_INDEX_SECOND   2
+#define LEVEL_INDEX_FINAL    3
+
+/* 加载关卡 */
+void level_load_scenes(LZH_ENGINE *engine);
+
+/* 获取关卡名称 */
+const char *level_get_name(int index);
 
 #if 0
 RBTREE_DECLARE(LEVEL, level, char *, void *)

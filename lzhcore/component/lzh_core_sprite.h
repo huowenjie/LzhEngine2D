@@ -2,8 +2,6 @@
 #define __LZH_CORE_SPRITE_H__
 
 #include <SDL2/SDL.h>
-
-#include "lzh_type.h"
 #include "lzh_component.h"
 
 /*===========================================================================*/

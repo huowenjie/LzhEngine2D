@@ -47,8 +47,8 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     base->fixed_update_param = NULL;
     base->draw_param = NULL;
 
-    /* 创建层级渲染树 */
-    scene->layer_tree = scene_layer_rb_create(lzh_scene_layer_comp);
+    /* 创建对象渲染树 */
+    scene->render_tree = scene_obj_rb_create(lzh_scene_objs_comp);
 
     /* 创建层级映射表 */
     scene->object_map = object_map_rb_create(lzh_scene_object_map_comp);
@@ -80,9 +80,9 @@ void lzh_scene_destroy(LZH_SCENE *scene)
         }
 
         /* 移除层级渲染树 */
-        if (scene->layer_tree) {
-            scene_layer_rb_destroy(scene->layer_tree, lzh_scene_layer_visit_free, NULL);
-            scene->layer_tree = NULL;
+        if (scene->render_tree) {
+            scene_obj_rb_destroy(scene->render_tree, lzh_scene_objs_visit_free, NULL);
+            scene->render_tree = NULL;
         }
 
         lzh_base_quit((LZH_BASE *)scene);
@@ -92,16 +92,15 @@ void lzh_scene_destroy(LZH_SCENE *scene)
 
 void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
 {    
-    SCENE_OBJ_RB_TREE *obj_tree = NULL;
-    SCENE_LAYER_RB_TREE *layer_tree = NULL;
+    SCENE_OBJ_RB_TREE *render_tree = NULL;
     OBJECT_MAP_RB_TREE *object_map = NULL;
 
     if (!scene || !object) {
         return;
     }
 
-    layer_tree = scene->layer_tree;
-    if (!layer_tree) {
+    render_tree = scene->render_tree;
+    if (!render_tree) {
         return;
     }
 
@@ -110,22 +109,13 @@ void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
         return;
     }
 
-    if (scene_layer_rb_find(layer_tree, object->render_layer, &obj_tree) != 0) {
-        obj_tree = scene_obj_rb_create(lzh_scene_objs_comp);
-        if (!obj_tree) {
-            return;
-        }
-        scene_layer_rb_insert(layer_tree, object->render_layer, obj_tree);
-    }
-
-    scene_obj_rb_insert(obj_tree, object->render_sort, object);
+    scene_obj_rb_insert(render_tree, object->render_sort, object);
     object_map_rb_insert(object_map, object->base.hash, object);
 }
 
 void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
 {
-    SCENE_OBJ_RB_TREE *obj_tree = NULL;
-    SCENE_LAYER_RB_TREE *layer_tree = NULL;
+    SCENE_OBJ_RB_TREE *render_tree = NULL;
     OBJECT_MAP_RB_TREE *object_map = NULL;
     LZH_HASH_CODE code = 0;
 
@@ -139,8 +129,8 @@ void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
         return;
     }
 
-    layer_tree = scene->layer_tree;
-    if (!layer_tree) {
+    render_tree = scene->render_tree;
+    if (!render_tree) {
         return;
     }
 
@@ -154,23 +144,31 @@ void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
         return;
     }
 
-    if (scene_layer_rb_find(layer_tree, object->render_layer, &obj_tree) != 0) {
-        return;
-    }
-
-    if (!obj_tree) {
-        return;
-    }
-
+    scene_obj_rb_delete(render_tree, object->render_sort, lzh_scene_objs_visit_free, NULL);
     object_map_rb_delete(object_map, code, NULL, NULL);
-    scene_obj_rb_delete(obj_tree, object->render_sort, lzh_scene_objs_visit_free, NULL);
 }
 
 void lzh_scene_set_name(LZH_SCENE *scene, const char *name)
 {
-    if (scene) {
-        lzh_base_set_name((LZH_BASE *)scene, name);
+    LZH_ENGINE *engine = NULL;
+
+    if (!scene) {
+        return;
     }
+
+    if (!name || !*name) {
+        return;
+    }
+
+    engine = scene->base.engine;
+    if (!engine) {
+        return;
+    }
+
+    /* 需要更新场景树中对应的对象 */
+    lzh_sm_remove_scene(engine->scene_manager, scene->base.name, NULL);
+    lzh_base_set_name((LZH_BASE *)scene, name);
+    lzh_sm_add_scene(engine->scene_manager, scene);
 }
 
 const char *lzh_scene_get_name(LZH_SCENE *scene)
@@ -186,46 +184,46 @@ const char *lzh_scene_get_name(LZH_SCENE *scene)
 void lzh_scene_update(LZH_BASE *base, void *args)
 {
     LZH_SCENE *scene = NULL;
-    SCENE_LAYER_RB_TREE *layer_tree = NULL;
+    SCENE_OBJ_RB_TREE *render_tree = NULL;
 
     if (!base) {
         return;
     }
 
     scene = (LZH_SCENE *)base;
-    layer_tree = scene->layer_tree;
+    render_tree = scene->render_tree;
 
-    scene_layer_rb_iterate(layer_tree, lzh_scene_layer_visit_update, NULL);
+    scene_obj_rb_iterate(render_tree, lzh_scene_objs_visit_update, NULL);
 }
 
 void lzh_scene_fixedupdate(LZH_BASE *base, void *args)
 {
     LZH_SCENE *scene = NULL;
-    SCENE_LAYER_RB_TREE *layer_tree = NULL;
+    SCENE_OBJ_RB_TREE *render_tree = NULL;
 
     if (!base) {
         return;
     }
 
     scene = (LZH_SCENE *)base;
-    layer_tree = scene->layer_tree;
+    render_tree = scene->render_tree;
 
-    scene_layer_rb_iterate(layer_tree, lzh_scene_layer_visit_fixedupdate, NULL);
+    scene_obj_rb_iterate(render_tree, lzh_scene_objs_visit_fixedupdate, NULL);
 }
 
 void lzh_scene_draw(LZH_BASE *base, void *args)
 {
     LZH_SCENE *scene = NULL;
-    SCENE_LAYER_RB_TREE *layer_tree = NULL;
+    SCENE_OBJ_RB_TREE *render_tree = NULL;
 
     if (!base) {
         return;
     }
 
     scene = (LZH_SCENE *)base;
-    layer_tree = scene->layer_tree;
+    render_tree = scene->render_tree;
 
-    scene_layer_rb_iterate(layer_tree, lzh_scene_layer_visit_draw, NULL);
+    scene_obj_rb_iterate(render_tree, lzh_scene_objs_visit_draw, NULL);
 }
 
 const char *lzh_gen_new_name()

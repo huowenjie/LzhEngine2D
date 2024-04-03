@@ -17,7 +17,7 @@ int lzh_scene_object_map_comp(const void *a, const void *b)
     return 0;
 }
 
-int lzh_scene_layer_comp(const void *a, const void *b)
+int lzh_scene_objs_comp(const void *a, const void *b)
 {
     int i1 = *((int *)a);
     int i2 = *((int *)b);
@@ -31,54 +31,11 @@ int lzh_scene_layer_comp(const void *a, const void *b)
     return 0;
 }
 
-void lzh_scene_layer_visit_free(const SCENE_LAYER_RB_NODE *node, void *args)
-{
-    if (node) {
-        SCENE_OBJ_RB_TREE *sub_tree = node->value;
-        scene_obj_rb_destroy(sub_tree, lzh_scene_objs_visit_free, NULL);
-    }
-}
-
-int lzh_scene_objs_comp(const void *a, const void *b)
-{
-    return lzh_scene_layer_comp(a, b);
-}
-
 void lzh_scene_objs_visit_free(const SCENE_OBJ_RB_NODE *node, void *args)
 {
     if (node) {
         LZH_OBJECT *object = node->value;
         lzh_object_remove(object);
-    }
-}
-
-void lzh_scene_layer_visit_update(const SCENE_LAYER_RB_NODE *node, void *args)
-{
-    if (node) {
-        SCENE_OBJ_RB_TREE *tree = node->value;
-        if (tree) {
-            scene_obj_rb_iterate(tree, lzh_scene_objs_visit_update, NULL);
-        }
-    }
-}
-
-void lzh_scene_layer_visit_fixedupdate(const SCENE_LAYER_RB_NODE *node, void *args)
-{
-    if (node) {
-        SCENE_OBJ_RB_TREE *tree = node->value;
-        if (tree) {
-            scene_obj_rb_iterate(tree, lzh_scene_objs_visit_fixedupdate, NULL);
-        }
-    }
-}
-
-void lzh_scene_layer_visit_draw(const SCENE_LAYER_RB_NODE *node, void *args)
-{
-    if (node) {
-        SCENE_OBJ_RB_TREE *tree = node->value;
-        if (tree) {
-            scene_obj_rb_iterate(tree, lzh_scene_objs_visit_draw, NULL);
-        }
     }
 }
 
@@ -115,10 +72,6 @@ void lzh_scene_objs_visit_draw(const SCENE_OBJ_RB_NODE *node, void *args)
 /*===========================================================================*/
 
 RBTREE_IMPLEMENT(SCENE_OBJ, scene_obj, int, LZH_OBJECT *)
-
-/*===========================================================================*/
-
-RBTREE_IMPLEMENT(SCENE_LAYER, scene_layer, int, SCENE_OBJ_RB_TREE *)
 
 /*===========================================================================*/
 

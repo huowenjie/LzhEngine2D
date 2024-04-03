@@ -12,7 +12,6 @@
 int main(int argc, char *argv[])
 {
     LZH_ENGINE *engine = NULL;
-    LZH_SCENE *scene = NULL;
 
     lzh_init();
     init_global_res();
@@ -22,11 +21,9 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    scene = lzh_scene_create(engine);
-    // TODO
+    level_load_scenes(engine);
 
     lzh_engine_update(engine);
-
     lzh_engine_destroy(engine);
     lzh_quit();
     return 0;

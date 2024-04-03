@@ -22,12 +22,12 @@
  */
 RBTREE_DECLARE(LZH_SCENE, lzh_scene, LZH_HASH_CODE, LZH_SCENE *)
 
-typedef struct LZH_SCENE_MANAGER {
+struct LZH_SCENE_MANAGER {
     LZH_SCENE_RB_TREE *scene_tree;
 
     LZH_SCENE *scene_active;
     LZH_SCENE *scene_prepare;
-} LZH_SCENE_MANAGER;
+};
 
 /* 创建、销毁场景管理器 */
 LZH_SCENE_MANAGER *lzh_scene_manager_create();

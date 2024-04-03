@@ -29,6 +29,20 @@ LZH_API void lzh_scene_set_name(LZH_SCENE *scene, const char *name);
 /* 获取场景名称 */
 LZH_API const char *lzh_scene_get_name(LZH_SCENE *scene);
 
+/*===========================================================================*/
+
+/* 获取场景管理器 */
+LZH_API LZH_SCENE_MANAGER *lzh_scene_get_manager(LZH_ENGINE *engine);
+
+/* 加载场景 */
+LZH_API void lzh_scene_manager_load(LZH_SCENE_MANAGER *manager, const char *name);
+
+/* 卸载场景 */
+LZH_API void lzh_scene_manager_unload(LZH_SCENE_MANAGER *manager, const char *name);
+
+/* 获取场景 */
+LZH_API LZH_SCENE *lzh_scene_manager_get(LZH_SCENE_MANAGER *manager, const char *name);
+
 #ifdef __cplusplus
 }
 #endif

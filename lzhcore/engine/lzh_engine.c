@@ -189,9 +189,6 @@ void lzh_engine_update(LZH_ENGINE *engine)
          *   |
          *   |
          * 3.components update 更新
-         *   |
-         *   |
-         * 4.最终将 sprites tree 调用图形 API 迭代绘制
          */
         lzh_sm_update(engine->scene_manager);
 

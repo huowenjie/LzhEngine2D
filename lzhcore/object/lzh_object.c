@@ -8,6 +8,7 @@
 #include "lzh_core_object.h"
 #include "../engine/lzh_core_engine.h"
 #include "../component/lzh_core_sprite.h"
+#include "../component/lzh_core_transform.h"
 
 /*===========================================================================*/
 
@@ -34,6 +35,7 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
 {
     LZH_OBJECT *obj = NULL;
     LZH_BASE *base = NULL;
+    LZH_TRANSFORM *transform = NULL;
 
     if (!engine) {
         return NULL;
@@ -61,7 +63,6 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->parent = NULL;
     obj->children = lzh_obj_rb_create(lzh_object_rb_comp);
     obj->components = lzh_cpnt_rb_create(lzh_cpnt_rb_comp);
-    obj->render_layer = 0;
     obj->render_sort = global_sort++;
 
     obj->update = NULL;
@@ -71,6 +72,10 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
 
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name(global_order++));
+
+    /* 默认挂载变换组件 */
+    transform = lzh_transform_create(engine);
+    lzh_object_add_component(obj, transform);
     return obj;
 }
 
@@ -129,6 +134,8 @@ void lzh_object_add_component(LZH_OBJECT *object, void *cpnt)
 {
     if (object && object->components && cpnt) {
         LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
+
+        elem->object = object;
         lzh_cpnt_rb_insert(object->components, elem->type, elem);
     }
 }
@@ -137,6 +144,8 @@ void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt)
 {
     if (object && object->components && cpnt) {
         LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
+
+        elem->object = NULL;
         lzh_cpnt_rb_delete(object->components, elem->type, NULL, NULL);
         return cpnt;
     }
@@ -184,21 +193,6 @@ const char *lzh_object_get_name(LZH_OBJECT *object)
         return object->base.name;
     }
     return NULL;
-}
-
-void lzh_object_set_layer(LZH_OBJECT *object, int layer)
-{
-    if (object) {
-        object->render_layer = layer;
-    }
-}
-
-int lzh_object_get_layer(LZH_OBJECT *object)
-{
-    if (object) {
-        return object->render_layer;
-    }
-    return 0;
 }
 
 void lzh_object_set_update(

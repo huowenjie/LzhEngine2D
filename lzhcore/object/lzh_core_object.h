@@ -37,7 +37,6 @@ struct LZH_OBJECT {
     LZH_CPNT_RB_TREE *components;
 
     /* ‰÷»æ≤„º∂∫ÕÀ≥–Ú */
-    int render_layer;
     int render_sort;
 
     /*---------------------------------------------------*/

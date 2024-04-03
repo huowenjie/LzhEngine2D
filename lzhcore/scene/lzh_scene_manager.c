@@ -3,11 +3,36 @@
 #include <lzh_systool.h>
 
 #include "lzh_scene_manager.h"
+#include "../engine/lzh_core_engine.h"
 
 /*===========================================================================*/
 
 static int scene_comp(const void *a, const void *b);
 static void scene_visit_free(const LZH_SCENE_RB_NODE *node, void *args);
+
+/*===========================================================================*/
+
+LZH_SCENE_MANAGER *lzh_scene_get_manager(LZH_ENGINE *engine)
+{
+    if (engine) {
+        return engine->scene_manager;
+    }
+    return NULL;
+}
+
+void lzh_scene_manager_load(LZH_SCENE_MANAGER *manager, const char *name)
+{
+    lzh_sm_set_active_scene(manager, name);
+}
+
+void lzh_scene_manager_unload(LZH_SCENE_MANAGER *manager, const char *name)
+{
+}
+
+LZH_SCENE *lzh_scene_manager_get(LZH_SCENE_MANAGER *manager, const char *name)
+{
+    return lzh_sm_get_scene(manager, name);
+}
 
 /*===========================================================================*/
 
@@ -167,6 +192,8 @@ void scene_visit_free(const LZH_SCENE_RB_NODE *node, void *args)
         lzh_scene_destroy(scene);
     }
 }
+
+/*===========================================================================*/
 
 RBTREE_IMPLEMENT(LZH_SCENE, lzh_scene, LZH_HASH_CODE, LZH_SCENE *)
 

@@ -5,6 +5,8 @@
 void lzh_cpnt_init(LZH_COMPONENT *cpnt)
 {
     lzh_base_init((LZH_BASE *)cpnt);
+    lzh_base_set_type((LZH_BASE *)cpnt, LZH_BT_COMPONENT);
+
     cpnt->object = NULL;
     cpnt->remove_component = NULL;
     cpnt->type = 0;

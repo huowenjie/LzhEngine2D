@@ -50,6 +50,9 @@ struct LZH_BASE {
 void lzh_base_init(LZH_BASE *base);
 void lzh_base_quit(LZH_BASE *base);
 
+/* 设置对象类型 */
+void lzh_base_set_type(LZH_BASE *base, LZH_UINT32 type);
+
 /* 设置名称 */
 void lzh_base_set_name(LZH_BASE *base, const char *name);
 

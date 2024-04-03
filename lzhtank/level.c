@@ -8,6 +8,107 @@
 
 #include "tank.h"
 
+/*===========================================================================*/
+
+static const char *level_names[] = {
+    "tutorial level",
+    "first level",
+    "second level",
+    "final level",
+    NULL
+};
+
+static const char *object_names[] = {
+    "player",
+    "enemy1",
+    "enemy2",
+    "enemy3",
+    NULL
+};
+
+static const char *tank_widget[] = {
+    "chassis",
+    "turret",
+    NULL
+};
+
+#define LEVEL_COUNT (sizeof(level_names) / sizeof(const char *))
+#define OBJECT_COUNT (sizeof(object_names) / sizeof(const char *))
+
+static void load_player(LZH_ENGINE *engine, LZH_SCENE *scene);
+//static void load_enemys(LZH_ENGINE *engine, LZH_SCENE *scene);
+
+/*===========================================================================*/
+
+void level_load_scenes(LZH_ENGINE *engine)
+{
+    int i = 0;
+    LZH_SCENE_MANAGER *manager = NULL;
+    LZH_SCENE *tutorial  = NULL;
+
+    if (!engine) {
+        return;
+    }
+
+    manager = lzh_scene_get_manager(engine);
+    if (!manager) {
+        return;
+    }
+
+    for (; i < LEVEL_COUNT; i++) {
+        LZH_SCENE *scene = lzh_scene_create(engine);
+        lzh_scene_set_name(scene, level_names[i]);
+
+        if (i == 0) {
+            tutorial = scene;
+        }
+    }
+
+    lzh_scene_manager_load(manager, level_names[0]);
+    load_player(engine, tutorial);
+}
+
+const char *level_get_name(int index)
+{
+    if (index < 0 || index >= LEVEL_COUNT) {
+        return NULL;
+    }
+    return level_names[index];
+}
+
+/*===========================================================================*/
+
+void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
+{
+    LZH_OBJECT *player = NULL;
+    LZH_OBJECT *chassis = NULL;
+    LZH_OBJECT *turret = NULL;
+
+    if (!engine || !scene) {
+        return;
+    }
+
+    player = lzh_object_create(engine);
+    turret = lzh_object_create(engine);
+    chassis = lzh_object_create(engine);
+
+    lzh_object_set_name(player, object_names[0]);
+    lzh_object_set_name(chassis, tank_widget[0]);
+    lzh_object_set_name(turret, tank_widget[1]);
+
+    lzh_object_add_child(player, turret);
+    lzh_object_add_child(player, chassis);
+    
+    lzh_scene_add_object(scene, player);
+}
+
+// void load_enemys(LZH_ENGINE *engine, LZH_SCENE *scene)
+// {
+
+// }
+
+/*===========================================================================*/
+
 #if 0
 /*===========================================================================*/
 

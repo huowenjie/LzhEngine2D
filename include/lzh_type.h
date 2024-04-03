@@ -26,23 +26,24 @@ extern "C" {
 /*===========================================================================*/
 
 /* 基本数据类型 */
-typedef char                    LZH_INT8;
-typedef unsigned char           LZH_UINT8;
-typedef unsigned char           LZH_BYTE;
-typedef int                     LZH_INT32;
-typedef unsigned int            LZH_UINT32;
-typedef int                     LZH_BOOL;
+typedef char                        LZH_INT8;
+typedef unsigned char               LZH_UINT8;
+typedef unsigned char               LZH_BYTE;
+typedef int                         LZH_INT32;
+typedef unsigned int                LZH_UINT32;
+typedef int                         LZH_BOOL;
 
-#define LZH_TRUE                1
-#define LZH_FALSE               0
+#define LZH_TRUE                    1
+#define LZH_FALSE                   0
 
-typedef struct LZH_OBJECT       LZH_OBJECT;
-typedef struct LZH_SCENE        LZH_SCENE;
-typedef struct LZH_SPRITE       LZH_SPRITE;
-typedef struct LZH_TRANSFORM    LZH_TRANSFORM;
-typedef struct LZH_ENGINE       LZH_ENGINE;
-typedef struct LZH_QUAD_TREE    LZH_QUAD_TREE;
-typedef LZH_UINT32              LZH_HASH_CODE;
+typedef struct LZH_OBJECT           LZH_OBJECT;
+typedef struct LZH_SCENE            LZH_SCENE;
+typedef struct LZH_SPRITE           LZH_SPRITE;
+typedef struct LZH_TRANSFORM        LZH_TRANSFORM;
+typedef struct LZH_ENGINE           LZH_ENGINE;
+typedef struct LZH_QUAD_TREE        LZH_QUAD_TREE;
+typedef struct LZH_SCENE_MANAGER    LZH_SCENE_MANAGER;
+typedef LZH_UINT32                  LZH_HASH_CODE;
 
 /* 数据对象 */
 typedef struct {

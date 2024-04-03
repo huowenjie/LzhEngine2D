@@ -24,6 +24,13 @@ void lzh_base_quit(LZH_BASE *base)
     }
 }
 
+void lzh_base_set_type(LZH_BASE *base, LZH_UINT32 type)
+{
+    if (base) {
+        base->type = type;
+    }
+}
+
 void lzh_base_set_name(LZH_BASE *base, const char *name)
 {
     char *buf = NULL;
