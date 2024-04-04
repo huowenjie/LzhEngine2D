@@ -67,7 +67,21 @@
     <ClCompile Include="lzh_base.c" />
     <ClCompile Include="lzh_keyboard.c" />
     <ClCompile Include="lzh_maindll.c" />
-    <ClCompile Include="lzh_render_tree.c" />
+    <ClCompile Include="component\lzh_core_transform.c">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="component\lzh_transform.c">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="math\lzh_mat4x4f.c">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\lzh_vec4f.c">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\lzh_scene_manager.c">
+      <Filter>scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\lzh_engine.h">
@@ -404,7 +418,6 @@
       <Filter>object</Filter>
     </ClInclude>
     <ClInclude Include="lzh_base.h" />
-    <ClInclude Include="lzh_render_tree.h" />
     <ClInclude Include="..\include\lzh_link.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -416,6 +429,18 @@
     </ClInclude>
     <ClInclude Include="..\include\lzh_transform.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lzh_mat4x4f.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lzh_vec4f.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="component\lzh_core_transform.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\lzh_scene_manager.h">
+      <Filter>scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

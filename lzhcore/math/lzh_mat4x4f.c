@@ -183,8 +183,8 @@ LZH_MAT4X4F lzh_mat4x4f_viewport(int width, int height)
 {
     LZH_MAT4X4F mat = lzh_mat4x4f_unit();
 
-    float nx = width;
-    float ny = height;
+    float nx = (float)width;
+    float ny = (float)height;
 
     mat.m00 = nx / 2.0f;
     mat.m11 = ny / 2.0f;
@@ -247,7 +247,7 @@ LZH_MAT4X4F lzh_mat4x4f_perspective(const LZH_VEC3F *l, const LZH_VEC3F *h)
         per.m11 = l->z * 2.0f / (h->y - l->y);
         per.m12 = (l->y + h->y) / (l->y - h->y);
         per.m22 = (l->z + h->z) / (l->z - h->z);
-        per.m23 = 2.0 * l->z * h->z / (h->z - l->z);
+        per.m23 = 2.0f * l->z * h->z / (h->z - l->z);
     }
     return per;
 }

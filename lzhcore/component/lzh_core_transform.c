@@ -82,7 +82,7 @@ void lzh_transform_flush(LZH_TRANSFORM *transform)
         LZH_MAT4X4F trans = lzh_mat4x4f_translate(localpos->x, localpos->y, 0.0f);
         LZH_MAT4X4F rotate = lzh_mat4x4f_rotate_z(transform->local_angle);
         LZH_MAT4X4F scale = lzh_mat4x4f_scale(localscale->x, localscale->y, 1.0f);
-        
+
         local = lzh_mat4x4f_mul(&local, &scale);
         local = lzh_mat4x4f_mul(&local, &rotate);
         local = lzh_mat4x4f_mul(&local, &trans);
@@ -108,7 +108,19 @@ void lzh_transform_flush(LZH_TRANSFORM *transform)
 
 void lzh_transform_sync_world(LZH_TRANSFORM *transform)
 {
-    /* TODO */
+    if (!transform) {
+        return;
+    }
+
+    transform->world_angle = transform->local_angle;
+    transform->world_pos = lzh_vec3f_xyz(
+        transform->world_mat.m03,
+        transform->world_mat.m13,
+        transform->world_mat.m23);
+    transform->world_scale = lzh_vec3f_xyz(
+        transform->world_mat.m00,
+        transform->world_mat.m11,
+        transform->world_mat.m22);
 }
 
 /*===========================================================================*/

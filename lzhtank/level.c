@@ -5,8 +5,11 @@
 #include <lzh_quadtree.h>
 #include <lzh_systool.h>
 #include <lzh_object.h>
+#include <lzh_sprite.h>
+#include <lzh_scene.h>
+#include <lzh_transform.h>
 
-#include "tank.h"
+#include "globalres.h"
 
 /*===========================================================================*/
 
@@ -37,6 +40,9 @@ static const char *tank_widget[] = {
 
 static void load_player(LZH_ENGINE *engine, LZH_SCENE *scene);
 //static void load_enemys(LZH_ENGINE *engine, LZH_SCENE *scene);
+
+/* ¶ÔÏó¿ØÖÆ */
+static void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args);
 
 /*===========================================================================*/
 
@@ -84,22 +90,72 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     LZH_OBJECT *chassis = NULL;
     LZH_OBJECT *turret = NULL;
 
+    LZH_SPRITE *chassis_sp = NULL;
+    LZH_SPRITE *turret_sp = NULL;
+
     if (!engine || !scene) {
         return;
     }
 
     player = lzh_object_create(engine);
-    turret = lzh_object_create(engine);
     chassis = lzh_object_create(engine);
+    turret = lzh_object_create(engine);
+
+    chassis_sp = lzh_sprite_create(engine, get_tank_res_path());
+    turret_sp = lzh_sprite_create(engine, get_tank_turret_path());
+
+    lzh_object_add_component(turret, turret_sp);
+    lzh_object_add_component(chassis, chassis_sp);
 
     lzh_object_set_name(player, object_names[0]);
     lzh_object_set_name(chassis, tank_widget[0]);
     lzh_object_set_name(turret, tank_widget[1]);
 
-    lzh_object_add_child(player, turret);
     lzh_object_add_child(player, chassis);
-    
+    lzh_object_add_child(player, turret);
+    lzh_object_set_update(player, update_player, NULL);
+
     lzh_scene_add_object(scene, player);
+}
+
+void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
+{
+    float delta = 0.0f;
+    float speed = 0.0f;
+
+    LZH_TRANSFORM *transform = NULL;
+
+    if (!eg || !object) {
+        return;
+    }
+
+    transform = lzh_object_get_transform(object);
+    if (!transform) {
+        return;
+    }
+
+    delta = lzh_engine_interval(eg);
+    speed = 100.0f * delta;
+
+    if (lzh_get_key_status(KEY_CODE_W)) {
+        LZH_VEC3F move = lzh_vec3f_xyz(0.0f, speed, 0.0f);
+        lzh_transform_translate(transform , &move);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_S)) {
+        LZH_VEC3F move = lzh_vec3f_xyz(0.0f, -speed, 0.0f);
+        lzh_transform_translate(transform, &move);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_A)) {
+        LZH_VEC3F move = lzh_vec3f_xyz(-speed, 0.0f, 0.0f);
+        lzh_transform_translate(transform, &move);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_D)) {
+        LZH_VEC3F move = lzh_vec3f_xyz(speed, 0.0f, 0.0f);
+        lzh_transform_translate(transform, &move);
+    }
 }
 
 // void load_enemys(LZH_ENGINE *engine, LZH_SCENE *scene)

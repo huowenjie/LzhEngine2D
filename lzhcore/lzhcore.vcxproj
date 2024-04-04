@@ -161,8 +161,10 @@
   <ItemGroup>
     <ClCompile Include="component\lzh_component.c" />
     <ClCompile Include="component\lzh_core_sprite.c" />
+    <ClCompile Include="component\lzh_core_transform.c" />
     <ClCompile Include="component\lzh_quadtree.c" />
     <ClCompile Include="component\lzh_sprite.c" />
+    <ClCompile Include="component\lzh_transform.c" />
     <ClCompile Include="container\lzh_link.c" />
     <ClCompile Include="container\lzh_rbtree.c" />
     <ClCompile Include="engine\lzh_engine.c" />
@@ -171,17 +173,19 @@
     <ClCompile Include="lzh_base.c" />
     <ClCompile Include="lzh_keyboard.c" />
     <ClCompile Include="lzh_maindll.c" />
-    <ClCompile Include="lzh_render_tree.c" />
     <ClCompile Include="math\lzh_mat2x2f.c" />
     <ClCompile Include="math\lzh_mat3x3f.c" />
+    <ClCompile Include="math\lzh_mat4x4f.c" />
     <ClCompile Include="math\lzh_vec2f.c" />
     <ClCompile Include="math\lzh_vec3f.c" />
+    <ClCompile Include="math\lzh_vec4f.c" />
     <ClCompile Include="mem\lzh_mem.c" />
     <ClCompile Include="mem\lzh_mem_page.c" />
     <ClCompile Include="object\lzh_core_object.c" />
     <ClCompile Include="object\lzh_object.c" />
     <ClCompile Include="scene\lzh_core_scene.c" />
     <ClCompile Include="scene\lzh_scene.c" />
+    <ClCompile Include="scene\lzh_scene_manager.c" />
     <ClCompile Include="tool\lzh_rectf.c" />
     <ClCompile Include="tool\lzh_systool.c" />
   </ItemGroup>
@@ -191,6 +195,7 @@
     <ClInclude Include="..\include\lzh_log.h" />
     <ClInclude Include="..\include\lzh_mat2x2f.h" />
     <ClInclude Include="..\include\lzh_mat3x3f.h" />
+    <ClInclude Include="..\include\lzh_mat4x4f.h" />
     <ClInclude Include="..\include\lzh_mem.h" />
     <ClInclude Include="..\include\lzh_object.h" />
     <ClInclude Include="..\include\lzh_quadtree.h" />
@@ -205,6 +210,7 @@
     <ClInclude Include="..\include\lzh_engine.h" />
     <ClInclude Include="..\include\lzh_vec2f.h" />
     <ClInclude Include="..\include\lzh_vec3f.h" />
+    <ClInclude Include="..\include\lzh_vec4f.h" />
     <ClInclude Include="..\include\SDL2\begin_code.h" />
     <ClInclude Include="..\include\SDL2\close_code.h" />
     <ClInclude Include="..\include\SDL2\SDL.h" />
@@ -296,13 +302,14 @@
     <ClInclude Include="..\include\SDL2\SDL_vulkan.h" />
     <ClInclude Include="component\lzh_component.h" />
     <ClInclude Include="component\lzh_core_sprite.h" />
+    <ClInclude Include="component\lzh_core_transform.h" />
     <ClInclude Include="engine\lzh_core_engine.h" />
     <ClInclude Include="log\lzh_tracer.h" />
     <ClInclude Include="lzh_base.h" />
-    <ClInclude Include="lzh_render_tree.h" />
     <ClInclude Include="mem\lzh_mem_page.h" />
     <ClInclude Include="object\lzh_core_object.h" />
     <ClInclude Include="scene\lzh_core_scene.h" />
+    <ClInclude Include="scene\lzh_scene_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

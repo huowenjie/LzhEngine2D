@@ -6,6 +6,7 @@
 #include "lzh_core_sprite.h"
 #include "../object/lzh_core_object.h"
 #include "../engine/lzh_core_engine.h"
+#include "../component/lzh_core_transform.h"
 
 /*===========================================================================*/
 
@@ -245,10 +246,10 @@ void add_sprite_texture(
 
 void lzh_sprite_draw(LZH_BASE *base, void *args)
 {
-#if 0
     LZH_SPRITE *sprite = NULL;
     LZH_OBJECT *object = NULL;
     LZH_ENGINE *engine = NULL;
+    LZH_TRANSFORM *transform = NULL;
 
     int cur_frame = 0;
     SDL_FRect target;
@@ -266,34 +267,51 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
         return;
     }
 
-    if (!IS_SP_STATE(sprite->state, SSC_SHOW)) {
+    transform = object->transform;
+    if (!transform) {
         return;
     }
 
-    engine = object->context.engine;
-
-    target.x = object->x;
-    target.y = object->y;
-    target.w = object->w;
-    target.h = object->h;
-
-    center.x = object->rx;
-    center.y = object->ry;
+    if (!IS_SP_STATE(sprite->state, SSC_SHOW)) {
+        return;
+    }
 
     cur_frame = calc_images_frame(sprite);
 
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
         SDL_Texture **textures = sprite->textures;
-
         if (textures && textures[cur_frame]) {
-            SDL_RenderCopyExF(
-                engine->renderer,
-                textures[cur_frame],
-                NULL,
-                &target,
-                object->angle,
-                &center,
-                SDL_FLIP_NONE);
+            int iw = 0;
+            int ih = 0;
+            float fw = 0.0f;
+            float fh = 0.0f;
+            float angle = 0.0f;
+            
+            if (!SDL_QueryTexture(
+                textures[cur_frame], NULL, NULL, &iw, &ih)) {
+                fw = (float)iw;
+                fh = (float)ih;
+
+                target.x = transform->world_pos.x;
+                target.y = transform->world_pos.y;
+                target.w = transform->world_scale.x * fw;
+                target.h = transform->world_scale.y * fh;
+
+                center.x = transform->center_pos.x;
+                center.y = transform->center_pos.y;
+                angle = transform->world_angle;
+
+                transform->world_pos;
+
+                SDL_RenderCopyExF(
+                    engine->renderer,
+                    textures[cur_frame],
+                    NULL,
+                    &target,
+                    angle,
+                    &center,
+                    SDL_FLIP_NONE);
+            }
         }
     }
 
@@ -305,7 +323,6 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
             kf->kf_cb(kf->args);
         }
     }
-#endif
 }
 
 void lzh_sprite_remove(LZH_COMPONENT *cpnt)
