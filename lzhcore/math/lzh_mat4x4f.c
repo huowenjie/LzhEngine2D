@@ -105,8 +105,8 @@ LZH_MAT4X4F lzh_mat4x4f_scale(float sx, float sy, float sz)
     LZH_MAT4X4F mat = lzh_mat4x4f_unit();
 
     mat.m00 = sx;
-    mat.m11 = sx;
-    mat.m22 = sx;
+    mat.m11 = sy;
+    mat.m22 = sz;
 
     return mat;
 }

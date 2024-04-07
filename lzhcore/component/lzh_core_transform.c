@@ -1,5 +1,6 @@
 #include <string.h>
 #include <lzh_mem.h>
+#include <lzh_engine.h>
 
 #include "lzh_core_transform.h"
 #include "../math/lzh_mathdef.h"
@@ -47,8 +48,9 @@ LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine)
 
     transform->world_angle = 0.0f;
     transform->local_angle = 0.0f;
-    transform->center_pos = lzh_vec2f_xy(0.0f, 0.0f);
 
+    /* 空对象的中心点为 (0, 0) */
+    transform->center_pos = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     transform->world_scale = lzh_vec3f_xyz(1.0f, 1.0f, 1.0f);
     transform->local_scale = lzh_vec3f_xyz(1.0f, 1.0f, 1.0f);
     transform->world_mat = lzh_mat4x4f_unit();
@@ -72,21 +74,37 @@ void lzh_transform_destroy(LZH_TRANSFORM *transform)
 void lzh_transform_flush(LZH_TRANSFORM *transform)
 {
     if (transform) {
+        int w = 0;
+        int h = 0;
+
         LZH_OBJECT *object = transform->base.object;
         LZH_OBJECT *parent = object->parent;
 
         LZH_VEC3F *localpos = &transform->local_pos;
         LZH_VEC3F *localscale = &transform->local_scale;
 
+        LZH_VEC3F center_pos = lzh_vec3f_reverse(&transform->center_pos);
+        LZH_MAT4X4F screen_trans = lzh_mat4x4f_unit();
+
         /* 首先计算当前局部变换矩阵 */
         LZH_MAT4X4F local = lzh_mat4x4f_unit();
+        LZH_MAT4X4F screen = lzh_mat4x4f_unit();
         LZH_MAT4X4F trans = lzh_mat4x4f_translate(localpos->x, localpos->y, 0.0f);
         LZH_MAT4X4F rotate = lzh_mat4x4f_rotate_z(transform->local_angle);
         LZH_MAT4X4F scale = lzh_mat4x4f_scale(localscale->x, localscale->y, 1.0f);
+        LZH_MAT4X4F center = lzh_mat4x4f_translate(center_pos.x, center_pos.y, center_pos.z);
 
+        /* 先平移至对象的中心点，然后进行仿射变换，最后进行投影变换 */
+        local = lzh_mat4x4f_mul(&local, &center);
         local = lzh_mat4x4f_mul(&local, &scale);
         local = lzh_mat4x4f_mul(&local, &rotate);
         local = lzh_mat4x4f_mul(&local, &trans);
+
+        lzh_engine_win_size(object->base.engine, &w, &h);
+        screen_trans = lzh_mat4x4f_translate(w / 2.0f, h / 2.0f, 0.0f);
+        screen = lzh_mat4x4f_mul(&screen, &screen_trans);
+
+        local = lzh_mat4x4f_mul(&local, &screen);
 
         if (parent && parent->transform) {
             LZH_TRANSFORM *ptransform = parent->transform;

@@ -18,7 +18,7 @@ struct LZH_TRANSFORM {
 
     float world_angle;      /* 世界旋转角度 */
     float local_angle;      /* 局部旋转角度 */
-    LZH_VEC2F center_pos;   /* 旋转中心点 */
+    LZH_VEC3F center_pos;   /* 中心点 */
 
     LZH_VEC3F world_scale;  /* 世界坐标缩放 */
     LZH_VEC3F local_scale;  /* 本地坐标缩放 */

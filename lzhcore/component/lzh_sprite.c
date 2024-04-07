@@ -10,6 +10,7 @@
 
 /*===========================================================================*/
 
+/* ÃÌº”Œ∆¿Ì */
 static void add_sprite_texture(
     LZH_ENGINE *engine, LZH_SPRITE *sp, const char *res[], int count);
 
