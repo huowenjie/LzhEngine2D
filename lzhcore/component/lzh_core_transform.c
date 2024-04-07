@@ -2,6 +2,7 @@
 #include <lzh_mem.h>
 
 #include "lzh_core_transform.h"
+#include "../math/lzh_mathdef.h"
 #include "../object/lzh_core_object.h"
 
 /*===========================================================================*/
@@ -77,7 +78,7 @@ void lzh_transform_flush(LZH_TRANSFORM *transform)
         LZH_VEC3F *localpos = &transform->local_pos;
         LZH_VEC3F *localscale = &transform->local_scale;
 
-        /* 首先计算当前全局变换矩阵 2d */
+        /* 首先计算当前局部变换矩阵 */
         LZH_MAT4X4F local = lzh_mat4x4f_unit();
         LZH_MAT4X4F trans = lzh_mat4x4f_translate(localpos->x, localpos->y, 0.0f);
         LZH_MAT4X4F rotate = lzh_mat4x4f_rotate_z(transform->local_angle);
@@ -108,19 +109,21 @@ void lzh_transform_flush(LZH_TRANSFORM *transform)
 
 void lzh_transform_sync_world(LZH_TRANSFORM *transform)
 {
+    LZH_MAT4X4F rotate;
+    LZH_MAT4X4F scale;
+    LZH_MAT4X4F trans;
+
     if (!transform) {
         return;
     }
 
-    transform->world_angle = transform->local_angle;
-    transform->world_pos = lzh_vec3f_xyz(
-        transform->world_mat.m03,
-        transform->world_mat.m13,
-        transform->world_mat.m23);
-    transform->world_scale = lzh_vec3f_xyz(
-        transform->world_mat.m00,
-        transform->world_mat.m11,
-        transform->world_mat.m22);
+    rotate = lzh_mat4x4f_get_rotate(&transform->world_mat);
+    scale = lzh_mat4x4f_get_scale(&transform->world_mat);
+    trans = lzh_mat4x4f_get_translate(&transform->world_mat);
+
+    transform->world_angle = lzh_mat4x4f_rotate_z_angle(&rotate);
+    transform->world_pos = lzh_vec3f_xyz(trans.m03, trans.m13, trans.m23);
+    transform->world_scale = lzh_vec3f_xyz(scale.m00, scale.m11, scale.m22);
 }
 
 /*===========================================================================*/

@@ -147,6 +147,30 @@ LZH_MAT4X4F lzh_mat4x4f_rotate_y(float theta)
     return mat;
 }
 
+float lzh_mat4x4f_rotate_z_angle(LZH_MAT4X4F *mat)
+{
+    if (mat) {
+        return acosf(mat->m00);
+    }
+    return 0.0f;
+}
+
+float lzh_mat4x4f_rotate_x_angle(LZH_MAT4X4F *mat)
+{
+    if (mat) {
+        return acosf(mat->m00);
+    }
+    return 0.0f;
+}
+
+float lzh_mat4x4f_rotate_y_angle(LZH_MAT4X4F *mat)
+{
+    if (mat) {
+        return acosf(mat->m00);
+    }
+    return 0.0f;
+}
+
 LZH_MAT4X4F lzh_mat4x4f_translate(float dx, float dy, float dz)
 {
     LZH_MAT4X4F mat = lzh_mat4x4f_unit();
@@ -156,6 +180,76 @@ LZH_MAT4X4F lzh_mat4x4f_translate(float dx, float dy, float dz)
     mat.m23 = dz;
 
     return mat;
+}
+
+LZH_MAT4X4F lzh_mat4x4f_get_scale(const LZH_MAT4X4F *mat)
+{
+    LZH_MAT4X4F scale = lzh_mat4x4f_unit();
+
+    if (mat) {
+        scale.m00 = sqrtf(
+            powf(mat->m00, 2) +
+            powf(mat->m01, 2) +
+            powf(mat->m02, 2)
+            );
+        scale.m11 = sqrtf(
+            powf(mat->m10, 2) +
+            powf(mat->m11, 2) +
+            powf(mat->m12, 2)
+            );
+        scale.m22 = sqrtf(
+            powf(mat->m20, 2) +
+            powf(mat->m21, 2) +
+            powf(mat->m22, 2)
+            );
+    }
+
+    return scale;
+}
+
+LZH_MAT4X4F lzh_mat4x4f_get_rotate(const LZH_MAT4X4F *mat)
+{
+    LZH_MAT4X4F rotate = lzh_mat4x4f_unit();
+
+    if (mat) {
+        LZH_MAT4X4F scale = lzh_mat4x4f_get_scale(mat);
+
+        if (rotate.m00 != 0) {
+            rotate.m00 = mat->m00 / scale.m00;
+            rotate.m10 = mat->m10 / scale.m00;
+            rotate.m20 = mat->m20 / scale.m00;
+            rotate.m30 = mat->m30 / scale.m00;
+        }
+
+        if (rotate.m11 != 0) {
+            rotate.m01 = mat->m01 / scale.m11;
+            rotate.m11 = mat->m11 / scale.m11;
+            rotate.m21 = mat->m21 / scale.m11;
+            rotate.m31 = mat->m31 / scale.m11;
+        }
+
+        if (rotate.m22 != 0) {
+            rotate.m02 = mat->m02 / scale.m22;
+            rotate.m12 = mat->m12 / scale.m22;
+            rotate.m22 = mat->m22 / scale.m22;
+            rotate.m32 = mat->m32 / scale.m22;
+        }
+    }
+
+    return rotate;
+}
+
+LZH_MAT4X4F lzh_mat4x4f_get_translate(const LZH_MAT4X4F *mat)
+{
+    LZH_MAT4X4F trans = lzh_mat4x4f_unit();
+
+    if (mat) {
+        trans.m03 = mat->m03;
+        trans.m13 = mat->m13;
+        trans.m23 = mat->m23;
+    }
+
+    return trans;
 }
 
 LZH_MAT4X4F lzh_mat4x4f_volume_map(

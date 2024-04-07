@@ -93,6 +93,9 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     LZH_SPRITE *chassis_sp = NULL;
     LZH_SPRITE *turret_sp = NULL;
 
+    LZH_TRANSFORM *transform = NULL;
+    LZH_VEC3F scale = lzh_vec3f_xyz(0.5f, 0.5f, 0.5f);
+
     if (!engine || !scene) {
         return;
     }
@@ -103,6 +106,8 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
 
     chassis_sp = lzh_sprite_create(engine, get_tank_res_path());
     turret_sp = lzh_sprite_create(engine, get_tank_turret_path());
+
+    transform = lzh_object_get_transform(player);
 
     lzh_object_add_component(turret, turret_sp);
     lzh_object_add_component(chassis, chassis_sp);
@@ -115,6 +120,7 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     lzh_object_add_child(player, turret);
     lzh_object_set_update(player, update_player, NULL);
 
+    lzh_transform_scale(transform, &scale);
     lzh_scene_add_object(scene, player);
 }
 

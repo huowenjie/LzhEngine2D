@@ -286,7 +286,7 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
             float fw = 0.0f;
             float fh = 0.0f;
             float angle = 0.0f;
-            
+
             if (!SDL_QueryTexture(
                 textures[cur_frame], NULL, NULL, &iw, &ih)) {
                 fw = (float)iw;
@@ -300,8 +300,6 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
                 center.x = transform->center_pos.x;
                 center.y = transform->center_pos.y;
                 angle = transform->world_angle;
-
-                transform->world_pos;
 
                 SDL_RenderCopyExF(
                     engine->renderer,

@@ -16,18 +16,17 @@ LZH_OBJECT *lzh_transform_get_object(LZH_TRANSFORM *transform)
 void lzh_transform_translate(LZH_TRANSFORM *transform, const LZH_VEC3F *vec)
 {
     if (transform && vec) {
-        LZH_MAT4X4F trans = lzh_mat4x4f_translate(vec->x, vec->y, vec->z);
-        LZH_VEC4F origin = lzh_vec4f_vec3f(&transform->local_pos, 1.0f);
-        LZH_VEC4F pos = lzh_mat4x4f_mul_vec(&trans, &origin);
-        transform->local_pos = lzh_vec3f_xyz(pos.x, pos.y, pos.z);
-
+        transform->local_pos = lzh_vec3f_add(&transform->local_pos, vec);
         lzh_transform_flush(transform);
     }
 }
 
 void lzh_transform_scale(LZH_TRANSFORM *transform, const LZH_VEC3F *scale)
 {
-
+    if (transform && scale) {
+        transform->local_scale = *scale;
+        lzh_transform_flush(transform);
+    }
 }
 
 void lzh_transform_rotate_z(LZH_TRANSFORM *transform, float angle)

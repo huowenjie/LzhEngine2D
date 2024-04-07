@@ -61,8 +61,26 @@ LZH_API LZH_MAT4X4F lzh_mat4x4f_rotate_x(float theta);
 /* 构建旋转矩阵 */
 LZH_API LZH_MAT4X4F lzh_mat4x4f_rotate_y(float theta);
 
+/* 获取绕 z 轴正方向旋转角度 */
+LZH_API float lzh_mat4x4f_rotate_z_angle(LZH_MAT4X4F *mat);
+
+/* 获取绕 x 轴正方向旋转角度 */
+LZH_API float lzh_mat4x4f_rotate_x_angle(LZH_MAT4X4F *mat);
+
+/* 获取绕 y 轴正方向旋转角度 */
+LZH_API float lzh_mat4x4f_rotate_y_angle(LZH_MAT4X4F *mat);
+
 /* 构建平移矩阵 */
 LZH_API LZH_MAT4X4F lzh_mat4x4f_translate(float dx, float dy, float dz);
+
+/* 从仿射矩阵提取缩放矩阵 */
+LZH_API LZH_MAT4X4F lzh_mat4x4f_get_scale(const LZH_MAT4X4F *mat);
+
+/* 从仿射矩阵提取旋转矩阵 */
+LZH_API LZH_MAT4X4F lzh_mat4x4f_get_rotate(const LZH_MAT4X4F *mat);
+
+/* 从仿射矩阵提取平移矩阵 */
+LZH_API LZH_MAT4X4F lzh_mat4x4f_get_translate(const LZH_MAT4X4F *mat);
 
 /**
  * 体积盒投影矩阵
