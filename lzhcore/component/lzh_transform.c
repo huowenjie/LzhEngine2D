@@ -2,6 +2,7 @@
 
 #include "lzh_core_transform.h"
 #include "../object/lzh_core_object.h"
+#include "../math/lzh_mathdef.h"
 
 /*===========================================================================*/
 
@@ -31,7 +32,10 @@ void lzh_transform_scale(LZH_TRANSFORM *transform, const LZH_VEC3F *scale)
 
 void lzh_transform_rotate_z(LZH_TRANSFORM *transform, float angle)
 {
-
+    if (transform) {
+        transform->local_angle += LZH_A2R(angle);
+        lzh_transform_flush(transform);
+    }
 }
 
 LZH_VEC3F lzh_transform_world_pos(LZH_TRANSFORM *transform)
@@ -62,6 +66,14 @@ LZH_VEC3F lzh_transform_world_scale(LZH_TRANSFORM *transform)
 LZH_VEC3F lzh_transform_local_scale(LZH_TRANSFORM *transform)
 {
     return lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
+}
+
+void lzh_transform_set_center(LZH_TRANSFORM *transform, const LZH_VEC3F *center)
+{
+    if (transform && center) {
+        transform->center_pos = *center;
+        lzh_transform_flush(transform);
+    }
 }
 
 /*===========================================================================*/

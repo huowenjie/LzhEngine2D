@@ -8,6 +8,7 @@
 #include "../object/lzh_core_object.h"
 #include "../engine/lzh_core_engine.h"
 #include "../component/lzh_core_transform.h"
+#include "../math/lzh_mathdef.h"
 
 /*===========================================================================*/
 
@@ -255,7 +256,7 @@ static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
     float fh = 0.0f;
     float hw = 0.0f;
 
-    float fixed_w = 1600.0f;
+    float fixed_w = 800.0f;
     float fixed_h = 0.0f;
 
     LZH_VEC3F refn;
@@ -303,8 +304,12 @@ static LZH_BOOL get_target_rect(
     float fw = 0.0f;
     float fh = 0.0f;
 
+    float scalex = 0.0f;
+    float scaley = 0.0f;
+
     LZH_MAT4X4F sdlmat;
     LZH_MAT4X4F scale;
+    LZH_VEC3F center_pos;
     LZH_VEC4F screen_pos;
     LZH_VEC3F screen_scale;
 
@@ -326,10 +331,17 @@ static LZH_BOOL get_target_rect(
     scale = lzh_mat4x4f_get_scale(&sdlmat);
     screen_scale = lzh_vec3f_xyz(scale.m00, scale.m11, scale.m22);
 
-    target->x = screen_pos.x - fw / 2.0f * screen_scale.x * transform->world_scale.x;
-    target->y = screen_pos.y - fh / 2.0f * screen_scale.y * transform->world_scale.y;
-    target->w = transform->world_scale.x * screen_scale.x * fw;
-    target->h = transform->world_scale.y * screen_scale.y * fh;
+    scalex = screen_scale.x * transform->world_scale.x;
+    scaley = screen_scale.y * transform->world_scale.y;
+
+    target->x = screen_pos.x - fw / 2.0f * scalex;
+    target->y = screen_pos.y - fh / 2.0f * scaley;
+    target->w = scalex * fw;
+    target->h = scaley * fh;
+    center_pos = transform->center_pos;
+
+    center->x = fw / 2.0f * scalex + center_pos.x;
+    center->y = fh / 2.0f * scaley + center_pos.y;
     return LZH_TRUE;
 }
 
@@ -372,7 +384,7 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
         if (textures && textures[cur_frame]) {
             if (get_target_rect(
                 transform, textures[cur_frame], &target, &center)) {
-                float angle = transform->world_angle;
+                float angle = LZH_R2A(transform->world_angle);
                 SDL_RenderCopyExF(
                     engine->renderer,
                     textures[cur_frame],

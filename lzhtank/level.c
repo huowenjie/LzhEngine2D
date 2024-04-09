@@ -94,7 +94,10 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     LZH_SPRITE *turret_sp = NULL;
 
     LZH_TRANSFORM *transform = NULL;
+    LZH_TRANSFORM *turret_transform = NULL;
     LZH_VEC3F scale = lzh_vec3f_xyz(0.5f, 0.5f, 0.5f);
+    LZH_VEC3F trans = lzh_vec3f_xyz(0.0f, 10.0f, 0.0f);
+    LZH_VEC3F center = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
 
     if (!engine || !scene) {
         return;
@@ -108,6 +111,7 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     turret_sp = lzh_sprite_create(engine, get_tank_turret_path());
 
     transform = lzh_object_get_transform(player);
+    turret_transform = lzh_object_get_transform(turret);
 
     lzh_object_add_component(turret, turret_sp);
     lzh_object_add_component(chassis, chassis_sp);
@@ -118,9 +122,11 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
 
     lzh_object_add_child(player, chassis);
     lzh_object_add_child(player, turret);
-    lzh_object_set_update(player, update_player, NULL);
+    lzh_object_set_update(player, update_player, turret_transform);
 
     lzh_transform_scale(transform, &scale);
+    lzh_transform_translate(turret_transform, &trans);
+    lzh_transform_set_center(turret_transform, &center);
     lzh_scene_add_object(scene, player);
 }
 
@@ -130,6 +136,7 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
     float speed = 0.0f;
 
     LZH_TRANSFORM *transform = NULL;
+    LZH_TRANSFORM *turret_transform = NULL;
 
     if (!eg || !object) {
         return;
@@ -137,6 +144,11 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
 
     transform = lzh_object_get_transform(object);
     if (!transform) {
+        return;
+    }
+
+    turret_transform = (LZH_TRANSFORM *)args;
+    if (!turret_transform) {
         return;
     }
 
@@ -153,14 +165,22 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
         lzh_transform_translate(transform, &move);
     }
 
+    speed = 30.0f * delta;
+
     if (lzh_get_key_status(KEY_CODE_A)) {
-        LZH_VEC3F move = lzh_vec3f_xyz(-speed, 0.0f, 0.0f);
-        lzh_transform_translate(transform, &move);
+        lzh_transform_rotate_z(transform, speed);
     }
 
     if (lzh_get_key_status(KEY_CODE_D)) {
-        LZH_VEC3F move = lzh_vec3f_xyz(speed, 0.0f, 0.0f);
-        lzh_transform_translate(transform, &move);
+        lzh_transform_rotate_z(transform, -speed);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_Q)) {
+        lzh_transform_rotate_z(turret_transform, speed);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_E)) {
+        lzh_transform_rotate_z(turret_transform, -speed);
     }
 }
 

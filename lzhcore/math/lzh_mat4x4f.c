@@ -168,7 +168,7 @@ LZH_MAT4X4F lzh_mat4x4f_reflect(const LZH_VEC3F *n)
     return mat;
 }
 
-float lzh_mat4x4f_rotate_z_angle(LZH_MAT4X4F *mat)
+float lzh_mat4x4f_rotate_z_theta(LZH_MAT4X4F *mat)
 {
     if (mat) {
         return acosf(mat->m00);
@@ -176,7 +176,7 @@ float lzh_mat4x4f_rotate_z_angle(LZH_MAT4X4F *mat)
     return 0.0f;
 }
 
-float lzh_mat4x4f_rotate_x_angle(LZH_MAT4X4F *mat)
+float lzh_mat4x4f_rotate_x_theta(LZH_MAT4X4F *mat)
 {
     if (mat) {
         return acosf(mat->m00);
@@ -184,7 +184,7 @@ float lzh_mat4x4f_rotate_x_angle(LZH_MAT4X4F *mat)
     return 0.0f;
 }
 
-float lzh_mat4x4f_rotate_y_angle(LZH_MAT4X4F *mat)
+float lzh_mat4x4f_rotate_y_theta(LZH_MAT4X4F *mat)
 {
     if (mat) {
         return acosf(mat->m00);

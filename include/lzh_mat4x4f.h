@@ -65,13 +65,13 @@ LZH_API LZH_MAT4X4F lzh_mat4x4f_rotate_y(float theta);
 LZH_API LZH_MAT4X4F lzh_mat4x4f_reflect(const LZH_VEC3F *n);
 
 /* 获取绕 z 轴正方向旋转角度 */
-LZH_API float lzh_mat4x4f_rotate_z_angle(LZH_MAT4X4F *mat);
+LZH_API float lzh_mat4x4f_rotate_z_theta(LZH_MAT4X4F *mat);
 
 /* 获取绕 x 轴正方向旋转角度 */
-LZH_API float lzh_mat4x4f_rotate_x_angle(LZH_MAT4X4F *mat);
+LZH_API float lzh_mat4x4f_rotate_x_theta(LZH_MAT4X4F *mat);
 
 /* 获取绕 y 轴正方向旋转角度 */
-LZH_API float lzh_mat4x4f_rotate_y_angle(LZH_MAT4X4F *mat);
+LZH_API float lzh_mat4x4f_rotate_y_theta(LZH_MAT4X4F *mat);
 
 /* 构建平移矩阵 */
 LZH_API LZH_MAT4X4F lzh_mat4x4f_translate(float dx, float dy, float dz);

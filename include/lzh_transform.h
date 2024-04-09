@@ -43,6 +43,9 @@ LZH_API LZH_VEC3F lzh_transform_world_scale(LZH_TRANSFORM *transform);
 /* 获取在本地坐标下的缩放系数 */
 LZH_API LZH_VEC3F lzh_transform_local_scale(LZH_TRANSFORM *transform);
 
+/* 设置中心点 */
+LZH_API void lzh_transform_set_center(LZH_TRANSFORM *transform, const LZH_VEC3F *center);
+
 #ifdef __cplusplus
 }
 #endif
