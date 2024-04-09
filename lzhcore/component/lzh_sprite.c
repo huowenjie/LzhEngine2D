@@ -313,6 +313,9 @@ static LZH_BOOL get_target_rect(
     LZH_VEC4F screen_pos;
     LZH_VEC3F screen_scale;
 
+    LZH_OBJECT *object = transform->base.object;
+    LZH_OBJECT *parent = object->parent;
+
     if (!transform || !texture || !target) {
         return LZH_FALSE;
     }
@@ -385,14 +388,31 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
             if (get_target_rect(
                 transform, textures[cur_frame], &target, &center)) {
                 float angle = LZH_R2A(transform->world_angle);
-                SDL_RenderCopyExF(
+                // SDL_RenderCopyExF(
+                //     engine->renderer,
+                //     textures[cur_frame],
+                //     NULL,
+                //     &target,
+                //     angle,
+                //     &center,
+                //     SDL_FLIP_NONE);
+
+                 SDL_Vertex vertices[] = {
+                    { { 400, 400 }, { 255, 255, 255, 255 }, { 0.0f, 0.0f } },
+                    { { 420, 400 }, { 255, 255, 255, 255 }, { 1.0f, 0.0f } },
+                    { { 420, 420 }, { 255, 255, 255, 255 }, { 1.0f, 1.0f } },
+                    { { 400, 420 }, { 255, 255, 255, 255 }, { 0.0f, 1.0f } }
+                };
+                int indices[] = { 0, 1, 2, 2, 3, 0 };
+
+                // 应该采用本函数来处理
+                SDL_RenderGeometry(
                     engine->renderer,
                     textures[cur_frame],
-                    NULL,
-                    &target,
-                    angle,
-                    &center,
-                    SDL_FLIP_NONE);
+                    vertices,
+                    sizeof(vertices) / sizeof(SDL_Vertex),
+                    indices,
+                    sizeof(indices) / sizeof(int));
             }
         }
     }
