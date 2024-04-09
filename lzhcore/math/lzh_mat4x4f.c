@@ -147,6 +147,27 @@ LZH_MAT4X4F lzh_mat4x4f_rotate_y(float theta)
     return mat;
 }
 
+LZH_MAT4X4F lzh_mat4x4f_reflect(const LZH_VEC3F *n)
+{
+    LZH_MAT4X4F mat = lzh_mat4x4f_unit();
+
+    if (n) {
+        float ax = -2.0f * n->x;
+        float ay = -2.0f * n->y;
+        float az = -2.0f * n->z;
+
+        mat.m00 = 1.0f + ax * n->x;
+        mat.m11 = 1.0f + ay * n->y;
+        mat.m22 = 1.0f + az * n->z;
+
+        mat.m01 = mat.m10 = ax * n->y;
+        mat.m02 = mat.m20 = ax * n->z;
+        mat.m12 = mat.m21 = ay * n->z;
+    }
+
+    return mat;
+}
+
 float lzh_mat4x4f_rotate_z_angle(LZH_MAT4X4F *mat)
 {
     if (mat) {
@@ -265,9 +286,15 @@ LZH_MAT4X4F lzh_mat4x4f_volume_map(
         mat.m00 = (hp->x - lp->x) / (h->x - l->x);
         mat.m11 = (hp->y - lp->y) / (h->y - l->y);
         mat.m22 = (hp->z - lp->z) / (h->z - l->z);
+#if 1
         mat.m03 = (lp->x * h->x - hp->x * l->x) / (h->x - l->x);
         mat.m13 = (lp->y * h->y - hp->y * l->y) / (h->y - l->y);
         mat.m23 = (lp->z * h->z - hp->z * l->z) / (h->z - l->z);
+#else
+        mat.m03 = -(h->x + l->x) / (hp->x - lp->x);
+        mat.m13 = -(h->y + l->y) / (hp->y - lp->y);
+        mat.m23 = -(h->z + l->z) / (hp->z - lp->z);
+#endif
     }
 
     return mat;

@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include <lzh_sprite.h>
 #include <lzh_mem.h>
+#include <lzh_engine.h>
 
 #include "lzh_core_sprite.h"
 #include "../object/lzh_core_object.h"
@@ -245,6 +246,93 @@ void add_sprite_texture(
 
 /*===========================================================================*/
 
+/* 计算坐标系转换矩阵 */
+static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
+{
+    int iw = 0;
+    int ih = 0;
+    float fw = 0.0f;
+    float fh = 0.0f;
+    float hw = 0.0f;
+
+    float fixed_w = 1600.0f;
+    float fixed_h = 0.0f;
+
+    LZH_VEC3F refn;
+    LZH_MAT4X4F refmat = lzh_mat4x4f_unit();
+    LZH_MAT4X4F scalemat = lzh_mat4x4f_unit();
+    LZH_MAT4X4F transmat = lzh_mat4x4f_unit();
+    LZH_MAT4X4F sdlmat = lzh_mat4x4f_unit();
+
+    if (!transform) {
+        return sdlmat;
+    }
+
+    /* 获取屏幕尺寸 */
+    lzh_engine_win_size(transform->base.base.engine, &iw, &ih);
+    fw = (float)iw;
+    fh = (float)ih;
+
+    if (fw == 0 || fh == 0) {
+        return sdlmat;
+    }
+
+    /* 计算屏幕高宽比 */
+    hw = fh / fw;
+    fixed_h = fixed_w * hw;
+
+    /* 计算缩放比例 */
+    scalemat = lzh_mat4x4f_scale(fw / fixed_w, fh / fixed_h, 1.0f);
+
+    /* 先按比例进行缩放，然后 y 轴镜像翻转，最后平移 */
+    refn = lzh_vec3f_xyz(0.0f, 1.0f, 0.0f);
+    transmat = lzh_mat4x4f_translate(fw / 2.0f, fh / 2.0f, 0.0f);
+    refmat = lzh_mat4x4f_reflect(&refn);
+    sdlmat = lzh_mat4x4f_mul(&scalemat, &sdlmat);
+    sdlmat = lzh_mat4x4f_mul(&refmat, &sdlmat);
+    sdlmat = lzh_mat4x4f_mul(&transmat, &sdlmat);
+
+    return sdlmat;
+}
+
+static LZH_BOOL get_target_rect(
+    LZH_TRANSFORM *transform, SDL_Texture *texture, SDL_FRect *target, SDL_FPoint *center)
+{
+    int iw = 0;
+    int ih = 0;
+    float fw = 0.0f;
+    float fh = 0.0f;
+
+    LZH_MAT4X4F sdlmat;
+    LZH_MAT4X4F scale;
+    LZH_VEC4F screen_pos;
+    LZH_VEC3F screen_scale;
+
+    if (!transform || !texture || !target) {
+        return LZH_FALSE;
+    }
+
+    if (SDL_QueryTexture(texture, NULL, NULL, &iw, &ih)) {
+        return LZH_FALSE;
+    }
+
+    fw = (float)iw;
+    fh = (float)ih;
+
+    sdlmat = get_sdl_mat(transform);
+
+    screen_pos = lzh_vec4f_vec3f(&transform->world_pos, 1.0f);
+    screen_pos = lzh_mat4x4f_mul_vec(&sdlmat, &screen_pos);
+    scale = lzh_mat4x4f_get_scale(&sdlmat);
+    screen_scale = lzh_vec3f_xyz(scale.m00, scale.m11, scale.m22);
+
+    target->x = screen_pos.x - fw / 2.0f * screen_scale.x * transform->world_scale.x;
+    target->y = screen_pos.y - fh / 2.0f * screen_scale.y * transform->world_scale.y;
+    target->w = transform->world_scale.x * screen_scale.x * fw;
+    target->h = transform->world_scale.y * screen_scale.y * fh;
+    return LZH_TRUE;
+}
+
 void lzh_sprite_draw(LZH_BASE *base, void *args)
 {
     LZH_SPRITE *sprite = NULL;
@@ -282,26 +370,9 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
         SDL_Texture **textures = sprite->textures;
         if (textures && textures[cur_frame]) {
-            int iw = 0;
-            int ih = 0;
-            float fw = 0.0f;
-            float fh = 0.0f;
-            float angle = 0.0f;
-
-            if (!SDL_QueryTexture(
-                textures[cur_frame], NULL, NULL, &iw, &ih)) {
-                fw = (float)iw;
-                fh = (float)ih;
-
-                target.x = transform->world_pos.x;
-                target.y = transform->world_pos.y;
-                target.w = transform->world_scale.x * fw;
-                target.h = transform->world_scale.y * fh;
-
-                center.x = transform->center_pos.x;
-                center.y = transform->center_pos.y;
-                angle = transform->world_angle;
-
+            if (get_target_rect(
+                transform, textures[cur_frame], &target, &center)) {
+                float angle = transform->world_angle;
                 SDL_RenderCopyExF(
                     engine->renderer,
                     textures[cur_frame],

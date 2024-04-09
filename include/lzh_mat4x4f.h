@@ -61,6 +61,9 @@ LZH_API LZH_MAT4X4F lzh_mat4x4f_rotate_x(float theta);
 /* 构建旋转矩阵 */
 LZH_API LZH_MAT4X4F lzh_mat4x4f_rotate_y(float theta);
 
+/* 构建镜像矩阵 */
+LZH_API LZH_MAT4X4F lzh_mat4x4f_reflect(const LZH_VEC3F *n);
+
 /* 获取绕 z 轴正方向旋转角度 */
 LZH_API float lzh_mat4x4f_rotate_z_angle(LZH_MAT4X4F *mat);
 
