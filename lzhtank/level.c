@@ -97,6 +97,7 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     LZH_TRANSFORM *turret_transform = NULL;
     LZH_TRANSFORM *chassis_transform = NULL;
     LZH_VEC3F scale = lzh_vec3f_xyz(20.0f, 20.0f, 20.0f);
+    LZH_VEC3F turret_scale = lzh_vec3f_xyz(15.0f, 20.0f, 20.0f);
     LZH_VEC3F trans = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     LZH_VEC3F center = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
 
@@ -126,8 +127,10 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     lzh_object_add_child(player, turret);
     lzh_object_set_update(player, update_player, turret_transform);
 
-    lzh_transform_scale(turret_transform, &scale);
+    lzh_transform_scale(turret_transform, &turret_scale);
     lzh_transform_scale(chassis_transform, &scale);
+    lzh_transform_rotate_z(turret_transform, 180.0f);
+    lzh_transform_rotate_z(chassis_transform, 180.0f);
     lzh_transform_translate(turret_transform, &trans);
     lzh_transform_set_center(turret_transform, &center);
 
@@ -162,8 +165,10 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
     speed = 100.0f * delta;
 
     if (lzh_get_key_status(KEY_CODE_W)) {
-        LZH_VEC3F move = lzh_vec3f_xyz(0.0f, speed, 0.0f);
-        lzh_transform_translate(transform , &move);
+        LZH_VEC3F forward = lzh_transform_get_leftward(transform);
+        forward = lzh_vec3f_mul(&forward, speed);
+
+        lzh_transform_translate(transform , &forward);
     }
 
     if (lzh_get_key_status(KEY_CODE_S)) {

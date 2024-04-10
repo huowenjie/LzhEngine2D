@@ -43,6 +43,18 @@ LZH_API LZH_VEC3F lzh_transform_world_scale(LZH_TRANSFORM *transform);
 /* 获取在本地坐标下的缩放系数 */
 LZH_API LZH_VEC3F lzh_transform_local_scale(LZH_TRANSFORM *transform);
 
+/* 获取前进向量（沿 x 轴正方向） */
+LZH_API LZH_VEC3F lzh_transform_get_forward(LZH_TRANSFORM *transform);
+
+/* 获取后退向量（沿 x 轴负方向） */
+LZH_API LZH_VEC3F lzh_transform_get_backward(LZH_TRANSFORM *transform);
+
+/* 获取向左向量（沿 y 轴正方向） */
+LZH_API LZH_VEC3F lzh_transform_get_leftward(LZH_TRANSFORM *transform);
+
+/* 获取向右向量（沿 y 轴负方向） */
+LZH_API LZH_VEC3F lzh_transform_get_rightward(LZH_TRANSFORM *transform);
+
 /* 设置中心点 */
 LZH_API void lzh_transform_set_center(LZH_TRANSFORM *transform, const LZH_VEC3F *center);
 

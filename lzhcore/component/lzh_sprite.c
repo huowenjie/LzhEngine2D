@@ -340,6 +340,7 @@ static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
     LZH_VEC3F hp;
     LZH_VEC3F refn;
     LZH_MAT4X4F refmat = lzh_mat4x4f_unit();
+    LZH_MAT4X4F projmat = lzh_mat4x4f_unit();
     LZH_MAT4X4F sdlmat = lzh_mat4x4f_unit();
 
     if (!transform) {
@@ -369,8 +370,10 @@ static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
     hp = lzh_vec3f_xyz((float)iw, (float)ih, 1.0f);
 
     refmat = lzh_mat4x4f_reflect(&refn);
-    sdlmat = lzh_mat4x4f_volume_map(&l, &h, &lp, &hp);
-    sdlmat = lzh_mat4x4f_mul(&sdlmat, &refmat);
+    projmat = lzh_mat4x4f_volume_map(&l, &h, &lp, &hp);
+
+    sdlmat = lzh_mat4x4f_mul(&refmat, &sdlmat);
+    sdlmat = lzh_mat4x4f_mul(&projmat, &sdlmat);
     return sdlmat;
 }
 

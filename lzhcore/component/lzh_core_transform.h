@@ -21,6 +21,11 @@ struct LZH_TRANSFORM {
     LZH_VEC3F center_pos;   /* 中心点 */
     LZH_VEC3F local_scale;  /* 本地坐标缩放 */
 
+    LZH_VEC3F forward;      /* 前，沿 x 轴正方向，相对向前对象的坐标系 */
+    LZH_VEC3F backward;     /* 后，沿 x 轴负方向，相对向前对象的坐标系 */
+    LZH_VEC3F leftward;     /* 左，沿 y 轴正方向，相对向前对象的坐标系 */
+    LZH_VEC3F rightward;    /* 右，沿 y 轴负方向，相对向前对象的坐标系 */
+
     LZH_MAT4X4F world_mat;  /* 变换矩阵 */
 };
 
@@ -32,7 +37,6 @@ void lzh_transform_destroy(LZH_TRANSFORM *transform);
 
 /* 刷新变换数据 */
 void lzh_transform_flush(LZH_TRANSFORM *transform);
-void lzh_transform_sync_world(LZH_TRANSFORM *transform);
 
 /*===========================================================================*/
 

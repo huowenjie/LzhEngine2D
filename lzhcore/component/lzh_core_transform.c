@@ -20,6 +20,9 @@ static void lzh_transform_remove(LZH_COMPONENT *cpnt);
 /* 子对象变换组件访问 */
 static void lzh_transform_rb_flush(const LZH_OBJ_RB_NODE *node, void *args);
 
+/* 更新当前对象的方向轴 */
+static void lzh_transform_update_axis(LZH_TRANSFORM *transform, LZH_MAT4X4F *mat);
+
 /*===========================================================================*/
 
 LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine)
@@ -54,6 +57,12 @@ LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine)
     transform->local_pos = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     transform->center_pos = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     transform->local_scale = lzh_vec3f_xyz(1.0f, 1.0f, 1.0f);
+
+    transform->forward = lzh_vec3f_xyz(1.0f, 0.0f, 0.0f);
+    transform->backward = lzh_vec3f_xyz(-1.0f, 0.0f, 0.0f);
+    transform->leftward = lzh_vec3f_xyz(0.0f, 1.0f, 0.0f);
+    transform->rightward = lzh_vec3f_xyz(0.0f, -1.0f, 0.0f);
+
     transform->world_mat = lzh_mat4x4f_unit();
 
     return transform;
@@ -104,7 +113,6 @@ void lzh_transform_flush(LZH_TRANSFORM *transform)
             centerpos->y,
             centerpos->z);
         local = lzh_mat4x4f_mul(&centermat, &local);
-
         local = lzh_mat4x4f_mul(&trans, &local);
 
         if (parent && parent->transform) {
@@ -114,6 +122,7 @@ void lzh_transform_flush(LZH_TRANSFORM *transform)
             local = lzh_mat4x4f_mul(&pworld, &local);
         }
 
+        lzh_transform_update_axis(transform, &local);
         transform->world_mat = local;
 
         /* 遍历子对象的 TRANSFORM 组件，更新子对象的矩阵 */
@@ -180,6 +189,38 @@ void lzh_transform_rb_flush(const LZH_OBJ_RB_NODE *node, void *args)
             lzh_transform_flush(transform);
         }
     }
+}
+
+void lzh_transform_update_axis(LZH_TRANSFORM *transform, LZH_MAT4X4F *mat)
+{
+    LZH_VEC4F forward;
+    LZH_VEC4F backward;
+    LZH_VEC4F leftward;
+    LZH_VEC4F rightward;
+
+    if (!transform || !mat) {
+        return;
+    }
+
+    forward = lzh_vec4f_xyzw(1.0f, 0.0f, 0.0f, 0.0f);
+    backward = lzh_vec4f_xyzw(-1.0f, 0.0f, 0.0f, 0.0f);
+    leftward = lzh_vec4f_xyzw(0.0f, 1.0f, 0.0f, 0.0f);
+    rightward = lzh_vec4f_xyzw(0.0f, -1.0f, 0.0f, 0.0f);
+
+    forward = lzh_mat4x4f_mul_vec(mat, &forward);
+    backward = lzh_mat4x4f_mul_vec(mat, &backward);
+    leftward = lzh_mat4x4f_mul_vec(mat, &leftward);
+    rightward = lzh_mat4x4f_mul_vec(mat, &rightward);
+
+    transform->forward = lzh_vec3f_xyz(forward.x, forward.y, forward.z);
+    transform->backward = lzh_vec3f_xyz(backward.x, backward.y, backward.z);
+    transform->leftward = lzh_vec3f_xyz(leftward.x, leftward.y, leftward.z);
+    transform->rightward = lzh_vec3f_xyz(rightward.x, rightward.y, rightward.z);
+
+    transform->forward = lzh_vec3f_normalize(&transform->forward);
+    transform->backward = lzh_vec3f_normalize(&transform->backward);
+    transform->leftward = lzh_vec3f_normalize(&transform->leftward);
+    transform->rightward = lzh_vec3f_normalize(&transform->rightward);
 }
 
 /*===========================================================================*/
