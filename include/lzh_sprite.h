@@ -21,6 +21,10 @@ LZH_API LZH_SPRITE *lzh_sprite_create_from_images(
 /* 销毁精灵 */
 LZH_API void lzh_sprite_destroy(LZH_SPRITE *sprite);
 
+/* 获取图片的默认宽高 */
+LZH_API void lzh_sprite_get_img_size(
+    LZH_SPRITE *sprite, int index, float *w, float *h);
+
 /* 控制精灵的显示或隐藏 */
 LZH_API void lzh_sprite_show(LZH_SPRITE *sprite, LZH_BOOL show);
 

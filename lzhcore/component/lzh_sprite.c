@@ -12,6 +12,9 @@
 
 /*===========================================================================*/
 
+/* 初始化顶点数据 */
+static void init_sprite_vertex(LZH_SPRITE *sp);
+
 /* 添加纹理 */
 static void add_sprite_texture(
     LZH_ENGINE *engine, LZH_SPRITE *sp, const char *res[], int count);
@@ -53,7 +56,7 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
     base->base.draw = lzh_sprite_draw;
     base->type = LZH_CPNT_SPRITE;
     base->remove_component = lzh_sprite_remove;
-
+    
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW;
     sprite->frame_count = 1;
     sprite->anim_fps = 30;
@@ -61,6 +64,8 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
     sprite->cur_frame = 0;
     sprite->start_frame = 0;
     sprite->end_frame = 0;
+
+    init_sprite_vertex(sprite);
     add_sprite_texture(engine, sprite, &res, 1);
     return sprite;
 }
@@ -122,6 +127,11 @@ void lzh_sprite_destroy(LZH_SPRITE *sprite)
         }
         lzh_sprite_remove((LZH_COMPONENT *)sprite);
     }
+}
+
+void lzh_sprite_get_img_size(LZH_SPRITE *sprite, int index, float *w, float *h)
+{
+    
 }
 
 void lzh_sprite_show(LZH_SPRITE *sprite, LZH_BOOL show)
@@ -204,6 +214,72 @@ void lzh_sprite_set_keyframe(
 
 /*===========================================================================*/
 
+void init_sprite_vertex(LZH_SPRITE *sp)
+{
+    SDL_Vertex *vertex = NULL;
+    int *indices = NULL;
+
+    if (!sp) {
+        return;
+    }
+
+    vertex = sp->vertices;
+    indices = sp->indices;
+
+    /*
+     * SDL_Vertex vertices[] = {
+     *     { { -1.0f, -1.0f }, { 255, 255, 255, 255 }, { 0.0f, 0.0f } },
+     *     { {  1.0f, -1.0f }, { 255, 255, 255, 255 }, { 1.0f, 0.0f } },
+     *     { {  1.0f,  1.0f }, { 255, 255, 255, 255 }, { 1.0f, 1.0f } },
+     *     { { -1.0f,  1.0f }, { 255, 255, 255, 255 }, { 0.0f, 1.0f } }
+     * };
+     * 
+     * int indices[] = { 0, 1, 2, 2, 3, 0 };
+     */
+    vertex[0].position.x = -1.0f;
+    vertex[0].position.y = -1.0f;
+    vertex[0].color.r = 255;
+    vertex[0].color.g = 255;
+    vertex[0].color.b = 255;
+    vertex[0].color.a = 255;
+    vertex[0].tex_coord.x = 0.0f;
+    vertex[0].tex_coord.y = 0.0f;
+
+    vertex[1].position.x = 1.0f;
+    vertex[1].position.y = -1.0f;
+    vertex[1].color.r = 255;
+    vertex[1].color.g = 255;
+    vertex[1].color.b = 255;
+    vertex[1].color.a = 255;
+    vertex[1].tex_coord.x = 1.0f;
+    vertex[1].tex_coord.y = 0.0f;
+
+    vertex[2].position.x = 1.0f;
+    vertex[2].position.y = 1.0f;
+    vertex[2].color.r = 255;
+    vertex[2].color.g = 255;
+    vertex[2].color.b = 255;
+    vertex[2].color.a = 255;
+    vertex[2].tex_coord.x = 1.0f;
+    vertex[2].tex_coord.y = 1.0f;
+
+    vertex[3].position.x = -1.0f;
+    vertex[3].position.y = 1.0f;
+    vertex[3].color.r = 255;
+    vertex[3].color.g = 255;
+    vertex[3].color.b = 255;
+    vertex[3].color.a = 255;
+    vertex[3].tex_coord.x = 0.0f;
+    vertex[3].tex_coord.y = 1.0f;
+
+    indices[0] = 0;
+    indices[1] = 1;
+    indices[2] = 2;
+    indices[3] = 2;
+    indices[4] = 3;
+    indices[5] = 0;
+}
+
 void add_sprite_texture(
     LZH_ENGINE *engine, LZH_SPRITE *sp, const char *res[], int count)
 {
@@ -254,20 +330,24 @@ static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
     int ih = 0;
     float fw = 0.0f;
     float fh = 0.0f;
-    float hw = 0.0f;
 
-    float fixed_w = 800.0f;
+    float fixed_w = 0.0f;
     float fixed_h = 0.0f;
 
+    LZH_VEC3F l;
+    LZH_VEC3F h;
+    LZH_VEC3F lp;
+    LZH_VEC3F hp;
     LZH_VEC3F refn;
     LZH_MAT4X4F refmat = lzh_mat4x4f_unit();
-    LZH_MAT4X4F scalemat = lzh_mat4x4f_unit();
-    LZH_MAT4X4F transmat = lzh_mat4x4f_unit();
     LZH_MAT4X4F sdlmat = lzh_mat4x4f_unit();
 
     if (!transform) {
         return sdlmat;
     }
+
+    fixed_w = transform->screen_width;
+    fixed_h = transform->screen_height;
 
     /* 获取屏幕尺寸 */
     lzh_engine_win_size(transform->base.base.engine, &iw, &ih);
@@ -278,74 +358,59 @@ static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
         return sdlmat;
     }
 
-    /* 计算屏幕高宽比 */
-    hw = fh / fw;
-    fixed_h = fixed_w * hw;
+    fw = fixed_w / 2.0f;
+    fh = fixed_h / 2.0f;
 
-    /* 计算缩放比例 */
-    scalemat = lzh_mat4x4f_scale(fw / fixed_w, fh / fixed_h, 1.0f);
-
-    /* 先按比例进行缩放，然后 y 轴镜像翻转，最后平移 */
+    /* 对 y 轴镜像翻转，最后平移 */
     refn = lzh_vec3f_xyz(0.0f, 1.0f, 0.0f);
-    transmat = lzh_mat4x4f_translate(fw / 2.0f, fh / 2.0f, 0.0f);
-    refmat = lzh_mat4x4f_reflect(&refn);
-    sdlmat = lzh_mat4x4f_mul(&scalemat, &sdlmat);
-    sdlmat = lzh_mat4x4f_mul(&refmat, &sdlmat);
-    sdlmat = lzh_mat4x4f_mul(&transmat, &sdlmat);
+    l = lzh_vec3f_xyz(-fw, -fh, 0.0f);
+    h = lzh_vec3f_xyz(fw, fh, 1.0f);
+    lp = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
+    hp = lzh_vec3f_xyz((float)iw, (float)ih, 1.0f);
 
+    refmat = lzh_mat4x4f_reflect(&refn);
+    sdlmat = lzh_mat4x4f_volume_map(&l, &h, &lp, &hp);
+    sdlmat = lzh_mat4x4f_mul(&sdlmat, &refmat);
     return sdlmat;
 }
 
-static LZH_BOOL get_target_rect(
-    LZH_TRANSFORM *transform, SDL_Texture *texture, SDL_FRect *target, SDL_FPoint *center)
+static void update_sprite_vertex(LZH_TRANSFORM *transform, LZH_SPRITE *sprite)
 {
-    int iw = 0;
-    int ih = 0;
-    float fw = 0.0f;
-    float fh = 0.0f;
-
-    float scalex = 0.0f;
-    float scaley = 0.0f;
-
     LZH_MAT4X4F sdlmat;
-    LZH_MAT4X4F scale;
-    LZH_VEC3F center_pos;
-    LZH_VEC4F screen_pos;
-    LZH_VEC3F screen_scale;
+    LZH_MAT4X4F worldmat;
 
-    LZH_OBJECT *object = transform->base.object;
-    LZH_OBJECT *parent = object->parent;
+    LZH_VEC4F vertext_pos;
+    SDL_Vertex *vertices = NULL;
 
-    if (!transform || !texture || !target) {
-        return LZH_FALSE;
+    if (!transform || !sprite) {
+        return;
     }
 
-    if (SDL_QueryTexture(texture, NULL, NULL, &iw, &ih)) {
-        return LZH_FALSE;
-    }
-
-    fw = (float)iw;
-    fh = (float)ih;
-
+    worldmat = transform->world_mat;
     sdlmat = get_sdl_mat(transform);
+    worldmat = lzh_mat4x4f_mul(&sdlmat, &worldmat);
 
-    screen_pos = lzh_vec4f_vec3f(&transform->world_pos, 1.0f);
-    screen_pos = lzh_mat4x4f_mul_vec(&sdlmat, &screen_pos);
-    scale = lzh_mat4x4f_get_scale(&sdlmat);
-    screen_scale = lzh_vec3f_xyz(scale.m00, scale.m11, scale.m22);
+    vertices = sprite->vertices;
 
-    scalex = screen_scale.x * transform->world_scale.x;
-    scaley = screen_scale.y * transform->world_scale.y;
+    vertext_pos = lzh_vec4f_xyzw(-1.0f, -1.0f, 0.0f, 1.0f);
+    vertext_pos = lzh_mat4x4f_mul_vec(&worldmat, &vertext_pos);
+    vertices[0].position.x = vertext_pos.x;
+    vertices[0].position.y = vertext_pos.y;
 
-    target->x = screen_pos.x - fw / 2.0f * scalex;
-    target->y = screen_pos.y - fh / 2.0f * scaley;
-    target->w = scalex * fw;
-    target->h = scaley * fh;
-    center_pos = transform->center_pos;
+    vertext_pos = lzh_vec4f_xyzw(1.0f, -1.0f, 0.0f, 1.0f);
+    vertext_pos = lzh_mat4x4f_mul_vec(&worldmat, &vertext_pos);
+    vertices[1].position.x = vertext_pos.x;
+    vertices[1].position.y = vertext_pos.y;
 
-    center->x = fw / 2.0f * scalex + center_pos.x;
-    center->y = fh / 2.0f * scaley + center_pos.y;
-    return LZH_TRUE;
+    vertext_pos = lzh_vec4f_xyzw(1.0f, 1.0f, 0.0f, 1.0f);
+    vertext_pos = lzh_mat4x4f_mul_vec(&worldmat, &vertext_pos);
+    vertices[2].position.x = vertext_pos.x;
+    vertices[2].position.y = vertext_pos.y;
+
+    vertext_pos = lzh_vec4f_xyzw(-1.0f, 1.0f, 0.0f, 1.0f);
+    vertext_pos = lzh_mat4x4f_mul_vec(&worldmat, &vertext_pos);
+    vertices[3].position.x = vertext_pos.x;
+    vertices[3].position.y = vertext_pos.y;
 }
 
 void lzh_sprite_draw(LZH_BASE *base, void *args)
@@ -356,8 +421,6 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
     LZH_TRANSFORM *transform = NULL;
 
     int cur_frame = 0;
-    SDL_FRect target;
-    SDL_FPoint center;
 
     if (!base) {
         return;
@@ -385,35 +448,14 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
         SDL_Texture **textures = sprite->textures;
         if (textures && textures[cur_frame]) {
-            if (get_target_rect(
-                transform, textures[cur_frame], &target, &center)) {
-                float angle = LZH_R2A(transform->world_angle);
-                // SDL_RenderCopyExF(
-                //     engine->renderer,
-                //     textures[cur_frame],
-                //     NULL,
-                //     &target,
-                //     angle,
-                //     &center,
-                //     SDL_FLIP_NONE);
-
-                 SDL_Vertex vertices[] = {
-                    { { 400, 400 }, { 255, 255, 255, 255 }, { 0.0f, 0.0f } },
-                    { { 420, 400 }, { 255, 255, 255, 255 }, { 1.0f, 0.0f } },
-                    { { 420, 420 }, { 255, 255, 255, 255 }, { 1.0f, 1.0f } },
-                    { { 400, 420 }, { 255, 255, 255, 255 }, { 0.0f, 1.0f } }
-                };
-                int indices[] = { 0, 1, 2, 2, 3, 0 };
-
-                // 应该采用本函数来处理
-                SDL_RenderGeometry(
-                    engine->renderer,
-                    textures[cur_frame],
-                    vertices,
-                    sizeof(vertices) / sizeof(SDL_Vertex),
-                    indices,
-                    sizeof(indices) / sizeof(int));
-            }
+            update_sprite_vertex(transform, sprite);
+            SDL_RenderGeometry(
+                engine->renderer,
+                textures[cur_frame],
+                sprite->vertices,
+                sizeof(sprite->vertices) / sizeof(SDL_Vertex),
+                sprite->indices,
+                sizeof(sprite->indices) / sizeof(int));
         }
     }
 
