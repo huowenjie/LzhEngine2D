@@ -284,7 +284,7 @@ void add_sprite_texture(
     LZH_ENGINE *engine, LZH_SPRITE *sp, const char *res[], int count)
 {
     SDL_Texture **textures = NULL;
-    int i = 0;
+    //int i = 0;
 
     if (!engine || !sp) {
         return;
