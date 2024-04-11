@@ -304,6 +304,7 @@ void add_sprite_texture(
     }
     memset(textures, 0, count * sizeof(SDL_Texture *));
 
+#if 0
     for (; i < count; i++) {
         SDL_Texture *texture = NULL;
         SDL_Surface *surface = IMG_Load(res[i]);
@@ -316,7 +317,7 @@ void add_sprite_texture(
             SDL_FreeSurface(surface);
         }
     }
-
+#endif
     sp->tex_count = count;
     sp->textures = textures;
 }
@@ -452,6 +453,7 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
         SDL_Texture **textures = sprite->textures;
         if (textures && textures[cur_frame]) {
             update_sprite_vertex(transform, sprite);
+#if 0
             SDL_RenderGeometry(
                 engine->renderer,
                 textures[cur_frame],
@@ -459,6 +461,7 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
                 sizeof(sprite->vertices) / sizeof(SDL_Vertex),
                 sprite->indices,
                 sizeof(sprite->indices) / sizeof(int));
+#endif
         }
     }
 

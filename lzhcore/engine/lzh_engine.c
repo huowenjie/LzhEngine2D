@@ -60,7 +60,7 @@ LZH_ENGINE *lzh_engine_create(
         title,
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        width, height, SDL_WINDOW_SHOWN);
+        width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     if (!window) {
         goto err;
     }
@@ -127,7 +127,7 @@ void lzh_engine_update(LZH_ENGINE *engine)
 {
     int run = 1;
     SDL_Event evt;
-    SDL_Renderer *renderer = NULL;
+    SDL_Window *window = NULL;
 
     float fix_time = 0.0f;
     float render_time = 0.0f;
@@ -138,9 +138,11 @@ void lzh_engine_update(LZH_ENGINE *engine)
         return;
     }
 
-    renderer = engine->renderer;
+    window = engine->window;
     fix_time = 1000.0f / engine->logic_fps;
     render_time = 1000.0f / engine->render_fps;
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     while (run) {
         Uint64 start = 0;
@@ -162,7 +164,7 @@ void lzh_engine_update(LZH_ENGINE *engine)
             }
         }
 
-        SDL_RenderClear(renderer);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         /*
          * 假设某一帧渲染时间过长，导致时间累计大于当前的
@@ -197,7 +199,7 @@ void lzh_engine_update(LZH_ENGINE *engine)
 
         /* 场景绘制，调用所有对象的 draw 方法绘制 */
         lzh_sm_draw(engine->scene_manager);
-        SDL_RenderPresent(renderer);
+        SDL_GL_SwapWindow(window);
 
         start = SDL_GetPerformanceCounter();
         frequency = SDL_GetPerformanceFrequency();
