@@ -8,6 +8,7 @@
 #include <lzh_mem.h>
 
 #include "lzh_core_engine.h"
+#include "../graphic/lzh_opengl.h"
 #include "../object/lzh_core_object.h"
 
 /*===========================================================================*/
@@ -25,6 +26,8 @@ int lzh_init()
     IMG_Init(IMG_INIT_PNG);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
     srand((unsigned int)time(NULL));
+
+    lzh_init_opengl(3, 3);
 
     LZH_MEM_START;
     return 0;
@@ -45,7 +48,7 @@ LZH_ENGINE *lzh_engine_create(
     const char *title, int width, int height)
 {
     SDL_Window *window = NULL;
-    SDL_Renderer *renderer = NULL;
+    SDL_GLContext *glctx = NULL;
     LZH_SCENE_MANAGER *manager = NULL;
 
     LZH_ENGINE *engine = LZH_MALLOC(sizeof(LZH_ENGINE));
@@ -62,11 +65,11 @@ LZH_ENGINE *lzh_engine_create(
         goto err;
     }
 
-    renderer = SDL_CreateRenderer(
-        window, -1, SDL_RENDERER_ACCELERATED);
-    if (!window) {
+    glctx = SDL_GL_CreateContext(window);
+    if (!glctx) {
         goto err;
     }
+    lzh_load_openglapi();
 
     manager = lzh_scene_manager_create();
     if (!manager) {
@@ -74,7 +77,7 @@ LZH_ENGINE *lzh_engine_create(
     }
 
     engine->window = window;
-    engine->renderer = renderer;
+    engine->glctx = glctx;
     engine->logic_fps = 30.0f;
     engine->render_fps = 60.0f;
     engine->pause_delay = 250.0f;
@@ -87,8 +90,8 @@ err:
         lzh_scene_manager_destroy(manager);
     }
 
-    if (renderer) {
-        SDL_DestroyRenderer(renderer);
+    if (glctx) {
+        SDL_GL_DeleteContext(glctx);
     }
 
     if (window) {
@@ -108,8 +111,8 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
             lzh_scene_manager_destroy(engine->scene_manager);
         }
 
-        if (engine->renderer) {
-            SDL_DestroyRenderer(engine->renderer);
+        if (engine->glctx) {
+            SDL_GL_DeleteContext(engine->glctx);
         }
 
         if (engine->window) {

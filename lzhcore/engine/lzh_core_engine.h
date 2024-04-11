@@ -16,7 +16,7 @@
 /* 引擎对象 */
 struct LZH_ENGINE {
     SDL_Window *window;
-    SDL_Renderer *renderer;
+    SDL_GLContext *glctx;
 
     float logic_fps;                    /* 逻辑帧帧数 */
     float render_fps;                   /* 渲染帧帧数 */
