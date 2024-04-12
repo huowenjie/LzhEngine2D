@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*===========================================================================*/
 /* ÄÚ´æ×·×Ù */
@@ -38,6 +39,23 @@ extern "C" {
     #define LZH_PRINT_BLOCK_LIST
     #define LZH_PRINT_LEAK_INFO
 #endif /* USE_MEMORY */
+
+#define LZH_DATA_INIT(data) (data)->value = NULL; (data)->size = 0
+#define LZH_DATA_SET(data, val, len) (data)->value = (LZH_BYTE *)(val); (data)->size = (LZH_UINT32)(len)
+#define LZH_DATA_MALLOC(data, len) \
+    do { \
+        (data)->value = LZH_MALLOC((size_t)(len)); \
+        (data)->size = (LZH_UINT32)(len); \
+        memset((data)->value, 0, (len)); \
+    } while (0)
+
+#define LZH_DATA_FREE(data) \
+    do { \
+        if ((data)->value) { \
+            LZH_FREE((data)->value); \
+            LZH_DATA_INIT(data); \
+        } \
+    } while (0)
 
 #define LZH_MEM_CLEAR(p, len) mem_clear((p), (len))
 #define LZH_MEM_CLEAR_FREE(p, len) (LZH_MEM_CLEAR((p), (len)), LZH_FREE((p)))

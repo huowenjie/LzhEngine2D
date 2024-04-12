@@ -10,6 +10,7 @@
 #include "lzh_core_engine.h"
 #include "../graphic/lzh_opengl.h"
 #include "../object/lzh_core_object.h"
+#include "../log/lzh_tracer.h"
 
 /*===========================================================================*/
 
@@ -30,11 +31,14 @@ int lzh_init()
     lzh_init_opengl(3, 3);
 
     LZH_MEM_START;
+    LZH_TRACE_START(1);
+    LZH_TRACE_SHOW_DBG();
     return 0;
 }
 
 void lzh_quit() 
 {
+    LZH_TRACE_END();
     LZH_PRINT_LEAK_INFO;
     LZH_MEM_END;
 
@@ -50,6 +54,7 @@ LZH_ENGINE *lzh_engine_create(
     SDL_Window *window = NULL;
     SDL_GLContext *glctx = NULL;
     LZH_SCENE_MANAGER *manager = NULL;
+    LZH_SHADER *shader = NULL;
 
     LZH_ENGINE *engine = LZH_MALLOC(sizeof(LZH_ENGINE));
     if (!engine) {
@@ -76,6 +81,11 @@ LZH_ENGINE *lzh_engine_create(
         goto err;
     }
 
+    shader = lzh_shader_sprite();
+    if (!shader) {
+        goto err;
+    }
+
     engine->window = window;
     engine->glctx = glctx;
     engine->logic_fps = 30.0f;
@@ -83,9 +93,14 @@ LZH_ENGINE *lzh_engine_create(
     engine->pause_delay = 250.0f;
     engine->delta_time = 0.0f;
     engine->scene_manager = manager;
+    engine->sprite_shader = shader;
     return engine;
 
 err:
+    if (shader) {
+        lzh_shader_destroy(shader);
+    }
+
     if (manager) {
         lzh_scene_manager_destroy(manager);
     }
@@ -107,6 +122,10 @@ err:
 void lzh_engine_destroy(LZH_ENGINE *engine)
 {
     if (engine) {
+        if (engine->sprite_shader) {
+            lzh_shader_destroy(engine->sprite_shader);
+        }
+
         if (engine->scene_manager) {
             lzh_scene_manager_destroy(engine->scene_manager);
         }

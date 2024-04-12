@@ -38,6 +38,15 @@ LZH_API LZH_BOOL lzh_get_curtime(const char *format, char *buf, int len);
 /* 根据文本生成 hash code */
 LZH_API LZH_HASH_CODE lzh_gen_hash_code(const char *src);
 
+/* 文件读 */
+LZH_API LZH_BOOL lzh_read_file(const char *file, LZH_DATA *data);
+
+/* 文件写 */
+LZH_API LZH_BOOL lzh_write_file(const char *file, const LZH_DATA *data);
+
+/* 获取文件大小 */
+LZH_API LZH_UINT32 lzh_get_file_size(const char *file); 
+
 #ifdef __cplusplus
 }
 #endif

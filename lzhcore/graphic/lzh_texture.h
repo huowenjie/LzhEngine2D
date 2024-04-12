@@ -7,12 +7,11 @@
 /* Œ∆¿Ì */
 /*===========================================================================*/
 
-typedef struct LZH_TEXTURE
-{
-    GLuint  textureId;	
-    GLint   format;
+typedef struct LZH_TEXTURE {
+    GLuint  texid;	
     int     width;
     int     height;
+    int     channels;
 } LZH_TEXTURE;
 
 LZH_TEXTURE *lzh_texture_create(const char *path);

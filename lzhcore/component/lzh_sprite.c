@@ -14,6 +14,7 @@
 
 /* 初始化顶点数据 */
 static void init_sprite_vertex(LZH_SPRITE *sp);
+static void quit_sprite_vertex(LZH_SPRITE *sp);
 
 /* 添加纹理 */
 static void add_sprite_texture(
@@ -104,6 +105,8 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     sprite->cur_frame = 0;
     sprite->start_frame = 0;
     sprite->end_frame = count - 1;
+
+    init_sprite_vertex(sprite);
     add_sprite_texture(engine, sprite, res_list, count);
     return sprite;
 }
@@ -125,6 +128,8 @@ void lzh_sprite_destroy(LZH_SPRITE *sprite)
             lzh_cpnt_rb_delete(obj->components, LZH_CPNT_SPRITE, NULL, NULL);
             sprite->base.object = NULL;
         }
+
+        quit_sprite_vertex(sprite);
         lzh_sprite_remove((LZH_COMPONENT *)sprite);
     }
 }
@@ -216,75 +221,72 @@ void lzh_sprite_set_keyframe(
 
 void init_sprite_vertex(LZH_SPRITE *sp)
 {
-    SDL_Vertex *vertex = NULL;
-    int *indices = NULL;
+    float vertices[] = {
+         /* positions          colors                texture coords */
+         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 1.0f,  0.0f, 1.0f
+    };
+
+    int indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    GLuint vao = 0;
+    GLuint vbo = 0;
+    GLuint ebo = 0;
 
     if (!sp) {
         return;
     }
 
-    vertex = sp->vertices;
-    indices = sp->indices;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
 
-    /*
-     * SDL_Vertex vertices[] = {
-     *     { { -1.0f, -1.0f }, { 255, 255, 255, 255 }, { 0.0f, 0.0f } },
-     *     { {  1.0f, -1.0f }, { 255, 255, 255, 255 }, { 1.0f, 0.0f } },
-     *     { {  1.0f,  1.0f }, { 255, 255, 255, 255 }, { 1.0f, 1.0f } },
-     *     { { -1.0f,  1.0f }, { 255, 255, 255, 255 }, { 0.0f, 1.0f } }
-     * };
-     * 
-     * int indices[] = { 0, 1, 2, 2, 3, 0 };
-     */
-    vertex[0].position.x = -1.0f;
-    vertex[0].position.y = -1.0f;
-    vertex[0].color.r = 255;
-    vertex[0].color.g = 255;
-    vertex[0].color.b = 255;
-    vertex[0].color.a = 255;
-    vertex[0].tex_coord.x = 0.0f;
-    vertex[0].tex_coord.y = 0.0f;
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    vertex[1].position.x = 1.0f;
-    vertex[1].position.y = -1.0f;
-    vertex[1].color.r = 255;
-    vertex[1].color.g = 255;
-    vertex[1].color.b = 255;
-    vertex[1].color.a = 255;
-    vertex[1].tex_coord.x = 1.0f;
-    vertex[1].tex_coord.y = 0.0f;
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    vertex[2].position.x = 1.0f;
-    vertex[2].position.y = 1.0f;
-    vertex[2].color.r = 255;
-    vertex[2].color.g = 255;
-    vertex[2].color.b = 255;
-    vertex[2].color.a = 255;
-    vertex[2].tex_coord.x = 1.0f;
-    vertex[2].tex_coord.y = 1.0f;
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
-    vertex[3].position.x = -1.0f;
-    vertex[3].position.y = 1.0f;
-    vertex[3].color.r = 255;
-    vertex[3].color.g = 255;
-    vertex[3].color.b = 255;
-    vertex[3].color.a = 255;
-    vertex[3].tex_coord.x = 0.0f;
-    vertex[3].tex_coord.y = 1.0f;
+    sp->vao = vao;
+    sp->vbo = vbo;
+    sp->ebo = ebo;
+}
 
-    indices[0] = 0;
-    indices[1] = 1;
-    indices[2] = 2;
-    indices[3] = 2;
-    indices[4] = 3;
-    indices[5] = 0;
+void quit_sprite_vertex(LZH_SPRITE *sp)
+{
+    if (sp) {
+        if (sp->ebo) {
+            glDeleteBuffers(1, &sp->ebo);
+        }
+
+        if (sp->vbo) {
+            glDeleteBuffers(1, &sp->vbo);
+        }
+
+        if (sp->vao) {
+            glDeleteBuffers(1, &sp->vao);
+        }
+    }
 }
 
 void add_sprite_texture(
     LZH_ENGINE *engine, LZH_SPRITE *sp, const char *res[], int count)
 {
-    SDL_Texture **textures = NULL;
-    //int i = 0;
+    LZH_TEXTURE **textures = NULL;
+    int i = 0;
 
     if (!engine || !sp) {
         return;
@@ -298,26 +300,19 @@ void add_sprite_texture(
         return;
     }
 
-    textures = LZH_MALLOC(count * sizeof(SDL_Texture *));
+    textures = LZH_MALLOC(count * sizeof(LZH_TEXTURE *));
     if (!textures) {
         return;
     }
-    memset(textures, 0, count * sizeof(SDL_Texture *));
+    memset(textures, 0, count * sizeof(LZH_TEXTURE *));
 
-#if 0
     for (; i < count; i++) {
-        SDL_Texture *texture = NULL;
-        SDL_Surface *surface = IMG_Load(res[i]);
-
-        if (surface) {
-            texture = SDL_CreateTextureFromSurface(engine->renderer, surface);
-            if (texture) {
-                textures[i] = texture;
-            }
-            SDL_FreeSurface(surface);
+        LZH_TEXTURE *texture = lzh_texture_create(res[i]);
+        if (texture) {
+            textures[i] = texture;
         }
     }
-#endif
+
     sp->tex_count = count;
     sp->textures = textures;
 }
@@ -380,6 +375,7 @@ static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
 
 static void update_sprite_vertex(LZH_TRANSFORM *transform, LZH_SPRITE *sprite)
 {
+#if 0
     LZH_MAT4X4F sdlmat;
     LZH_MAT4X4F worldmat;
 
@@ -415,6 +411,21 @@ static void update_sprite_vertex(LZH_TRANSFORM *transform, LZH_SPRITE *sprite)
     vertext_pos = lzh_mat4x4f_mul_vec(&worldmat, &vertext_pos);
     vertices[3].position.x = vertext_pos.x;
     vertices[3].position.y = vertext_pos.y;
+#endif
+
+    if (sprite && sprite->vao) {
+        glBindVertexArray(sprite->vao);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    }
+}
+
+static void update_sprite_texture(
+    LZH_TRANSFORM *transform, LZH_SPRITE *sprite, LZH_TEXTURE *texture)
+{
+    if (texture && texture->texid) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture->texid);
+    }
 }
 
 void lzh_sprite_draw(LZH_BASE *base, void *args)
@@ -450,18 +461,10 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
     cur_frame = calc_images_frame(sprite);
 
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
-        SDL_Texture **textures = sprite->textures;
+        LZH_TEXTURE **textures = sprite->textures;
         if (textures && textures[cur_frame]) {
             update_sprite_vertex(transform, sprite);
-#if 0
-            SDL_RenderGeometry(
-                engine->renderer,
-                textures[cur_frame],
-                sprite->vertices,
-                sizeof(sprite->vertices) / sizeof(SDL_Vertex),
-                sprite->indices,
-                sizeof(sprite->indices) / sizeof(int));
-#endif
+            update_sprite_texture(transform, sprite, textures[cur_frame]);
         }
     }
 
@@ -481,12 +484,12 @@ void lzh_sprite_remove(LZH_COMPONENT *cpnt)
         LZH_SPRITE *sprite = (LZH_SPRITE *)cpnt;
 
         if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
-            SDL_Texture **textures = sprite->textures;
+            LZH_TEXTURE **textures = sprite->textures;
             if (textures) {
-                int i;
-                for (i = 0; i < sprite->tex_count; i++) {
+                int i = 0;
+                for (; i < sprite->tex_count; i++) {
                     if (textures[i]) {
-                        SDL_DestroyTexture(textures[i]);
+                        lzh_texture_destroy(textures[i]);
                     }
                 }
                 LZH_FREE(textures);

@@ -1,7 +1,9 @@
-#include <lzh_systool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
+
+#include <lzh_systool.h>
 #include <SDL2/SDL.h>
 
 #ifdef _WINDOWS
@@ -142,6 +144,95 @@ LZH_HASH_CODE lzh_gen_hash_code(const char *src)
 
     hash = (hash & 0x7FFFFFFFU);
     return hash;
+}
+
+LZH_BOOL lzh_read_file(const char *file, LZH_DATA *data)
+{
+    size_t len = 0;
+
+    char *path = NULL;
+    FILE *fp   = NULL;
+
+    if (!file || !*file) {
+        return LZH_FALSE;
+    }
+
+    if (!data || !data->value) {
+        return LZH_FALSE;
+    }
+
+    fp = fopen(path, "rb");
+    if (!fp) {
+        return LZH_FALSE;
+    }
+
+    len = data->size;
+
+    if (fread(data->value, sizeof(LZH_BYTE), len, fp) != len) {
+        fclose(fp);
+        return LZH_FALSE;
+    }
+
+    data->size =len;
+
+    if (fp) {
+        fclose(fp);
+    }
+    return LZH_TRUE;
+}
+
+LZH_BOOL lzh_write_file(const char *file, const LZH_DATA *data)
+{
+    size_t len = 0;
+
+    char *path = NULL;
+    FILE *fp   = NULL;
+
+    if (!file || !*file) {
+        return LZH_FALSE;
+    }
+
+    if (!data || !data->value) {
+        return LZH_FALSE;
+    }
+
+    fp = fopen(path, "wb");
+    if (!fp) {
+        return LZH_FALSE;
+    }
+
+    len = data->size;
+
+    if (fwrite(data->value, sizeof(LZH_BYTE), len, fp) != len) {
+        fclose(fp);
+        return LZH_FALSE;
+    }
+
+    if (fp) {
+        fclose(fp);
+    }
+    return LZH_TRUE;
+}
+
+LZH_UINT32 lzh_get_file_size(const char *file)
+{
+	FILE *fp = NULL;
+	long size = 0;
+
+	if (!file || !*file) {
+		return 0;
+	}
+
+	fp = fopen(file, "rb");
+	if (!fp) {
+		return 0;
+	}
+
+	fseek(fp, 0, SEEK_END);
+	size = ftell(fp);
+
+	fclose(fp);
+	return (LZH_UINT32)size;
 }
 
 /*===========================================================================*/

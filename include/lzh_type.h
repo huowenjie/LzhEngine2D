@@ -61,7 +61,7 @@ typedef void (*LZH_OBJECT_UPDATE)(LZH_ENGINE *, LZH_OBJECT *, void *);
 typedef void (*LZH_OBJECT_FIXEDUPDATE)(LZH_ENGINE *, LZH_OBJECT *, void *);
 
 /* ¹Ø¼üÖ¡»Øµ÷ */
-typedef LZH_UINT32(*LZH_KEYFRAME_CB)(void *);
+typedef LZH_UINT32 (*LZH_KEYFRAME_CB)(void *);
 
 #ifdef __cplusplus
 }

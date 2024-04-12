@@ -5,9 +5,10 @@
 
 #include "lzh_type.h"
 #include "../scene/lzh_scene_manager.h"
+#include "../graphic/lzh_shader.h"
 
 /*===========================================================================*/
-/* 引擎(内部) */
+/* 引擎对象 */
 /*===========================================================================*/
 
 #define LZH_EVT_NONE        0x00000000U /* 无事件*/
@@ -26,6 +27,7 @@ struct LZH_ENGINE {
     LZH_UINT32 engine_event;            /* 引擎状态事件 */
 
     LZH_SCENE_MANAGER *scene_manager;   /* 场景管理 */
+    LZH_SHADER *sprite_shader;          /* 通用的精灵着色器 */
 };
 
 /*===========================================================================*/
