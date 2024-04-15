@@ -373,7 +373,8 @@ static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
     return sdlmat;
 }
 
-static void update_sprite_vertex(LZH_TRANSFORM *transform, LZH_SPRITE *sprite)
+static void update_sprite_vertex(
+    LZH_ENGINE *engine, LZH_TRANSFORM *transform, LZH_SPRITE *sprite)
 {
 #if 0
     LZH_MAT4X4F sdlmat;
@@ -412,20 +413,32 @@ static void update_sprite_vertex(LZH_TRANSFORM *transform, LZH_SPRITE *sprite)
     vertices[3].position.x = vertext_pos.x;
     vertices[3].position.y = vertext_pos.y;
 #endif
+    LZH_SHADER *shader = NULL;
 
-    if (sprite && sprite->vao) {
+    if (!engine || !transform || !sprite) {
+        return;
+    }
+
+    shader = engine->sprite_shader;
+    if (!shader) {
+        return;
+    }
+
+    if (sprite->vao) {
+        lzh_shader_bind(shader);
         glBindVertexArray(sprite->vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
 }
 
-static void update_sprite_texture(
-    LZH_TRANSFORM *transform, LZH_SPRITE *sprite, LZH_TEXTURE *texture)
+static void update_sprite_texture(LZH_TEXTURE *texture)
 {
-    if (texture && texture->texid) {
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture->texid);
+    if (!texture || !texture->texid) {
+        return;
     }
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->texid);
 }
 
 void lzh_sprite_draw(LZH_BASE *base, void *args)
@@ -463,8 +476,8 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
         LZH_TEXTURE **textures = sprite->textures;
         if (textures && textures[cur_frame]) {
-            update_sprite_vertex(transform, sprite);
-            update_sprite_texture(transform, sprite, textures[cur_frame]);
+            update_sprite_vertex(engine, transform, sprite);
+            update_sprite_texture(textures[cur_frame]);
         }
     }
 

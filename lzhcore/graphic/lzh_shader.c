@@ -9,8 +9,9 @@
 static char infobuffer[1024] = { 0 };
 
 static LZH_BOOL lzh_shader_compile_check(GLuint shader);
-static LZH_BOOL lzh_shader_link_check(GLuint shader);
+static LZH_BOOL lzh_program_link_check(GLuint shader);
 static void lzh_shader_show_err(GLuint shader);
+static void lzh_program_show_err(GLuint shader);
 
 /*===========================================================================*/
 
@@ -100,8 +101,8 @@ LZH_SHADER *lzh_shader_new(const char *vert_shader, const char *frag_shader)
     glAttachShader(program, fshader);
     glLinkProgram(program);
 
-    if (!lzh_shader_link_check(program)) {
-        lzh_shader_show_err(program);
+    if (!lzh_program_link_check(program)) {
+        lzh_program_show_err(program);
         success = LZH_FALSE;
         goto end;
     }
@@ -142,7 +143,7 @@ LZH_SHADER *lzh_shader_sprite()
         "out vec2 outTexture;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(aPos, 1.0);\n"
+        "   gl_Position = vec4(inPos, 1.0);\n"
         "   outColor = inColor;\n"
         "   outTexture = inTexCoord;\n"
         "}\0";
@@ -155,10 +156,10 @@ LZH_SHADER *lzh_shader_sprite()
         "uniform sampler2D texture1;\n"
         "void main()\n"
         "{\n"
-        "   FragColor = texture(texture1, outTexture)\n"
+        "   FragColor = texture(texture1, outTexture);\n"
         "}\n\0";
 
-    
+    return lzh_shader_new(vertexShaderSource, fragmentShaderSource);
 }
 
 void lzh_shader_destroy(LZH_SHADER *shader)
@@ -185,6 +186,140 @@ void lzh_shader_unbind(LZH_SHADER *shader)
     }
 }
 
+void lzh_shader_set_int(LZH_SHADER *shader, const char *name, int value)
+{
+    GLint location = 0;
+
+    if (!name || !*name) {
+        return;
+    }
+
+    if (!shader || !shader->program) {
+        return;
+    }
+
+    location = glGetUniformLocation(shader->program, name);
+    glUniform1i(location, value);
+}
+
+void lzh_shader_set_float(LZH_SHADER *shader, const char *name, float value)
+{
+    GLint location = 0;
+
+    if (!name || !*name) {
+        return;
+    }
+
+    if (!shader || !shader->program) {
+        return;
+    }
+
+    location = glGetUniformLocation(shader->program, name);
+    glUniform1f(location, value);
+}
+
+void lzh_shader_set_vec2f(
+    LZH_SHADER *shader, const char *name, const LZH_VEC2F *vec)
+{
+    GLint location = 0;
+
+    if (!name || !*name || !vec) {
+        return;
+    }
+
+    if (!shader || !shader->program) {
+        return;
+    }
+
+    location = glGetUniformLocation(shader->program, name);
+    glUniform2f(location, vec->x, vec->y);
+}
+
+void lzh_shader_set_vec3f(
+    LZH_SHADER *shader, const char *name, const LZH_VEC3F *vec)
+{
+    GLint location = 0;
+
+    if (!name || !*name || !vec) {
+        return;
+    }
+
+    if (!shader || !shader->program) {
+        return;
+    }
+
+    location = glGetUniformLocation(shader->program, name);
+    glUniform3f(location, vec->x, vec->y, vec->z);
+}
+
+void lzh_shader_set_vec4f(
+    LZH_SHADER *shader, const char *name, const LZH_VEC4F *vec)
+{
+    GLint location = 0;
+
+    if (!name || !*name || !vec) {
+        return;
+    }
+
+    if (!shader || !shader->program) {
+        return;
+    }
+
+    location = glGetUniformLocation(shader->program, name);
+    glUniform4f(location, vec->x, vec->y, vec->z, vec->w);
+}
+
+void lzh_shader_set_mat2x2f(
+    LZH_SHADER *shader, const char *name, const LZH_MAT2X2F *mat)
+{
+    GLint location = 0;
+
+    if (!name || !*name || !mat) {
+        return;
+    }
+
+    if (!shader || !shader->program) {
+        return;
+    }
+
+    location = glGetUniformLocation(shader->program, name);
+    glUniformMatrix2fv(location, 1, GL_TRUE, mat->mat);
+}
+
+void lzh_shader_set_mat3x3f(
+    LZH_SHADER *shader, const char *name, const LZH_MAT3X3F *mat)
+{
+    GLint location = 0;
+
+    if (!name || !*name || !mat) {
+        return;
+    }
+
+    if (!shader || !shader->program) {
+        return;
+    }
+
+    location = glGetUniformLocation(shader->program, name);
+    glUniformMatrix3fv(location, 1, GL_TRUE, mat->mat);
+}
+
+void lzh_shader_set_mat4x4f(
+    LZH_SHADER *shader, const char *name, const LZH_MAT4X4F *mat)
+{
+    GLint location = 0;
+
+    if (!name || !*name || !mat) {
+        return;
+    }
+
+    if (!shader || !shader->program) {
+        return;
+    }
+
+    location = glGetUniformLocation(shader->program, name);
+    glUniformMatrix4fv(location, 1, GL_TRUE, mat->mat);
+}
+
 /*===========================================================================*/
 
 LZH_BOOL lzh_shader_compile_check(GLuint shader)
@@ -194,16 +329,22 @@ LZH_BOOL lzh_shader_compile_check(GLuint shader)
     return success ? LZH_TRUE : LZH_FALSE;
 }
 
-LZH_BOOL lzh_shader_link_check(GLuint shader)
+LZH_BOOL lzh_program_link_check(GLuint program)
 {
     GLint success = 0;
-    glGetShaderiv(shader, GL_LINK_STATUS, &success);
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
     return success ? LZH_TRUE : LZH_FALSE;
 }
 
 void lzh_shader_show_err(GLuint shader)
 {
     glGetShaderInfoLog(shader, sizeof(infobuffer), NULL, infobuffer);
+    LZH_TRACE(infobuffer);
+}
+
+void lzh_program_show_err(GLuint program)
+{
+    glGetProgramInfoLog(program, sizeof(infobuffer), NULL, infobuffer);
     LZH_TRACE(infobuffer);
 }
 

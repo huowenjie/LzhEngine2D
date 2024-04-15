@@ -53,9 +53,22 @@ LZH_TEXTURE *lzh_texture_create(const char *path)
 
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, imgdata);
         glGenerateMipmap(GL_TEXTURE_2D);
+
+        texture->channels = channels;
+        texture->width = width;
+        texture->height = height;
+        texture->texid = texid;
+
+        stbi_image_free(imgdata);
+    } else {
+        if (texid) {
+            glDeleteTextures(1, &texid);
+        }
+
+        LZH_FREE(texture);
+        texture = NULL;
     }
 
-    stbi_image_free(imgdata);
     return texture;
 }
 
