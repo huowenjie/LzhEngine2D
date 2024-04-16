@@ -17,6 +17,9 @@ void lzh_quit_opengl()
 void lzh_load_openglapi()
 {
     gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
 }
 
 /*===========================================================================*/

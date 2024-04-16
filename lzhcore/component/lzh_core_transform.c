@@ -63,7 +63,7 @@ LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine)
     transform->leftward = lzh_vec3f_xyz(0.0f, 1.0f, 0.0f);
     transform->rightward = lzh_vec3f_xyz(0.0f, -1.0f, 0.0f);
 
-    transform->world_mat = lzh_mat4x4f_unit();
+    transform->model_mat = lzh_mat4x4f_unit();
 
     return transform;
 }
@@ -91,13 +91,13 @@ void lzh_transform_flush(LZH_TRANSFORM *transform)
         LZH_VEC3F *localscale = &transform->local_scale;
         LZH_VEC3F *centerpos = &transform->center_pos;
 
-        /* 仿射变换 */
+        /* 模型变换 */
         LZH_MAT4X4F local = lzh_mat4x4f_unit();
-        LZH_MAT4X4F trans = lzh_mat4x4f_translate(localpos->x, localpos->y, 0.0f);
+        LZH_MAT4X4F trans = lzh_mat4x4f_translate(localpos->x, localpos->y, localpos->z);
         LZH_MAT4X4F rotate = lzh_mat4x4f_rotate_z(transform->local_angle);
-        LZH_MAT4X4F scale = lzh_mat4x4f_scale(localscale->x, localscale->y, 1.0f);
+        LZH_MAT4X4F scale = lzh_mat4x4f_scale(localscale->x, localscale->y, localscale->z);
 
-        /* 中心坐标点为  */
+        /* 移动至旋转中心坐标  */
         LZH_MAT4X4F centermat = lzh_mat4x4f_translate(
             -centerpos->x,
             -centerpos->y,
@@ -117,13 +117,13 @@ void lzh_transform_flush(LZH_TRANSFORM *transform)
 
         if (parent && parent->transform) {
             LZH_TRANSFORM *ptransform = parent->transform;
-            LZH_MAT4X4F pworld = ptransform->world_mat;
+            LZH_MAT4X4F pworld = ptransform->model_mat;
 
             local = lzh_mat4x4f_mul(&pworld, &local);
         }
 
         lzh_transform_update_axis(transform, &local);
-        transform->world_mat = local;
+        transform->model_mat = local;
 
         /* 遍历子对象的 TRANSFORM 组件，更新子对象的矩阵 */
         if (object->children) {

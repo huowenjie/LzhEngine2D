@@ -39,6 +39,7 @@ typedef int                         LZH_BOOL;
 typedef struct LZH_OBJECT           LZH_OBJECT;
 typedef struct LZH_SCENE            LZH_SCENE;
 typedef struct LZH_SPRITE           LZH_SPRITE;
+typedef struct LZH_CAMERA           LZH_CAMERA;
 typedef struct LZH_TRANSFORM        LZH_TRANSFORM;
 typedef struct LZH_ENGINE           LZH_ENGINE;
 typedef struct LZH_QUAD_TREE        LZH_QUAD_TREE;

@@ -376,43 +376,6 @@ static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
 static void update_sprite_vertex(
     LZH_ENGINE *engine, LZH_TRANSFORM *transform, LZH_SPRITE *sprite)
 {
-#if 0
-    LZH_MAT4X4F sdlmat;
-    LZH_MAT4X4F worldmat;
-
-    LZH_VEC4F vertext_pos;
-    SDL_Vertex *vertices = NULL;
-
-    if (!transform || !sprite) {
-        return;
-    }
-
-    worldmat = transform->world_mat;
-    sdlmat = get_sdl_mat(transform);
-    worldmat = lzh_mat4x4f_mul(&sdlmat, &worldmat);
-
-    vertices = sprite->vertices;
-
-    vertext_pos = lzh_vec4f_xyzw(-1.0f, -1.0f, 0.0f, 1.0f);
-    vertext_pos = lzh_mat4x4f_mul_vec(&worldmat, &vertext_pos);
-    vertices[0].position.x = vertext_pos.x;
-    vertices[0].position.y = vertext_pos.y;
-
-    vertext_pos = lzh_vec4f_xyzw(1.0f, -1.0f, 0.0f, 1.0f);
-    vertext_pos = lzh_mat4x4f_mul_vec(&worldmat, &vertext_pos);
-    vertices[1].position.x = vertext_pos.x;
-    vertices[1].position.y = vertext_pos.y;
-
-    vertext_pos = lzh_vec4f_xyzw(1.0f, 1.0f, 0.0f, 1.0f);
-    vertext_pos = lzh_mat4x4f_mul_vec(&worldmat, &vertext_pos);
-    vertices[2].position.x = vertext_pos.x;
-    vertices[2].position.y = vertext_pos.y;
-
-    vertext_pos = lzh_vec4f_xyzw(-1.0f, 1.0f, 0.0f, 1.0f);
-    vertext_pos = lzh_mat4x4f_mul_vec(&worldmat, &vertext_pos);
-    vertices[3].position.x = vertext_pos.x;
-    vertices[3].position.y = vertext_pos.y;
-#endif
     LZH_SHADER *shader = NULL;
 
     if (!engine || !transform || !sprite) {
@@ -425,18 +388,25 @@ static void update_sprite_vertex(
     }
 
     if (sprite->vao) {
+        LZH_MAT4X4F test = lzh_mat4x4f_unit();
+
         lzh_shader_bind(shader);
+        lzh_shader_set_mat4x4f(shader, "model", &transform->model_mat);
+        lzh_shader_set_mat4x4f(shader, "view", &test);
+        lzh_shader_set_mat4x4f(shader, "projection", &test);
+
         glBindVertexArray(sprite->vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
 }
 
-static void update_sprite_texture(LZH_TEXTURE *texture)
+static void update_sprite_texture(LZH_SHADER *shader, LZH_TEXTURE *texture)
 {
-    if (!texture || !texture->texid) {
+    if (!shader || !texture || !texture->texid) {
         return;
     }
 
+    lzh_shader_bind(shader);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->texid);
 }
@@ -476,8 +446,8 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
         LZH_TEXTURE **textures = sprite->textures;
         if (textures && textures[cur_frame]) {
+            update_sprite_texture(engine->sprite_shader, textures[cur_frame]);
             update_sprite_vertex(engine, transform, sprite);
-            update_sprite_texture(textures[cur_frame]);
         }
     }
 

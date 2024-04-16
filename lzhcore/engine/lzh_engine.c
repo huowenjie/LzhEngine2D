@@ -145,6 +145,7 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
 void lzh_engine_update(LZH_ENGINE *engine)
 {
     int run = 1;
+    GLbitfield mask = GL_COLOR_BUFFER_BIT;
     SDL_Event evt;
     SDL_Window *window = NULL;
 
@@ -162,6 +163,11 @@ void lzh_engine_update(LZH_ENGINE *engine)
     render_time = 1000.0f / engine->render_fps;
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    if (glIsEnabled(GL_DEPTH_TEST))
+    {
+        mask |= GL_DEPTH_BUFFER_BIT;
+    }
 
     while (run) {
         Uint64 start = 0;
@@ -183,7 +189,7 @@ void lzh_engine_update(LZH_ENGINE *engine)
             }
         }
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(mask);
 
         /*
          * 假设某一帧渲染时间过长，导致时间累计大于当前的

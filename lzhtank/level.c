@@ -96,8 +96,8 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     LZH_TRANSFORM *transform = NULL;
     LZH_TRANSFORM *turret_transform = NULL;
     LZH_TRANSFORM *chassis_transform = NULL;
-    LZH_VEC3F scale = lzh_vec3f_xyz(20.0f, 20.0f, 20.0f);
-    LZH_VEC3F turret_scale = lzh_vec3f_xyz(15.0f, 20.0f, 20.0f);
+    LZH_VEC3F scale = lzh_vec3f_xyz(0.1f, 0.1f, 1.0f);
+    LZH_VEC3F turret_scale = lzh_vec3f_xyz(0.1f, 0.1f, 1.0f);
     LZH_VEC3F trans = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     LZH_VEC3F center = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
 
@@ -129,8 +129,8 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
 
     lzh_transform_scale(turret_transform, &turret_scale);
     lzh_transform_scale(chassis_transform, &scale);
-    lzh_transform_rotate_z(turret_transform, 180.0f);
-    lzh_transform_rotate_z(chassis_transform, 180.0f);
+
+    trans = lzh_vec3f_xyz(0.0f, 0.0f, -0.5f);
     lzh_transform_translate(turret_transform, &trans);
     lzh_transform_set_center(turret_transform, &center);
 
