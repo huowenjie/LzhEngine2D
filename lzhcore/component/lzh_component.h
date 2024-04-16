@@ -48,6 +48,7 @@ RBTREE_DECLARE(LZH_CPNT, lzh_cpnt, LZH_UINT32, LZH_COMPONENT *)
 
 void lzh_cpnt_init(LZH_COMPONENT *cpnt);
 void lzh_cpnt_quit(LZH_COMPONENT *cpnt);
+void lzh_cpnt_destroy(LZH_COMPONENT *cpnt);
 
 /* 精灵组件的回调函数 */
 int lzh_cpnt_rb_comp(const void *cpnt1, const void *cpnt2);

@@ -70,15 +70,7 @@ LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine)
 
 void lzh_transform_destroy(LZH_TRANSFORM *transform)
 {
-    if (transform) {
-        /* 从所属对象组件表中移除组件对象 */
-        if (transform->base.object) {
-            LZH_OBJECT *obj = transform->base.object;
-            lzh_cpnt_rb_delete(obj->components, LZH_CPNT_TRANSFORM, NULL, NULL);
-            transform->base.object = NULL;
-        }
-        lzh_transform_remove((LZH_COMPONENT *)transform);
-    }
+    lzh_cpnt_destroy((LZH_COMPONENT *)transform);
 }
 
 void lzh_transform_flush(LZH_TRANSFORM *transform)
@@ -174,7 +166,7 @@ void lzh_transform_remove(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
         LZH_TRANSFORM *transform = (LZH_TRANSFORM *)cpnt;
-        lzh_cpnt_quit((LZH_COMPONENT *)transform);
+        lzh_cpnt_quit(cpnt);
         LZH_FREE(transform);
     }
 }

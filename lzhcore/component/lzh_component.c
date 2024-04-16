@@ -1,4 +1,5 @@
 #include "lzh_component.h"
+#include "../object/lzh_core_object.h"
 
 /*===========================================================================*/
 
@@ -18,6 +19,22 @@ void lzh_cpnt_quit(LZH_COMPONENT *cpnt)
     cpnt->remove_component = NULL;
     cpnt->type = 0;
     lzh_base_quit((LZH_BASE *)cpnt);
+}
+
+void lzh_cpnt_destroy(LZH_COMPONENT *cpnt)
+{
+    if (cpnt) {
+        /* ??????????????? */
+        if (cpnt->object) {
+            LZH_OBJECT *obj = cpnt->object;
+            lzh_cpnt_rb_delete(obj->components, cpnt->type, NULL, NULL);
+            cpnt->object = NULL;
+        }
+
+        if (cpnt->remove_component) {
+            cpnt->remove_component(cpnt);
+        }
+    }
 }
 
 /*===========================================================================*/
