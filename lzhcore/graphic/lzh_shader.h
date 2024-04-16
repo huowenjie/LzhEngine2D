@@ -1,9 +1,9 @@
 #ifndef __LZH_SHADER_H__
 #define __LZH_SHADER_H__
 
-#include <lzh_mat2x2f.h>
-#include <lzh_mat3x3f.h>
-#include <lzh_mat4x4f.h>
+#include "../math/lzh_mat2x2f.h"
+#include "../math/lzh_mat3x3f.h"
+#include "../math/lzh_mat4x4f.h"
 #include "lzh_opengl.h"
 
 /*===========================================================================*/

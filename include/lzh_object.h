@@ -2,7 +2,6 @@
 #define __LZH_OBJECT_H__
 
 #include "lzh_type.h"
-#include "lzh_vec2f.h"
 #include "lzh_rectf.h"
 
 /*===========================================================================*/

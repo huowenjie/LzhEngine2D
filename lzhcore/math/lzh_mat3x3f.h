@@ -34,49 +34,49 @@ typedef union {
 } LZH_MAT3X3F;
 
 /* 构建单位矩阵 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_unit();
+LZH_MAT3X3F lzh_mat3x3f_unit();
 
 /* 构建零矩阵 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_zero();
+LZH_MAT3X3F lzh_mat3x3f_zero();
 
 /* 构建矩阵 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_array(const float *elems);
+LZH_MAT3X3F lzh_mat3x3f_array(const float *elems);
 
 /* 构建矩阵 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_array2d(const float (*elems)[3]);
+LZH_MAT3X3F lzh_mat3x3f_array2d(const float (*elems)[3]);
 
 /* 转置矩阵 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_transpose(const LZH_MAT3X3F *mat);
+LZH_MAT3X3F lzh_mat3x3f_transpose(const LZH_MAT3X3F *mat);
 
 /* 逆矩阵 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_inverse(const LZH_MAT3X3F *mat);
+LZH_MAT3X3F lzh_mat3x3f_inverse(const LZH_MAT3X3F *mat);
 
 /* 绕 z 轴旋转 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_rotate(float theta);
+LZH_MAT3X3F lzh_mat3x3f_rotate(float theta);
 
 /* 平移 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_translate(float x, float y);
+LZH_MAT3X3F lzh_mat3x3f_translate(float x, float y);
 
 /* 缩放 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_scale(float scale);
+LZH_MAT3X3F lzh_mat3x3f_scale(float scale);
 
 /* 3 x 3 行列式值 */
-LZH_API float lzh_mat3x3f_determinant(const LZH_MAT3X3F *mat); 
+float lzh_mat3x3f_determinant(const LZH_MAT3X3F *mat); 
 
 /* 矩阵加 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_add(const LZH_MAT3X3F *a, const LZH_MAT3X3F *b);
+LZH_MAT3X3F lzh_mat3x3f_add(const LZH_MAT3X3F *a, const LZH_MAT3X3F *b);
 
 /* 矩阵减 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_sub(const LZH_MAT3X3F *a, const LZH_MAT3X3F *b);
+LZH_MAT3X3F lzh_mat3x3f_sub(const LZH_MAT3X3F *a, const LZH_MAT3X3F *b);
 
 /* 矩阵乘 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_mul(const LZH_MAT3X3F *a, const LZH_MAT3X3F *b);
+LZH_MAT3X3F lzh_mat3x3f_mul(const LZH_MAT3X3F *a, const LZH_MAT3X3F *b);
 
 /* 矩阵和标量乘 */
-LZH_API LZH_MAT3X3F lzh_mat3x3f_mul_real(const LZH_MAT3X3F *a, float b);
+LZH_MAT3X3F lzh_mat3x3f_mul_real(const LZH_MAT3X3F *a, float b);
 
 /* 矩阵和向量乘 */
-LZH_API LZH_VEC3F lzh_mat3x3f_mul_vec(const LZH_MAT3X3F *a, const LZH_VEC3F *b);
+LZH_VEC3F lzh_mat3x3f_mul_vec(const LZH_MAT3X3F *a, const LZH_VEC3F *b);
 
 #ifdef __cplusplus
 }

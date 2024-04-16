@@ -1,9 +1,7 @@
 #ifndef __LZH_CORE_TRANSFORM_H__
 #define __LZH_CORE_TRANSFORM_H__
 
-#include <lzh_mat4x4f.h>
-#include <lzh_vec4f.h>
-
+#include "../math/lzh_mat4x4f.h"
 #include "lzh_component.h"
 
 /*===========================================================================*/

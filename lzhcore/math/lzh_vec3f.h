@@ -20,34 +20,34 @@ typedef struct
 } LZH_VEC3F;
 
 /* 构建向量 */
-LZH_API LZH_VEC3F lzh_vec3f_xyz(float x, float y, float z);
+LZH_VEC3F lzh_vec3f_xyz(float x, float y, float z);
 
 /* 构建向量 */
-LZH_API LZH_VEC3F lzh_vec3f_vec2f(const LZH_VEC2F *v, float z);
+LZH_VEC3F lzh_vec3f_vec2f(const LZH_VEC2F *v, float z);
 
 /* 向量加 */
-LZH_API LZH_VEC3F lzh_vec3f_add(const LZH_VEC3F *a, const LZH_VEC3F *b);
+LZH_VEC3F lzh_vec3f_add(const LZH_VEC3F *a, const LZH_VEC3F *b);
 
 /* 向量减 */
-LZH_API LZH_VEC3F lzh_vec3f_sub(const LZH_VEC3F *a, const LZH_VEC3F *b);
+LZH_VEC3F lzh_vec3f_sub(const LZH_VEC3F *a, const LZH_VEC3F *b);
 
 /* 向量与实数相乘 */
-LZH_API LZH_VEC3F lzh_vec3f_mul(const LZH_VEC3F *a, float t);
+LZH_VEC3F lzh_vec3f_mul(const LZH_VEC3F *a, float t);
 
 /* 向量与实数相除 */
-LZH_API LZH_VEC3F lzh_vec3f_div(const LZH_VEC3F *a, float t);
+LZH_VEC3F lzh_vec3f_div(const LZH_VEC3F *a, float t);
 
 /* 向量取反 */
-LZH_API LZH_VEC3F lzh_vec3f_reverse(const LZH_VEC3F *a);
+LZH_VEC3F lzh_vec3f_reverse(const LZH_VEC3F *a);
 
 /* 向量归一化 */
-LZH_API LZH_VEC3F lzh_vec3f_normalize(const LZH_VEC3F *a);
+LZH_VEC3F lzh_vec3f_normalize(const LZH_VEC3F *a);
 
 /* 向量线性插值, p = (1 - t) * a + t * b 当 t = 0 时返回 a，否则返回 b */
-LZH_API LZH_VEC3F lzh_vec3f_lerp(const LZH_VEC3F *a, const LZH_VEC3F *b, float t);
+LZH_VEC3F lzh_vec3f_lerp(const LZH_VEC3F *a, const LZH_VEC3F *b, float t);
 
 /* 向量点乘 */
-LZH_API float lzh_vec3f_dot(const LZH_VEC3F *a, const LZH_VEC3F *b);
+float lzh_vec3f_dot(const LZH_VEC3F *a, const LZH_VEC3F *b);
 
 /* 向量叉乘 */
 LZH_API LZH_VEC3F lzh_vec3f_cross(const LZH_VEC3F *a, const LZH_VEC3F *b);

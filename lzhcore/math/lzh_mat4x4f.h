@@ -38,52 +38,52 @@ typedef union {
 } LZH_MAT4X4F;
 
 /* 构建单位矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_unit();
+LZH_MAT4X4F lzh_mat4x4f_unit();
 
 /* 构建零矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_zero();
+LZH_MAT4X4F lzh_mat4x4f_zero();
 
 /* 构建矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_array(const float *elems);
+LZH_MAT4X4F lzh_mat4x4f_array(const float *elems);
 
 /* 构建矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_array2d(const float (*elems)[4]);
+LZH_MAT4X4F lzh_mat4x4f_array2d(const float (*elems)[4]);
 
 /* 构建缩放矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_scale(float sx, float sy, float sz);
+LZH_MAT4X4F lzh_mat4x4f_scale(float sx, float sy, float sz);
 
 /* 构建旋转矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_rotate_z(float theta);
+LZH_MAT4X4F lzh_mat4x4f_rotate_z(float theta);
 
 /* 构建旋转矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_rotate_x(float theta);
+LZH_MAT4X4F lzh_mat4x4f_rotate_x(float theta);
 
 /* 构建旋转矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_rotate_y(float theta);
+LZH_MAT4X4F lzh_mat4x4f_rotate_y(float theta);
 
 /* 构建镜像矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_reflect(const LZH_VEC3F *n);
+LZH_MAT4X4F lzh_mat4x4f_reflect(const LZH_VEC3F *n);
 
 /* 获取绕 z 轴正方向旋转角度 */
-LZH_API float lzh_mat4x4f_rotate_z_theta(LZH_MAT4X4F *mat);
+float lzh_mat4x4f_rotate_z_theta(LZH_MAT4X4F *mat);
 
 /* 获取绕 x 轴正方向旋转角度 */
-LZH_API float lzh_mat4x4f_rotate_x_theta(LZH_MAT4X4F *mat);
+float lzh_mat4x4f_rotate_x_theta(LZH_MAT4X4F *mat);
 
 /* 获取绕 y 轴正方向旋转角度 */
-LZH_API float lzh_mat4x4f_rotate_y_theta(LZH_MAT4X4F *mat);
+float lzh_mat4x4f_rotate_y_theta(LZH_MAT4X4F *mat);
 
 /* 构建平移矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_translate(float dx, float dy, float dz);
+LZH_MAT4X4F lzh_mat4x4f_translate(float dx, float dy, float dz);
 
 /* 从仿射矩阵提取缩放矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_get_scale(const LZH_MAT4X4F *mat);
+LZH_MAT4X4F lzh_mat4x4f_get_scale(const LZH_MAT4X4F *mat);
 
 /* 从仿射矩阵提取旋转矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_get_rotate(const LZH_MAT4X4F *mat);
+LZH_MAT4X4F lzh_mat4x4f_get_rotate(const LZH_MAT4X4F *mat);
 
 /* 从仿射矩阵提取平移矩阵 */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_get_translate(const LZH_MAT4X4F *mat);
+LZH_MAT4X4F lzh_mat4x4f_get_translate(const LZH_MAT4X4F *mat);
 
 /**
  * 体积盒投影矩阵
