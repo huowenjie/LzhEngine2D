@@ -119,7 +119,7 @@ endif
 LNK := -Wl,-Bsymbolic
 
 # 链接库列表
-LIB := dl m SDL2 SDL2_image
+LIB := dl m SDL2
 
 # 共享库
 ifeq ($(TYPE),so)

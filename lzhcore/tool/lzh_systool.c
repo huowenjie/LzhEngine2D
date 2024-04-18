@@ -4,7 +4,8 @@
 #include <time.h>
 
 #include <lzh_systool.h>
-#include <SDL2/SDL.h>
+
+#include "../sdl2/SDL.h"
 
 #ifdef _WINDOWS
 	#define _WIN32_WINNT 0x0502
@@ -149,8 +150,6 @@ LZH_HASH_CODE lzh_gen_hash_code(const char *src)
 LZH_BOOL lzh_read_file(const char *file, LZH_DATA *data)
 {
     size_t len = 0;
-
-    char *path = NULL;
     FILE *fp   = NULL;
 
     if (!file || !*file) {
@@ -161,7 +160,7 @@ LZH_BOOL lzh_read_file(const char *file, LZH_DATA *data)
         return LZH_FALSE;
     }
 
-    fp = fopen(path, "rb");
+    fp = fopen(file, "rb");
     if (!fp) {
         return LZH_FALSE;
     }
@@ -173,7 +172,7 @@ LZH_BOOL lzh_read_file(const char *file, LZH_DATA *data)
         return LZH_FALSE;
     }
 
-    data->size =len;
+    data->size = (LZH_UINT32)len;
 
     if (fp) {
         fclose(fp);
@@ -184,8 +183,6 @@ LZH_BOOL lzh_read_file(const char *file, LZH_DATA *data)
 LZH_BOOL lzh_write_file(const char *file, const LZH_DATA *data)
 {
     size_t len = 0;
-
-    char *path = NULL;
     FILE *fp   = NULL;
 
     if (!file || !*file) {
@@ -196,7 +193,7 @@ LZH_BOOL lzh_write_file(const char *file, const LZH_DATA *data)
         return LZH_FALSE;
     }
 
-    fp = fopen(path, "wb");
+    fp = fopen(file, "wb");
     if (!fp) {
         return LZH_FALSE;
     }

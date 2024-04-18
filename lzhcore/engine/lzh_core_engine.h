@@ -1,9 +1,8 @@
 #ifndef __LZH_CORE_ENGINE_H__
 #define __LZH_CORE_ENGINE_H__
 
-#include <SDL2/SDL.h>
-
 #include "lzh_type.h"
+#include "../SDL2/SDL.h"
 #include "../scene/lzh_scene_manager.h"
 #include "../graphic/lzh_shader.h"
 

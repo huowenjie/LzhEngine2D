@@ -1,13 +1,14 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <time.h>
-#include <SDL2/SDL_image.h>
 
 #include <lzh_engine.h>
 #include <lzh_object.h>
 #include <lzh_mem.h>
 
 #include "lzh_core_engine.h"
+
+#include "../sdl2/SDL_image.h"
 #include "../graphic/lzh_opengl.h"
 #include "../object/lzh_core_object.h"
 #include "../log/lzh_tracer.h"
@@ -24,7 +25,6 @@ static void render_objects_fixed(
 int lzh_init()
 {
     SDL_Init(SDL_INIT_VIDEO);
-    IMG_Init(IMG_INIT_PNG);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
     srand((unsigned int)time(NULL));
 
@@ -42,7 +42,6 @@ void lzh_quit()
     LZH_PRINT_LEAK_INFO;
     LZH_MEM_END;
 
-    IMG_Quit();
     SDL_Quit();
 }
 

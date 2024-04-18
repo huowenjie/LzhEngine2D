@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include <SDL2/SDL.h>
 #include <lzh_log.h>
 #include <lzh_systool.h>
+
+#include "../sdl2/SDL.h"
 
 /*===========================================================================*/
 
