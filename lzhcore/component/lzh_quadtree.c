@@ -457,7 +457,7 @@ void find_quad_node(
     LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count,
     int offset)
 {
-    LZH_RECTF objrect;
+    LZH_RECTF objrect = { 0 };
     LZH_UINT32 index = 0;
 
     int num = 0;
