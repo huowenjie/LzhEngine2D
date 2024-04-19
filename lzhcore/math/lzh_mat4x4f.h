@@ -113,20 +113,25 @@ LZH_API LZH_MAT4X4F lzh_mat4x4f_volume_map(
 LZH_API LZH_MAT4X4F lzh_mat4x4f_viewport(int width, int height);
 
 /**
- * 摄像机视觉变换矩阵
+ * 摄像机视觉变换矩阵 look at
  * 
  * pos 摄像机位置
  * target 目标位置
  */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_camera(const LZH_VEC3F *pos, const LZH_VEC3F *target);
+LZH_API LZH_MAT4X4F lzh_mat4x4f_camera(
+    const LZH_VEC3F *pos,
+    const LZH_VEC3F *up,
+    const LZH_VEC3F *target);
 
 /**
  * 透视投影矩阵
  * 
- * 将体积盒 [xl, xh] x [yl, yh] x [zl, zh] 中的物体
- * 进行透视变换，同时投影到规范化坐标系统 [-1, 1] 上
+ * fov：视场角
+ * aspect：宽高比
+ * near：近平面
+ * far：远平面
  */
-LZH_API LZH_MAT4X4F lzh_mat4x4f_perspective(const LZH_VEC3F *l, const LZH_VEC3F *h);
+LZH_API LZH_MAT4X4F lzh_mat4x4f_perspective(float fov, float aspect, float near, float far);
 
 /* 转置矩阵 */
 LZH_API LZH_MAT4X4F lzh_mat4x4f_transpose(const LZH_MAT4X4F *mat);

@@ -315,7 +315,10 @@ LZH_MAT4X4F lzh_mat4x4f_viewport(int width, int height)
     return mat;
 }
 
-LZH_MAT4X4F lzh_mat4x4f_camera(const LZH_VEC3F *pos, const LZH_VEC3F *target)
+LZH_MAT4X4F lzh_mat4x4f_camera(
+    const LZH_VEC3F *pos,
+    const LZH_VEC3F *up,
+    const LZH_VEC3F *target)
 {
     LZH_VEC3F z = { 0.0f, 1.0f, 0.0f };
     LZH_VEC3F u = { 0 };
@@ -326,6 +329,10 @@ LZH_MAT4X4F lzh_mat4x4f_camera(const LZH_VEC3F *pos, const LZH_VEC3F *target)
 
     if (!pos || !target) {
         return cam;
+    }
+
+    if (up) {
+        z = *up;
     }
 
     w = lzh_vec3f_sub(pos, target);
@@ -355,21 +362,17 @@ LZH_MAT4X4F lzh_mat4x4f_camera(const LZH_VEC3F *pos, const LZH_VEC3F *target)
     return cam;
 }
 
-LZH_MAT4X4F lzh_mat4x4f_perspective(const LZH_VEC3F *l, const LZH_VEC3F *h)
+LZH_MAT4X4F lzh_mat4x4f_perspective(float fov, float aspect, float near, float far)
 {
-    LZH_MAT4X4F per = lzh_mat4x4f_unit();
+    LZH_MAT4X4F per = lzh_mat4x4f_zero();
 
-    if (l && h) {
-        per.m33 = 0.0f;
-        per.m32 = 1.0f;
+    float thfov = tanf(fov / 2.0f);
 
-        per.m00 = l->z * 2.0f / (h->x - l->x);
-        per.m02 = (l->x + h->x) / (l->x - h->x);
-        per.m11 = l->z * 2.0f / (h->y - l->y);
-        per.m12 = (l->y + h->y) / (l->y - h->y);
-        per.m22 = (l->z + h->z) / (l->z - h->z);
-        per.m23 = 2.0f * l->z * h->z / (h->z - l->z);
-    }
+    per.m00 = 1.0f / (aspect * thfov);
+    per.m11 = 1.0f / thfov;
+    per.m22 = -(near + far) / (far - near);
+    per.m23 = -(2.0f * far * near) / (far - near);
+    per.m32 = -1.0f;
     return per;
 }
 

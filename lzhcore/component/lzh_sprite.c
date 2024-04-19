@@ -4,6 +4,7 @@
 #include <lzh_engine.h>
 
 #include "lzh_core_sprite.h"
+#include "lzh_core_camera.h"
 
 #include "../sdl2/SDL_image.h"
 #include "../object/lzh_core_object.h"
@@ -96,6 +97,7 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     lzh_cpnt_init(base);
 
     base->base.engine = engine;
+    base->base.draw = lzh_sprite_draw;
     base->type = LZH_CPNT_SPRITE;
     base->remove_component = lzh_sprite_remove;
 
@@ -378,6 +380,9 @@ static void update_sprite_vertex(
     LZH_ENGINE *engine, LZH_TRANSFORM *transform, LZH_SPRITE *sprite)
 {
     LZH_SHADER *shader = NULL;
+    LZH_SCENE *cur_scene = NULL;
+    LZH_OBJECT *camera = NULL;
+    LZH_CAMERA *camera_cpnt = NULL;
 
     if (!engine || !transform || !sprite) {
         return;
@@ -388,13 +393,29 @@ static void update_sprite_vertex(
         return;
     }
 
+    cur_scene = lzh_sm_get_active_scene(engine->scene_manager);
+    if (!cur_scene) {
+        return;
+    }
+
+    camera = cur_scene->main_camera;
+    if (!camera) {
+        return;
+    }
+
+    camera_cpnt = (LZH_CAMERA *)lzh_cpnt_get_type(
+        camera->components, LZH_CPNT_CAMERA);
+    if (!camera_cpnt) {
+        return;
+    }
+
     if (sprite->vao) {
-        LZH_MAT4X4F test = lzh_mat4x4f_unit();
+        LZH_MAT4X4F unit = lzh_mat4x4f_unit();
 
         lzh_shader_bind(shader);
         lzh_shader_set_mat4x4f(shader, "model", &transform->model_mat);
-        lzh_shader_set_mat4x4f(shader, "view", &test);
-        lzh_shader_set_mat4x4f(shader, "projection", &test);
+        lzh_shader_set_mat4x4f(shader, "view", &camera_cpnt->view);
+        lzh_shader_set_mat4x4f(shader, "projection", &camera_cpnt->prog);
 
         glBindVertexArray(sprite->vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

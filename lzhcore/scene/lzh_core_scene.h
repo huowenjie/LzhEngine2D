@@ -48,6 +48,9 @@ struct LZH_SCENE
 
     /* 对象映射表 */
     OBJECT_MAP_RB_TREE *object_map;
+
+    /* 场景主相机 */
+    LZH_OBJECT *main_camera;
 };
 
 /* 映射表比较 */

@@ -24,7 +24,6 @@ void lzh_cpnt_quit(LZH_COMPONENT *cpnt)
 void lzh_cpnt_destroy(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
-        /* ??????????????? */
         if (cpnt->object) {
             LZH_OBJECT *obj = cpnt->object;
             lzh_cpnt_rb_delete(obj->components, cpnt->type, NULL, NULL);

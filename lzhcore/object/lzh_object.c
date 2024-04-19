@@ -296,7 +296,7 @@ void lzh_object_fixedupdate(LZH_BASE *base, void *args)
         if (transform) {
             LZH_BASE *base = (LZH_BASE *)transform;
             if (base->update) {
-                base->update(base, base->update_param);
+                base->fixed_update(base, base->fixed_update_param);
             }
         }
 

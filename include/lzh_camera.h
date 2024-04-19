@@ -24,8 +24,11 @@ LZH_API void lzh_camera_set_viewport(
 /* 开启相机的透视投影效果，关闭后为正交投影 */
 LZH_API void lzh_camera_set_perspective(LZH_CAMERA *camera, LZH_BOOL perspective);
 
-/* 相机注视 */
+/* 相机注视目标位置 */
 LZH_API void lzh_camera_lookat(LZH_CAMERA *camera, float x, float y, float z);
+
+/* 相机上方向，默认为 (0.0f, 1.0f, 0.0f) */
+LZH_API void lzh_camera_set_updir(LZH_CAMERA *camera, float x, float y, float z);
 
 #ifdef __cplusplus
 }

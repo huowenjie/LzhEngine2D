@@ -5,6 +5,8 @@
 #include <lzh_systool.h>
 
 #include "../engine/lzh_core_engine.h"
+#include "../component/lzh_core_camera.h"
+
 #include "lzh_scene_manager.h"
 
 /*===========================================================================*/
@@ -50,8 +52,11 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     /* 创建对象渲染树 */
     scene->render_tree = scene_obj_rb_create(lzh_scene_objs_comp);
 
-    /* 创建层级映射表 */
+    /* 创建对象映射表 */
     scene->object_map = object_map_rb_create(lzh_scene_object_map_comp);
+
+    /* 初始化场景主相机 */
+    scene->main_camera = NULL;
 
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name());
@@ -91,7 +96,7 @@ void lzh_scene_destroy(LZH_SCENE *scene)
 }
 
 void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
-{    
+{
     SCENE_OBJ_RB_TREE *render_tree = NULL;
     OBJECT_MAP_RB_TREE *object_map = NULL;
 
@@ -177,6 +182,17 @@ const char *lzh_scene_get_name(LZH_SCENE *scene)
         return scene->base.name;
     }
     return NULL;
+}
+
+void lzh_scene_set_main_camera(LZH_SCENE *scene, LZH_OBJECT *camera)
+{
+    if (scene) {
+        scene->main_camera = camera;
+        LZH_COMPONENT *cpnt = lzh_cpnt_get_type(camera->components, LZH_CPNT_CAMERA);
+        if (cpnt) {
+            lzh_camera_flush((LZH_CAMERA *)cpnt);
+        }
+    }
 }
 
 /*===========================================================================*/

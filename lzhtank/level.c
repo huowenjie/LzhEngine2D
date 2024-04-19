@@ -8,6 +8,7 @@
 #include <lzh_sprite.h>
 #include <lzh_scene.h>
 #include <lzh_transform.h>
+#include <lzh_camera.h>
 
 #include "globalres.h"
 
@@ -61,7 +62,7 @@ void level_load_scenes(LZH_ENGINE *engine)
         return;
     }
 
-    for (; i < LEVEL_COUNT; i++) {
+    for (; i < LEVEL_COUNT - 1; i++) {
         LZH_SCENE *scene = lzh_scene_create(engine);
         lzh_scene_set_name(scene, level_names[i]);
 
@@ -89,11 +90,14 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     LZH_OBJECT *player = NULL;
     LZH_OBJECT *chassis = NULL;
     LZH_OBJECT *turret = NULL;
+    LZH_OBJECT *camera = NULL;
 
     LZH_SPRITE *chassis_sp = NULL;
     LZH_SPRITE *turret_sp = NULL;
+    LZH_CAMERA *camera_cm = NULL;
 
     LZH_TRANSFORM *transform = NULL;
+    LZH_TRANSFORM *camera_transform = NULL;
     LZH_TRANSFORM *turret_transform = NULL;
     LZH_TRANSFORM *chassis_transform = NULL;
 
@@ -104,33 +108,42 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     player = lzh_object_create(engine);
     chassis = lzh_object_create(engine);
     turret = lzh_object_create(engine);
+    camera = lzh_object_create(engine);
 
     chassis_sp = lzh_sprite_create(engine, get_tank_res_path());
     turret_sp = lzh_sprite_create(engine, get_tank_turret_path());
+    camera_cm = lzh_camera_create(engine);
 
     transform = lzh_object_get_transform(player);
+    camera_transform = lzh_object_get_transform(camera);
     turret_transform = lzh_object_get_transform(turret);
     chassis_transform = lzh_object_get_transform(chassis);
 
     lzh_object_add_component(turret, turret_sp);
     lzh_object_add_component(chassis, chassis_sp);
+    lzh_object_add_component(camera, camera_cm);
 
     lzh_object_set_name(player, object_names[0]);
     lzh_object_set_name(chassis, tank_widget[0]);
     lzh_object_set_name(turret, tank_widget[1]);
+    lzh_object_set_name(camera, "Main Camera");
 
     lzh_object_add_child(player, chassis);
     lzh_object_add_child(player, turret);
     lzh_object_set_update(player, update_player, turret_transform);
 
-    lzh_transform_scale(turret_transform, 0.1f, 0.1f, 1.0f);
-    lzh_transform_scale(chassis_transform, 0.1f, 0.1f, 1.0f);
+    lzh_transform_scale(turret_transform, 1.0f, 1.0f, 1.0f);
+    lzh_transform_scale(chassis_transform, 1.0f, 1.0f, 1.0f);
 
-    lzh_transform_translate(turret_transform, 0.0f, 0.0f, -0.5f);
-    lzh_transform_set_center(turret_transform, 0.0f, 0.0f, 0.0f);
-
+    lzh_transform_translate(turret_transform, 0.0f, 0.0f, 0.1f);
+    lzh_transform_translate(camera_transform, 0.0f, 0.0f, 1.0f);
     lzh_transform_translate(transform, 0.0f, 0.0f, 0.0f);
     lzh_scene_add_object(scene, player);
+
+    lzh_camera_set_viewport(camera_cm, 2.0f, 2.0f);
+    lzh_camera_lookat(camera_cm, 0.0f, 0.0f, 0.0f);
+    lzh_scene_set_main_camera(scene, camera);
+    lzh_scene_add_object(scene, camera);
 }
 
 void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
@@ -159,22 +172,22 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
     }
 
     delta = lzh_engine_interval(eg);
-    speed = 100.0f * delta;
+    speed = 1.0f * delta;
 
     if (lzh_get_key_status(KEY_CODE_W)) {
-        lzh_transform_get_forward(transform, &x, &y, &z);
+        /*lzh_transform_get_forward(transform, &x, &y, &z);
         x *= speed;
-        y *= speed;
+        y *= speed;*/
         z *= speed;
-        lzh_transform_translate(transform ,x, y, z);
+        lzh_transform_translate(transform ,x, y, speed);
     }
 
     if (lzh_get_key_status(KEY_CODE_S)) {
-        lzh_transform_get_backward(transform, &x, &y, &z);
+        /*lzh_transform_get_backward(transform, &x, &y, &z);
         x *= speed;
-        y *= speed;
-        z *= speed;
-        lzh_transform_translate(transform ,x, y, z);
+        y *= speed;*/
+        z *= (-speed);
+        lzh_transform_translate(transform ,x, y, -speed);
     }
 
     speed = 30.0f * delta;

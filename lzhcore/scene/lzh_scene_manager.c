@@ -97,6 +97,14 @@ LZH_SCENE *lzh_sm_get_scene(LZH_SCENE_MANAGER *manager, const char *name)
     return scene;
 }
 
+LZH_SCENE *lzh_sm_get_active_scene(LZH_SCENE_MANAGER *manager)
+{
+    if (manager) {
+        return manager->scene_active;
+    }
+    return NULL;
+}
+
 void lzh_sm_remove_scene(
     LZH_SCENE_MANAGER *manager, const char *name, LZH_SCENE **scene)
 {

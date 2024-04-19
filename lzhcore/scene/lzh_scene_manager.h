@@ -39,6 +39,9 @@ void lzh_sm_add_scene(LZH_SCENE_MANAGER *manager, LZH_SCENE *scene);
 /* 获取场景对象 */
 LZH_SCENE *lzh_sm_get_scene(LZH_SCENE_MANAGER *manager, const char *name);
 
+/* 获取当前活跃的场景对象 */
+LZH_SCENE *lzh_sm_get_active_scene(LZH_SCENE_MANAGER *manager);
+
 /* 移除并返回场景 */
 void lzh_sm_remove_scene(
     LZH_SCENE_MANAGER *manager, const char *name, LZH_SCENE **scene);
