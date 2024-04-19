@@ -376,6 +376,18 @@ LZH_MAT4X4F lzh_mat4x4f_perspective(float fov, float aspect, float near, float f
     return per;
 }
 
+LZH_MAT4X4F lzh_mat4x4f_ortho(
+    float left, float top, float right, float bottom, float near, float far)
+{
+    LZH_MAT4X4F ortho = lzh_mat4x4f_unit();
+
+    ortho.m00 = 2.0f / (right - left);
+    ortho.m11 = 2.0f / (top - bottom);
+    ortho.m22 = -2.0f / (far - near);
+    ortho.m23 = -(far + near) / (far - near);
+    return ortho;
+}
+
 LZH_MAT4X4F lzh_mat4x4f_transpose(const LZH_MAT4X4F *mat)
 {
     LZH_MAT4X4F tmp = lzh_mat4x4f_zero();

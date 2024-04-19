@@ -106,8 +106,8 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     }
 
     player = lzh_object_create(engine);
-    chassis = lzh_object_create(engine);
     turret = lzh_object_create(engine);
+    chassis = lzh_object_create(engine);
     camera = lzh_object_create(engine);
 
     chassis_sp = lzh_sprite_create(engine, get_tank_res_path());
@@ -128,19 +128,20 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     lzh_object_set_name(turret, tank_widget[1]);
     lzh_object_set_name(camera, "Main Camera");
 
-    lzh_object_add_child(player, chassis);
     lzh_object_add_child(player, turret);
+    lzh_object_add_child(player, chassis);
     lzh_object_set_update(player, update_player, turret_transform);
 
-    lzh_transform_scale(turret_transform, 1.0f, 1.0f, 1.0f);
+    lzh_transform_scale(turret_transform, 0.5f, 0.5f, 0.5f);
     lzh_transform_scale(chassis_transform, 1.0f, 1.0f, 1.0f);
 
     lzh_transform_translate(turret_transform, 0.0f, 0.0f, 0.1f);
-    lzh_transform_translate(camera_transform, 0.0f, 0.0f, 1.0f);
+    lzh_transform_translate(camera_transform, 0.0f, 0.0f, 2.0f);
     lzh_transform_translate(transform, 0.0f, 0.0f, 0.0f);
     lzh_scene_add_object(scene, player);
 
     lzh_camera_set_viewport(camera_cm, 2.0f, 2.0f);
+    lzh_camera_set_perspective(camera_cm, LZH_FALSE);
     lzh_camera_lookat(camera_cm, 0.0f, 0.0f, 0.0f);
     lzh_scene_set_main_camera(scene, camera);
     lzh_scene_add_object(scene, camera);

@@ -40,8 +40,8 @@ void lzh_cpnt_destroy(LZH_COMPONENT *cpnt)
 
 int lzh_cpnt_rb_comp(const void *cpnt1, const void *cpnt2)
 {
-    LZH_UINT32 *i1 = *((LZH_UINT32 **)cpnt1);
-    LZH_UINT32 *i2 = *((LZH_UINT32 **)cpnt2);
+    LZH_UINT32 i1 = *((LZH_UINT32 *)cpnt1);
+    LZH_UINT32 i2 = *((LZH_UINT32 *)cpnt2);
 
     if (i1 < i2) {
         return -1;

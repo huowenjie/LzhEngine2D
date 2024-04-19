@@ -222,7 +222,8 @@ void lzh_engine_update(LZH_ENGINE *engine)
          */
         lzh_sm_update(engine->scene_manager);
 
-        /* 场景绘制，调用所有对象的 draw 方法绘制 */
+        /* 场景绘制，TODO 将渲染树对象放置在深度排序树中进行排序，
+           调用所有对象的 draw 方法绘制 */
         lzh_sm_draw(engine->scene_manager);
         SDL_GL_SwapWindow(window);
 

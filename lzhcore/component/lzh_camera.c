@@ -180,13 +180,11 @@ void lzh_camera_flush(LZH_CAMERA *camera)
 
 void lzh_camera_orth_flush(LZH_CAMERA *camera) 
 {
-    LZH_MAT4X4F prog = lzh_mat4x4f_unit();
-
     if (!camera) {
         return;
     }
 
-    camera->prog = prog;
+    camera->prog = lzh_mat4x4f_ortho(-1.0f, 1.0f, 1.0f, -1.0f, 0.1f, 100.0f);
 }
 
 void lzh_camera_pers_flush(LZH_CAMERA *camera)

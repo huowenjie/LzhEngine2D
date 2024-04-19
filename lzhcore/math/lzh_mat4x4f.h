@@ -133,6 +133,10 @@ LZH_API LZH_MAT4X4F lzh_mat4x4f_camera(
  */
 LZH_API LZH_MAT4X4F lzh_mat4x4f_perspective(float fov, float aspect, float near, float far);
 
+/* 正交投影矩阵 */
+LZH_API LZH_MAT4X4F lzh_mat4x4f_ortho(
+    float left, float top, float right, float bottom, float near, float far);
+
 /* 转置矩阵 */
 LZH_API LZH_MAT4X4F lzh_mat4x4f_transpose(const LZH_MAT4X4F *mat);
 

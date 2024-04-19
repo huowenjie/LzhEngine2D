@@ -382,6 +382,7 @@ static void update_sprite_vertex(
     LZH_SHADER *shader = NULL;
     LZH_SCENE *cur_scene = NULL;
     LZH_OBJECT *camera = NULL;
+    LZH_COMPONENT *cpnt = NULL;
     LZH_CAMERA *camera_cpnt = NULL;
 
     if (!engine || !transform || !sprite) {
@@ -403,15 +404,18 @@ static void update_sprite_vertex(
         return;
     }
 
-    camera_cpnt = (LZH_CAMERA *)lzh_cpnt_get_type(
+    cpnt = lzh_cpnt_get_type(
         camera->components, LZH_CPNT_CAMERA);
+    if (!cpnt) {
+        return;
+    }
+    
+    camera_cpnt = (LZH_CAMERA *)cpnt;
     if (!camera_cpnt) {
         return;
     }
 
     if (sprite->vao) {
-        LZH_MAT4X4F unit = lzh_mat4x4f_unit();
-
         lzh_shader_bind(shader);
         lzh_shader_set_mat4x4f(shader, "model", &transform->model_mat);
         lzh_shader_set_mat4x4f(shader, "view", &camera_cpnt->view);

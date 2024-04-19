@@ -24,6 +24,12 @@
 RBTREE_DECLARE(SCENE_OBJ, scene_obj, int, LZH_OBJECT *)
 
 /**
+ * 定义摄像机深度排序树
+ * 离摄像机越远越先渲染
+ *
+ */
+
+/**
  * 定义Hash-对象映射表，用户快速定位对象
  * 
  * OBJECT_MAPP_RB_NODE

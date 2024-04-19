@@ -30,8 +30,8 @@ void lzh_object_remove(LZH_OBJECT *object)
 
 int lzh_object_rb_comp(const void *obj1, const void *obj2)
 {
-    LZH_HASH_CODE *i1 = *((LZH_HASH_CODE **)obj1);
-    LZH_HASH_CODE *i2 = *((LZH_HASH_CODE **)obj2);
+    LZH_HASH_CODE i1 = *((LZH_HASH_CODE *)obj1);
+    LZH_HASH_CODE i2 = *((LZH_HASH_CODE *)obj2);
 
     if (i1 < i2) {
         return -1;
