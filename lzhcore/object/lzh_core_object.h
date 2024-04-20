@@ -65,6 +65,7 @@ void lzh_object_rb_visit(const LZH_OBJ_RB_NODE *node, void *args);
 void lzh_object_rb_visit_update(const LZH_OBJ_RB_NODE *node, void *args);
 void lzh_object_rb_visit_fixedupdate(const LZH_OBJ_RB_NODE *node, void *args);
 void lzh_object_rb_visit_draw(const LZH_OBJ_RB_NODE *node, void *args);
+void lzh_object_rb_visit_sort_draw(const LZH_OBJ_RB_NODE *node, void *args);
 
 /*===========================================================================*/
 

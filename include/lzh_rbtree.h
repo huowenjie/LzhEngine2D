@@ -393,6 +393,7 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
                 LZH_FREE(node); \
             } \
             tree->count = 0; \
+            tree->root = NULL; \
             LZH_FREE(buf); \
         } \
     } \

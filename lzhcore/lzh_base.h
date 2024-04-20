@@ -39,11 +39,13 @@ struct LZH_BASE {
 
     /* 绘制回调 */
     LZH_BASE_DRAW draw;
+    LZH_BASE_DRAW sort_draw;
 
     /* 回调参数缓存 */
     void *update_param;
     void *fixed_update_param;
     void *draw_param;
+    void *sort_draw_param;
 };
 
 /* 初始化终止 */

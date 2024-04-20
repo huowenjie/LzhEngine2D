@@ -11,6 +11,7 @@
 #include "../engine/lzh_core_engine.h"
 #include "../component/lzh_core_transform.h"
 #include "../math/lzh_mathdef.h"
+#include "../log/lzh_tracer.h"
 
 /*===========================================================================*/
 

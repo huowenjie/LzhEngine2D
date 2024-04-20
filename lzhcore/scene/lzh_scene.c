@@ -55,6 +55,9 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     /* 创建对象映射表 */
     scene->object_map = object_map_rb_create(lzh_scene_object_map_comp);
 
+    /* 创建深度排序树 */
+    scene->sort_tree = scene_sort_rb_create(lzh_scene_sort_comp);
+
     /* 初始化场景主相机 */
     scene->main_camera = NULL;
 
@@ -77,6 +80,12 @@ void lzh_scene_destroy(LZH_SCENE *scene)
 
         /* 从场景树删除场景 */
         lzh_sm_remove_scene(engine->scene_manager, scene->base.name, NULL);
+
+        /* 移除排序树 */
+        if (scene->sort_tree) {
+            scene_sort_rb_destroy(scene->sort_tree, NULL, NULL);
+            scene->sort_tree = NULL;
+        }
 
         /* 移除映射表 */
         if (scene->object_map) {
@@ -231,6 +240,7 @@ void lzh_scene_draw(LZH_BASE *base, void *args)
 {
     LZH_SCENE *scene = NULL;
     SCENE_OBJ_RB_TREE *render_tree = NULL;
+    SCENE_SORT_RB_TREE *sort_tree = NULL;
 
     if (!base) {
         return;
@@ -238,8 +248,15 @@ void lzh_scene_draw(LZH_BASE *base, void *args)
 
     scene = (LZH_SCENE *)base;
     render_tree = scene->render_tree;
+    sort_tree = scene->sort_tree;
 
-    scene_obj_rb_iterate(render_tree, lzh_scene_objs_visit_draw, NULL);
+    if (!sort_tree) {
+        return;
+    }
+
+    scene_sort_rb_clear(sort_tree, NULL, NULL);
+    scene_obj_rb_iterate(render_tree, lzh_scene_objs_visit_draw, scene);
+    scene_sort_rb_iterate(sort_tree, lzh_scene_sort_visit_draw, scene);
 }
 
 const char *lzh_gen_new_name()

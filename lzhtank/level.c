@@ -141,7 +141,7 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
     lzh_scene_add_object(scene, player);
 
     lzh_camera_set_viewport(camera_cm, 2.0f, 2.0f);
-    lzh_camera_set_perspective(camera_cm, LZH_FALSE);
+    //lzh_camera_set_perspective(camera_cm, LZH_FALSE);
     lzh_camera_lookat(camera_cm, 0.0f, 0.0f, 0.0f);
     lzh_scene_set_main_camera(scene, camera);
     lzh_scene_add_object(scene, camera);

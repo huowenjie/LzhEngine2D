@@ -1,5 +1,6 @@
 #include "lzh_core_object.h"
 #include "../component/lzh_core_transform.h"
+#include "../scene/lzh_core_scene.h"
 
 /*===========================================================================*/
 
@@ -84,7 +85,17 @@ void lzh_object_rb_visit_draw(const LZH_OBJ_RB_NODE *node, void *args)
     if (node && node->value) {
         LZH_BASE *base = (LZH_BASE *)node->value;
         if (base->draw) {
-            base->draw(base, base->draw_param);
+            base->draw(base, args);
+        }
+    }
+}
+
+void lzh_object_rb_visit_sort_draw(const LZH_OBJ_RB_NODE *node, void *args)
+{
+    if (node && node->value) {
+        LZH_BASE *base = (LZH_BASE *)node->value;
+        if (base->sort_draw) {
+            base->sort_draw(base, args);
         }
     }
 }
