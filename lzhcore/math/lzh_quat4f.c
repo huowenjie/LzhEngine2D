@@ -150,4 +150,71 @@ LZH_QUAT4F lzh_quat4f_inverse(const LZH_QUAT4F *q)
     return quat;
 }
 
+LZH_VEC3F lzh_quat4f_rotate(const LZH_QUAT4F *q, const LZH_VEC3F *v)
+{
+    LZH_QUAT4F r = lzh_quat4f_vec3f(v);
+    LZH_QUAT4F c = lzh_quat4f_conjugate(q);
+
+    if (!q || !v) {
+        return lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
+    }
+
+    /* v' = q * r * q' */
+    r = lzh_quat4f_mul(q, &r);
+    r = lzh_quat4f_mul(&r, &c);
+
+    return lzh_vec3f_xyz(r.x, r.y, r.z);
+}
+
+LZH_QUAT4F lzh_quat4f_rotation(const LZH_VEC3F *u, float theta)
+{
+    LZH_VEC3F ru = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
+    LZH_QUAT4F q = lzh_quat4f_real(0.0f);
+    float si = sinf(theta * 0.5f);
+    float co = cosf(theta * 0.5f);
+
+    if (!u) {
+        return q;
+    }
+
+    ru = lzh_vec3f_normalize(u);
+    q.s = co;
+    q.x  = si * ru.x;
+    q.y  = si * ru.y;
+    q.z  = si * ru.z;
+    return q;
+}
+
+float lzh_quat4f_get_theta(const LZH_QUAT4F *q)
+{
+    if (!q) {
+        return 0.0f;
+    }
+
+    return 2.0f * acosf(q->s);
+}
+
+LZH_VEC3F lzh_quat4f_get_axis(const LZH_QUAT4F *q)
+{
+    float t = 0.0f;
+    LZH_VEC3F u = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
+
+    if (!q) {
+        return u;
+    }
+
+    t = sinf(acosf(q->s));
+
+    if (fabsf(t) < 1e-6) {
+        return u;
+    }
+
+    t = 1.0f / t;
+    u.x = q->x * t;
+    u.y = q->y * t;
+    u.z = q->z * t;
+
+    return u;
+}
+
 /*===========================================================================*/

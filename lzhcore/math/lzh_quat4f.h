@@ -63,6 +63,18 @@ LZH_QUAT4F lzh_quat4f_mul(const LZH_QUAT4F *qa, const LZH_QUAT4F *qb);
 /* 四元数的逆 */
 LZH_QUAT4F lzh_quat4f_inverse(const LZH_QUAT4F *q);
 
+/* 四元数旋转运算 v' = qvq*，四元数 q 必须保证是单位四元数 */
+LZH_VEC3F lzh_quat4f_rotate(const LZH_QUAT4F *q, const LZH_VEC3F *v);
+
+/* 创建一个绕旋转轴 u 旋转 theta 角度（单位：弧度）的旋转 */
+LZH_QUAT4F lzh_quat4f_rotation(const LZH_VEC3F *u, float theta);
+
+/* 从旋转四元数中获取角度 */
+float lzh_quat4f_get_theta(const LZH_QUAT4F *q);
+
+/* 从旋转四元数获取旋转轴 */
+LZH_VEC3F lzh_quat4f_get_axis(const LZH_QUAT4F *q);
+
 /*===========================================================================*/
 
 #endif /* __LZH_QUAT4F_H__ */
