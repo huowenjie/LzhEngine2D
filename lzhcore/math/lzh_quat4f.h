@@ -2,6 +2,8 @@
 #define __LZH_QUAT4F_H__
 
 #include "lzh_vec3f.h"
+#include "lzh_mat3x3f.h"
+#include "lzh_mat4x4f.h"
 
 /*===========================================================================*/
 /* 四元数 */
@@ -45,6 +47,9 @@ LZH_QUAT4F lzh_quat4f_conjugate(const LZH_QUAT4F *q);
 /* 求四元数的模长 */
 float lzh_quat4f_norm(const LZH_QUAT4F *q);
 
+/* 四元数归一化 */
+LZH_QUAT4F lzh_quat4f_normalize(const LZH_QUAT4F *q);
+
 /* 四元数的加法 a + b */
 LZH_QUAT4F lzh_quat4f_add(const LZH_QUAT4F *qa, const LZH_QUAT4F *qb);
 
@@ -74,6 +79,24 @@ float lzh_quat4f_get_theta(const LZH_QUAT4F *q);
 
 /* 从旋转四元数获取旋转轴 */
 LZH_VEC3F lzh_quat4f_get_axis(const LZH_QUAT4F *q);
+
+/* 从旋转四元数获取 3x3 旋转矩阵 */
+LZH_MAT3X3F lzh_quat4f_get_mat3x3f(const LZH_QUAT4F *q);
+
+/* 从旋转四元数获取 3x3 齐次旋转矩阵 */
+LZH_MAT4X4F lzh_quat4f_get_mat4x4f(const LZH_QUAT4F *q);
+
+/* 四元数线性插值 */
+LZH_QUAT4F lzh_quat4f_lerp(const LZH_QUAT4F *a, const LZH_QUAT4F *b, float t);
+
+/* 四元数归一化线性插值 */
+LZH_QUAT4F lzh_quat4f_nlerp(const LZH_QUAT4F *a, const LZH_QUAT4F *b, float t);
+
+/* 求两个旋转四元数之间的夹角（单位：弧度） */
+float lzh_quat4f_angle(const LZH_QUAT4F *a, const LZH_QUAT4F *b);
+
+/* 四元数球面线性插值 */
+LZH_QUAT4F lzh_quat4f_slerp(const LZH_QUAT4F *a, const LZH_QUAT4F *b, float t);
 
 /*===========================================================================*/
 
