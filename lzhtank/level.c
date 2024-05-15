@@ -188,10 +188,26 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
         x *= speed;
         y *= speed;*/
         z *= (-speed);
-        lzh_transform_translate(transform ,x, y, -speed);
+        lzh_transform_translate(transform , x, y, -speed);
     }
 
-    speed = 30.0f * delta;
+    if (lzh_get_key_status(KEY_CODE_R)) {
+        /*lzh_transform_get_forward(transform, &x, &y, &z);
+        x *= speed;
+        y *= speed;*/
+        x *= speed;
+        lzh_transform_translate(transform, speed, 0.0f, 0.0f);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_F)) {
+        /*lzh_transform_get_backward(transform, &x, &y, &z);
+        x *= speed;
+        y *= speed;*/
+        x *= (-speed);
+        lzh_transform_translate(transform, -speed, 0.0f, 0.0f);
+    }
+
+    speed = 60.0f * delta;
 
     if (lzh_get_key_status(KEY_CODE_A)) {
         lzh_transform_rotate_z(transform, speed);

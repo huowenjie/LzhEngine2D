@@ -94,6 +94,9 @@
     <ClCompile Include="graphic\glad\glad.c">
       <Filter>graphic\glad</Filter>
     </ClCompile>
+    <ClCompile Include="math\lzh_quat4f.c">
+      <Filter>math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="component\lzh_component.h">
@@ -480,6 +483,9 @@
     </ClInclude>
     <ClInclude Include="sdl2\SDL_vulkan.h">
       <Filter>sdl2</Filter>
+    </ClInclude>
+    <ClInclude Include="math\lzh_quat4f.h">
+      <Filter>math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

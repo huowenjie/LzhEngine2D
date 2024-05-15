@@ -180,6 +180,7 @@
     <ClCompile Include="math\lzh_mat2x2f.c" />
     <ClCompile Include="math\lzh_mat3x3f.c" />
     <ClCompile Include="math\lzh_mat4x4f.c" />
+    <ClCompile Include="math\lzh_quat4f.c" />
     <ClCompile Include="math\lzh_vec2f.c" />
     <ClCompile Include="math\lzh_vec3f.c" />
     <ClCompile Include="math\lzh_vec4f.c" />
@@ -226,6 +227,7 @@
     <ClInclude Include="math\lzh_mat3x3f.h" />
     <ClInclude Include="math\lzh_mat4x4f.h" />
     <ClInclude Include="math\lzh_mathdef.h" />
+    <ClInclude Include="math\lzh_quat4f.h" />
     <ClInclude Include="math\lzh_vec2f.h" />
     <ClInclude Include="math\lzh_vec3f.h" />
     <ClInclude Include="math\lzh_vec4f.h" />

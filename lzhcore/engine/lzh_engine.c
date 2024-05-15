@@ -26,6 +26,7 @@ int lzh_init()
 {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+    
     srand((unsigned int)time(NULL));
 
     lzh_init_opengl(3, 3);
