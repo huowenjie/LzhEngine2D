@@ -180,35 +180,16 @@ void lzh_camera_flush(LZH_CAMERA *camera)
 
 void lzh_camera_orth_flush(LZH_CAMERA *camera) 
 {
-    if (!camera) {
-        return;
+    if (camera) {
+        camera->prog = lzh_mat4x4f_ortho(-1.0f, 1.0f, 1.0f, -1.0f, 0.1f, 100.0f);
     }
-
-    camera->prog = lzh_mat4x4f_ortho(-1.0f, 1.0f, 1.0f, -1.0f, 0.1f, 100.0f);
 }
 
 void lzh_camera_pers_flush(LZH_CAMERA *camera)
 {
-    LZH_MAT4X4F prog = lzh_mat4x4f_unit();
-    LZH_VEC3F l = lzh_vec3f_xyz(-1.0f, -1.0f, -1.0f);
-    LZH_VEC3F h = lzh_vec3f_xyz(1.0f, 1.0f, 1.0f);
-
-    float width = 0.0f;
-    float height = 0.0f;
-
-    if (!camera) {
-        return;
+    if (camera) {
+        camera->prog = lzh_mat4x4f_perspective(LZH_PI / 4.0f, 8.0f / 6.0f, 0.1f, 100.0f);
     }
-
-    width = camera->view_port_w / 2.0f;
-    height = camera->view_port_h / 2.0f;
-
-    l = lzh_vec3f_xyz(-width, -height, 0.1f);
-    h = lzh_vec3f_xyz(width, height, -2.0f);
-
-    /* 生成投影矩阵 */
-    prog = lzh_mat4x4f_perspective(LZH_PI / 4.0f, 8.0f / 6.0f, 0.1f, 100.0f);
-    camera->prog = prog;
 }
 
 /*===========================================================================*/
