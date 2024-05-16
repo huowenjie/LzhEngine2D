@@ -147,6 +147,8 @@ void lzh_camera_flush(LZH_CAMERA *camera)
     LZH_VEC3F camera_up = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     LZH_VEC4F origin_up = lzh_vec4f_xyzw(0.0f, 0.0f, 0.0f, 1.0f);
 
+    LZH_MAT4X4F v = lzh_mat4x4f_scale(1.0f / 10.0f, 1.0f / 10.0f, 1.0f);
+
     if (!camera) {
         return;
     }
@@ -169,6 +171,7 @@ void lzh_camera_flush(LZH_CAMERA *camera)
     camera_pos = transform->local_pos;
     lookat = lzh_mat4x4f_camera(&camera_pos, &camera_up, &camera->target);
 
+    lookat = lzh_mat4x4f_mul(&lookat, &v);
     camera->view = lookat;
 
     if (camera->type == LZH_CAMERA_PERSP) {
