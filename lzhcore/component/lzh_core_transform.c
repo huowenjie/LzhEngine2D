@@ -52,11 +52,12 @@ LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine)
     transform->screen_width = 1600.0f;
     transform->screen_height = lzh_transform_get_height(
         engine, transform->screen_width);
-    transform->local_angle = 0.0f;
+    //transform->local_angle = 0.0f;
 
     transform->local_pos = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     transform->center_pos = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     transform->local_scale = lzh_vec3f_xyz(1.0f, 1.0f, 1.0f);
+    transform->local_rotate = lzh_quat4f_real(1.0f);
 
     transform->forward = lzh_vec3f_xyz(1.0f, 0.0f, 0.0f);
     transform->backward = lzh_vec3f_xyz(-1.0f, 0.0f, 0.0f);
@@ -86,7 +87,7 @@ void lzh_transform_flush(LZH_TRANSFORM *transform)
         /* 模型变换 */
         LZH_MAT4X4F local = lzh_mat4x4f_unit();
         LZH_MAT4X4F trans = lzh_mat4x4f_translate(localpos->x, localpos->y, localpos->z);
-        LZH_MAT4X4F rotate = lzh_mat4x4f_rotate_z(transform->local_angle);
+        LZH_MAT4X4F rotate = lzh_quat4f_get_mat4x4f(&transform->local_rotate);
         LZH_MAT4X4F scale = lzh_mat4x4f_scale(localscale->x, localscale->y, localscale->z);
 
         /* 移动至旋转中心坐标  */

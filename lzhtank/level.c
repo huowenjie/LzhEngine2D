@@ -137,7 +137,7 @@ void load_player(LZH_ENGINE *engine, LZH_SCENE *scene)
 
     lzh_transform_translate(turret_transform, 0.0f, 0.0f, 0.1f);
     lzh_transform_translate(camera_transform, 0.0f, 0.0f, 2.0f);
-    lzh_transform_translate(transform, 0.0f, 0.0f, 0.0f);
+    lzh_transform_translate(transform, 0.0f, 0.0f, -20.0f);
     lzh_scene_add_object(scene, player);
 
     lzh_camera_set_viewport(camera_cm, 2.0f, 2.0f);
@@ -215,6 +215,22 @@ void update_player(LZH_ENGINE *eg, LZH_OBJECT *object, void *args)
 
     if (lzh_get_key_status(KEY_CODE_D)) {
         lzh_transform_rotate_z(transform, -speed);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_Z)) {
+        lzh_transform_rotate_x(transform, speed);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_C)) {
+        lzh_transform_rotate_x(transform, -speed);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_T)) {
+        lzh_transform_rotate_y(transform, speed);
+    }
+
+    if (lzh_get_key_status(KEY_CODE_G)) {
+        lzh_transform_rotate_y(transform, -speed);
     }
 
     if (lzh_get_key_status(KEY_CODE_Q)) {

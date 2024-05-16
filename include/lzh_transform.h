@@ -25,6 +25,12 @@ LZH_API void lzh_transform_scale(LZH_TRANSFORM *transform, float sx, float sy, f
 /* 绕 z 轴旋转 */
 LZH_API void lzh_transform_rotate_z(LZH_TRANSFORM *transform, float angle);
 
+/* 绕 x 轴旋转 */
+LZH_API void lzh_transform_rotate_x(LZH_TRANSFORM *transform, float angle);
+
+/* 绕 y 轴旋转 */
+LZH_API void lzh_transform_rotate_y(LZH_TRANSFORM *transform, float angle);
+
 /* 获取当前世界坐标 */
 LZH_API void lzh_transform_world_pos(LZH_TRANSFORM *transform, float *x, float *y, float *z);
 

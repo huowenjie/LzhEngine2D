@@ -7,6 +7,11 @@
 
 /*===========================================================================*/
 
+static void lzh_transform_rotate(
+    LZH_TRANSFORM *transform, const LZH_VEC3F *axis, float angle);
+
+/*===========================================================================*/
+
 LZH_OBJECT *lzh_transform_get_object(LZH_TRANSFORM *transform)
 {
     if (transform) {
@@ -36,8 +41,24 @@ void lzh_transform_scale(LZH_TRANSFORM *transform, float sx, float sy, float sz)
 void lzh_transform_rotate_z(LZH_TRANSFORM *transform, float angle)
 {
     if (transform) {
-        transform->local_angle += LZH_A2R(angle);
-        lzh_transform_flush(transform);
+        LZH_VEC3F u = lzh_vec3f_xyz(0.0f, 0.0f, 1.0f);
+        lzh_transform_rotate(transform, &u, angle);
+    }
+}
+
+void lzh_transform_rotate_x(LZH_TRANSFORM *transform, float angle)
+{
+    if (transform) {
+        LZH_VEC3F u = lzh_vec3f_xyz(1.0f, 0.0f, 0.0f);
+        lzh_transform_rotate(transform, &u, angle);
+    }
+}
+
+void lzh_transform_rotate_y(LZH_TRANSFORM *transform, float angle)
+{
+    if (transform) {
+        LZH_VEC3F u = lzh_vec3f_xyz(0.0f, 1.0f, 0.0f);
+        lzh_transform_rotate(transform, &u, angle);
     }
 }
 
@@ -156,6 +177,18 @@ void lzh_transform_set_center(LZH_TRANSFORM *transform, float x, float y, float 
     if (transform) {
         LZH_VEC3F center = lzh_vec3f_xyz(x, y, z);
         transform->center_pos = center;
+        lzh_transform_flush(transform);
+    }
+}
+
+/*===========================================================================*/
+
+void lzh_transform_rotate(
+    LZH_TRANSFORM *transform, const LZH_VEC3F *axis, float angle)
+{
+    if (transform && axis) {
+        LZH_QUAT4F quat = lzh_quat4f_rotation(axis, LZH_A2R(angle));
+        transform->local_rotate = lzh_quat4f_mul(&transform->local_rotate, &quat);
         lzh_transform_flush(transform);
     }
 }

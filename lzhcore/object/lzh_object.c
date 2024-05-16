@@ -15,8 +15,6 @@
 static int global_order = 1;
 static int global_sort = 0;
 
-#define PI 3.141592654f
-
 /* 更新内部参数 */
 static void update_object_center(LZH_OBJECT *obj);
 static void update_object_forward(LZH_OBJECT *obj);

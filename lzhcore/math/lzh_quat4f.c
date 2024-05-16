@@ -165,10 +165,10 @@ LZH_QUAT4F lzh_quat4f_mul(const LZH_QUAT4F *qa, const LZH_QUAT4F *qb)
         float c = qa->y;
         float d = qa->z;
 
-        float e = qa->s;
-        float f = qa->x;
-        float g = qa->y;
-        float h = qa->z;
+        float e = qb->s;
+        float f = qb->x;
+        float g = qb->y;
+        float h = qb->z;
 
         quat.s = a * e - b * f - c * g - d * h;
         quat.x = b * e + a * f - d * g + c * h;
