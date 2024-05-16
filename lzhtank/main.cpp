@@ -3,7 +3,6 @@
 #include <lzh_engine.h>
 #include <lzh_scene.h>
 
-#include "tank.h"
 #include "globalres.h"
 #include "level.h"
 
