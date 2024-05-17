@@ -1,35 +1,26 @@
-#ifndef __TANK_H__
-#define __TANK_H__
+#ifndef __CAMERA_H__
+#define __CAMERA_H__
 
 #include "object.h"
 
 /*===========================================================================*/
-/* tank */
+/* ÉãÏñ»ú */
 /*===========================================================================*/
 
-class Tank : public Object
+class Camera : public Object
 {
 public:
-    Tank(LZH_ENGINE *engine);
-    virtual ~Tank();
+    Camera(LZH_ENGINE *engine);
+    virtual ~Camera();
 
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
 
 protected:
-    LZH_OBJECT *chassis;
-    LZH_OBJECT *turret;
-
-    LZH_SPRITE *chassisSp;
-    LZH_SPRITE *turretSp;
-
-    LZH_TRANSFORM *chassisTransform;
-    LZH_TRANSFORM *turretTransform;
-
-    bool isAddedScene;
+    LZH_CAMERA *camera;
 };
 
 /*===========================================================================*/
 
-#endif /* __TANK_H__ */
+#endif /* __CAMERA_H__ */
