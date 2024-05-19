@@ -6,59 +6,52 @@
 #include "tank.h"
 #include "camera.h"
 #include "scene.h"
+#include "bullet.h"
 
 /*===========================================================================*/
 
-class Game
-{
-public:
-    Game();
-    ~Game();
-    
-public:
-    void Run();
+void Run(LZH_ENGINE *engine);
 
-private:
-    LZH_ENGINE *engine;
-};
+/*===========================================================================*/
 
 int main(int argc, char *argv[])
 {
-    Game game;
-    game.Run();
+    LZH_ENGINE *engine = NULL;
+
+    lzh_init();
+    init_global_res();
+
+    engine = lzh_engine_create("Tank", 800, 600);
+    if (!engine) {
+        goto end;
+    }
+
+    Run(engine);
+
+end:
+    lzh_engine_destroy(engine);
+    lzh_quit();
     return 0;
 }
 
 /*===========================================================================*/
 
-Game::Game()
+void Run(LZH_ENGINE *engine)
 {
-    lzh_init();
-    init_global_res();
-}
-
-Game::~Game()
-{
-    lzh_engine_destroy(engine);
-    lzh_quit();
-}
-
-void Game::Run()
-{
-    engine = lzh_engine_create("Tank", 800, 600);
-    if (!engine) {
-        return;
-    }
-
     Scene scene(engine, "tutorial level");
     Tank player(engine);
+    Bullet bullet(engine);
     Camera camera(engine);
 
+    player.SetCurrentScene(&scene);
+
     scene.AddObjectToScene(&player);
+    scene.AddObjectToScene(&bullet);
+
     scene.AddObjectToScene(&camera);
     scene.SetMainCamera(&camera);
+
     scene.LoadScene();
-    //level_load_scenes(engine);
 
     lzh_engine_update(engine);
 }

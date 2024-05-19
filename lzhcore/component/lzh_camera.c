@@ -147,7 +147,7 @@ void lzh_camera_flush(LZH_CAMERA *camera)
     LZH_VEC3F camera_up = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     LZH_VEC4F origin_up = lzh_vec4f_xyzw(0.0f, 0.0f, 0.0f, 1.0f);
 
-    LZH_MAT4X4F v = lzh_mat4x4f_scale(1.0f / 16.0f, 1.0f / 12.0f, 1.0f);
+    LZH_MAT4X4F v = lzh_mat4x4f_scale(1.0f / 8.0f, 1.0f / 6.0f, 1.0f);
 
     if (!camera) {
         return;

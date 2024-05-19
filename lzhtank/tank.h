@@ -14,6 +14,10 @@ public:
     virtual ~Tank();
 
 protected:
+    // 开火发射炮弹
+    void Fire();
+
+protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
 
@@ -27,7 +31,14 @@ protected:
     LZH_TRANSFORM *chassisTransform;
     LZH_TRANSFORM *turretTransform;
 
-    bool isAddedScene;
+    // 移动速度
+    float moveSpeed;
+
+    // 旋转速度
+    float rotateSpeed;
+
+    // 炮塔旋转速度
+    float turretRotateSpeed;
 };
 
 /*===========================================================================*/

@@ -195,10 +195,10 @@ void lzh_transform_update_axis(LZH_TRANSFORM *transform, LZH_MAT4X4F *mat)
         return;
     }
 
-    forward = lzh_vec4f_xyzw(1.0f, 0.0f, 0.0f, 0.0f);
-    backward = lzh_vec4f_xyzw(-1.0f, 0.0f, 0.0f, 0.0f);
-    leftward = lzh_vec4f_xyzw(0.0f, 1.0f, 0.0f, 0.0f);
-    rightward = lzh_vec4f_xyzw(0.0f, -1.0f, 0.0f, 0.0f);
+    forward = lzh_vec4f_xyzw(0.0f, 1.0f, 0.0f, 0.0f);
+    backward = lzh_vec4f_xyzw(0.0f, -1.0f, 0.0f, 0.0f);
+    leftward = lzh_vec4f_xyzw(1.0f, 0.0f, 0.0f, 0.0f);
+    rightward = lzh_vec4f_xyzw(-1.0f, 0.0f, 0.0f, 0.0f);
 
     forward = lzh_mat4x4f_mul_vec(mat, &forward);
     backward = lzh_mat4x4f_mul_vec(mat, &backward);

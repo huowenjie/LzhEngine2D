@@ -6,6 +6,7 @@
 #include "globalres.h"
 #include "scene.h"
 #include "tank.h"
+#include "bullet.h"
 
 /*===========================================================================*/
 
@@ -26,8 +27,16 @@ Tank::Tank(LZH_ENGINE *engine) : Object(engine)
     lzh_object_add_child(object, turret);
     lzh_object_add_child(object, chassis);
 
+    lzh_object_set_name(object, "tank");
+    lzh_object_set_name(chassis, "chassis");
+    lzh_object_set_name(turret, "turret");
+
     lzh_transform_scale(turretTransform, 0.5f, 0.5f, 0.5f);
     lzh_transform_translate(turretTransform, 0.0f, 0.0f, 0.1f);
+
+    moveSpeed = 5.0f;
+    rotateSpeed = 60.0f;
+    turretRotateSpeed = 60.0f;
 }
 
 Tank::~Tank()
@@ -36,85 +45,72 @@ Tank::~Tank()
 
 /*===========================================================================*/
 
+void Tank::Fire()
+{
+    if (currentScene) {
+        Bullet *bullet = new Bullet(engine);
+
+        if (!bullet) {
+            return;
+        }
+
+        currentScene->AddObjectToScene(bullet);
+    }
+}
+
+/*===========================================================================*/
+
 void Tank::Update(LZH_ENGINE *eg)
 {
     float delta = 0.0f;
-    float speed = 0.0f;
+    float ms = 0.0f;
+    float rs = 0.0f;
+    float ts = 0.0f;
+
     float x = 0.0f;
     float y = 0.0f;
-    float z = 0.0f;
 
     if (!eg) {
         return;
     }
 
     delta = lzh_engine_interval(eg);
-    speed = 1.0f * delta;
+    ms = moveSpeed * delta;
+    rs = rotateSpeed * delta;
+    ts = turretRotateSpeed * delta;
 
     if (lzh_get_key_status(KEY_CODE_W)) {
-        /*lzh_transform_get_forward(transform, &x, &y, &z);
-        x *= speed;
-        y *= speed;*/
-        z *= speed;
-        lzh_transform_translate(transform ,x, y, speed);
+        lzh_transform_get_forward(transform, &x, &y, NULL);
+        x *= ms;
+        y *= ms;
+        lzh_transform_translate(transform, x, y, 0.0f);
     }
 
     if (lzh_get_key_status(KEY_CODE_S)) {
-        /*lzh_transform_get_backward(transform, &x, &y, &z);
-        x *= speed;
-        y *= speed;*/
-        z *= (-speed);
-        lzh_transform_translate(transform , x, y, -speed);
+        lzh_transform_get_backward(transform, &x, &y, NULL);
+        x *= ms;
+        y *= ms;
+        lzh_transform_translate(transform, x, y, 0.0f);
     }
-
-    if (lzh_get_key_status(KEY_CODE_R)) {
-        /*lzh_transform_get_forward(transform, &x, &y, &z);
-        x *= speed;
-        y *= speed;*/
-        x *= speed;
-        lzh_transform_translate(transform, speed, 0.0f, 0.0f);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_F)) {
-        /*lzh_transform_get_backward(transform, &x, &y, &z);
-        x *= speed;
-        y *= speed;*/
-        x *= (-speed);
-        lzh_transform_translate(transform, -speed, 0.0f, 0.0f);
-    }
-
-    speed = 60.0f * delta;
 
     if (lzh_get_key_status(KEY_CODE_A)) {
-        lzh_transform_rotate_z(transform, speed);
+        lzh_transform_rotate_z(transform, rs);
     }
 
     if (lzh_get_key_status(KEY_CODE_D)) {
-        lzh_transform_rotate_z(transform, -speed);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_Z)) {
-        lzh_transform_rotate_x(transform, speed);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_C)) {
-        lzh_transform_rotate_x(transform, -speed);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_T)) {
-        lzh_transform_rotate_y(transform, speed);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_G)) {
-        lzh_transform_rotate_y(transform, -speed);
+        lzh_transform_rotate_z(transform, -rs);
     }
 
     if (lzh_get_key_status(KEY_CODE_Q)) {
-        lzh_transform_rotate_z(turretTransform, speed);
+        lzh_transform_rotate_z(turretTransform, ts);
     }
 
     if (lzh_get_key_status(KEY_CODE_E)) {
-        lzh_transform_rotate_z(turretTransform, -speed);
+        lzh_transform_rotate_z(turretTransform, -ts);
+    }
+
+    if (lzh_get_key_down(eg, KEY_CODE_SPACE)) {
+        Fire();
     }
 }
 

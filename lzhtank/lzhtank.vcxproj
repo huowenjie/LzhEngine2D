@@ -155,21 +155,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bullet.c" />
-    <ClCompile Include="globalres.c" />
-    <ClCompile Include="level.c" />
-    <ClCompile Include="main.c" />
-    <ClCompile Include="objwidget.c" />
-    <ClCompile Include="tank.c" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="camera.cpp" />
+    <ClCompile Include="globalres.cpp" />
+    <ClCompile Include="level.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="object.cpp" />
+    <ClCompile Include="scene.cpp" />
+    <ClCompile Include="tank.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="globalres.h" />
     <ClInclude Include="level.h" />
-    <ClInclude Include="objwidget.h" />
+    <ClInclude Include="object.h" />
+    <ClInclude Include="scene.h" />
     <ClInclude Include="tank.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

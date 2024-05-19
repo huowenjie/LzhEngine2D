@@ -17,6 +17,7 @@ Scene::Scene(LZH_ENGINE *eg, const std::string &name)
 
 Scene::~Scene()
 {
+    //lzh_scene_destroy(sceneObj);
 }
 
 void Scene::LoadScene()
@@ -32,6 +33,7 @@ void Scene::LoadScene()
 void Scene::AddObjectToScene(Object *obj)
 {
     if (obj && sceneObj) {
+        obj->isAddedScene = true;
         lzh_scene_add_object(sceneObj, obj->object);
     }
 }

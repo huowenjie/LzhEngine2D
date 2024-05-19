@@ -19,6 +19,12 @@ protected:
 
 protected:
     LZH_SPRITE *bulletSp;
+
+    // 移动速度
+    float moveSpeed;
+
+    // 射程
+    float fireDistance;
 };
 
 /*===========================================================================*/
