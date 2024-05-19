@@ -55,6 +55,7 @@ void Tank::Fire()
         }
 
         currentScene->AddObjectToScene(bullet);
+        // TODO
     }
 }
 

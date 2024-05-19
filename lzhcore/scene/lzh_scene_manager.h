@@ -49,6 +49,9 @@ void lzh_sm_remove_scene(
 /* 设置当前场景 */
 void lzh_sm_set_active_scene(LZH_SCENE_MANAGER *manager, const char *name);
 
+/* 取消当前场景 */
+void lzh_sm_cancel_active_scene(LZH_SCENE_MANAGER *manager);
+
 /* 场景更新 */
 void lzh_sm_update(LZH_SCENE_MANAGER *manager);
 

@@ -17,7 +17,7 @@ Scene::Scene(LZH_ENGINE *eg, const std::string &name)
 
 Scene::~Scene()
 {
-    //lzh_scene_destroy(sceneObj);
+    lzh_scene_destroy(sceneObj);
 }
 
 void Scene::LoadScene()

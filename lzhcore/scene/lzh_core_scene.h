@@ -72,6 +72,9 @@ struct LZH_SCENE
     LZH_OBJECT *main_camera;
 };
 
+/* 移除场景 */
+void lzh_scene_remove(LZH_SCENE *scene);
+
 /* 映射表比较 */
 int lzh_scene_object_map_comp(const void *a, const void *b);
 

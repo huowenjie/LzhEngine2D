@@ -41,7 +41,7 @@ LZH_API LZH_SCENE_MANAGER *lzh_scene_get_manager(LZH_ENGINE *engine);
 LZH_API void lzh_scene_manager_load(LZH_SCENE_MANAGER *manager, const char *name);
 
 /* 卸载场景 */
-LZH_API void lzh_scene_manager_unload(LZH_SCENE_MANAGER *manager, const char *name);
+LZH_API void lzh_scene_manager_unload(LZH_SCENE_MANAGER *manager);
 
 /* 获取场景 */
 LZH_API LZH_SCENE *lzh_scene_manager_get(LZH_SCENE_MANAGER *manager, const char *name);

@@ -80,27 +80,7 @@ void lzh_scene_destroy(LZH_SCENE *scene)
 
         /* ´Ó³¡¾°Ê÷É¾³ý³¡¾° */
         lzh_sm_remove_scene(engine->scene_manager, scene->base.name, NULL);
-
-        /* ÒÆ³ýÅÅÐòÊ÷ */
-        if (scene->sort_tree) {
-            scene_sort_rb_destroy(scene->sort_tree, NULL, NULL);
-            scene->sort_tree = NULL;
-        }
-
-        /* ÒÆ³ýÓ³Éä±í */
-        if (scene->object_map) {
-            object_map_rb_destroy(scene->object_map, NULL, NULL);
-            scene->object_map = NULL;
-        }
-
-        /* ÒÆ³ý²ã¼¶äÖÈ¾Ê÷ */
-        if (scene->render_tree) {
-            scene_obj_rb_destroy(scene->render_tree, lzh_scene_objs_visit_free, NULL);
-            scene->render_tree = NULL;
-        }
-
-        lzh_base_quit((LZH_BASE *)scene);
-        LZH_FREE(scene);
+        lzh_scene_remove(scene);
     }
 }
 

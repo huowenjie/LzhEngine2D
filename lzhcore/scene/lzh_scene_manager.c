@@ -25,8 +25,9 @@ void lzh_scene_manager_load(LZH_SCENE_MANAGER *manager, const char *name)
     lzh_sm_set_active_scene(manager, name);
 }
 
-void lzh_scene_manager_unload(LZH_SCENE_MANAGER *manager, const char *name)
+void lzh_scene_manager_unload(LZH_SCENE_MANAGER *manager)
 {
+    lzh_sm_cancel_active_scene(manager);
 }
 
 LZH_SCENE *lzh_scene_manager_get(LZH_SCENE_MANAGER *manager, const char *name)
@@ -147,6 +148,13 @@ void lzh_sm_set_active_scene(LZH_SCENE_MANAGER *manager, const char *name)
     }
 }
 
+void lzh_sm_cancel_active_scene(LZH_SCENE_MANAGER *manager)
+{
+    if (manager) {
+        manager->scene_active = NULL;
+    }
+}
+
 void lzh_sm_update(LZH_SCENE_MANAGER *manager)
 {
     if (manager && manager->scene_active) {
@@ -171,7 +179,7 @@ void lzh_sm_draw(LZH_SCENE_MANAGER *manager)
 {
     if (manager && manager->scene_active) {
         LZH_BASE *active = (LZH_BASE *)manager->scene_active;
-        if (active->draw) {
+        if (active && active->draw) {
             active->draw(active, active->draw_param);
         }
     }
@@ -197,7 +205,7 @@ void scene_visit_free(const LZH_SCENE_RB_NODE *node, void *args)
 {
     if (node) {
         LZH_SCENE *scene = node->value;
-        lzh_scene_destroy(scene);
+        lzh_scene_remove(scene);
     }
 }
 

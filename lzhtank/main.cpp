@@ -40,14 +40,10 @@ void Run(LZH_ENGINE *engine)
 {
     Scene scene(engine, "tutorial level");
     Tank player(engine);
-    Bullet bullet(engine);
     Camera camera(engine);
 
     player.SetCurrentScene(&scene);
-
     scene.AddObjectToScene(&player);
-    scene.AddObjectToScene(&bullet);
-
     scene.AddObjectToScene(&camera);
     scene.SetMainCamera(&camera);
 

@@ -6,6 +6,32 @@
 
 /*===========================================================================*/
 
+void lzh_scene_remove(LZH_SCENE *scene)
+{
+    if (scene) {
+        /* ÒÆ³ýÅÅÐòÊ÷ */
+        if (scene->sort_tree) {
+            scene_sort_rb_destroy(scene->sort_tree, NULL, NULL);
+            scene->sort_tree = NULL;
+        }
+
+        /* ÒÆ³ýÓ³Éä±í */
+        if (scene->object_map) {
+            object_map_rb_destroy(scene->object_map, NULL, NULL);
+            scene->object_map = NULL;
+        }
+
+        /* ÒÆ³ý²ã¼¶äÖÈ¾Ê÷ */
+        if (scene->render_tree) {
+            scene_obj_rb_destroy(scene->render_tree, lzh_scene_objs_visit_free, NULL);
+            scene->render_tree = NULL;
+        }
+
+        lzh_base_quit((LZH_BASE *)scene);
+        LZH_FREE(scene);
+    }
+}
+
 int lzh_scene_object_map_comp(const void *a, const void *b)
 {
     LZH_HASH_CODE i1 = *((LZH_HASH_CODE *)a);
