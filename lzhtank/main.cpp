@@ -43,8 +43,8 @@ void Run(LZH_ENGINE *engine)
     Camera camera(engine);
 
     player.SetCurrentScene(&scene);
-    scene.AddObjectToScene(&player);
-    scene.AddObjectToScene(&camera);
+    scene.AddObjectToScene(&player, false);
+    scene.AddObjectToScene(&camera, false);
     scene.SetMainCamera(&camera);
 
     scene.LoadScene();

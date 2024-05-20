@@ -54,8 +54,22 @@ void Tank::Fire()
             return;
         }
 
+        float x = 0.0f;
+        float y = 0.0f;
+        float r = 0.0f;
+
+        GetPosition(&x, &y);
+        bullet->SetPosition(x, y);
+
+        Object *turret = FindChildRecursion("turret");
+
+        if (turret) {
+            r = turret->GetRotateAngle();
+            bullet->SetRotate(r);
+            delete turret;
+        }
+
         currentScene->AddObjectToScene(bullet);
-        // TODO
     }
 }
 

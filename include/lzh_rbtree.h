@@ -96,6 +96,7 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
 #define RBTREE_DECLARE(ns, fns, keytype, valuetype) \
     typedef struct ns##_RB_NODE ns##_RB_NODE; \
     typedef struct ns##_RB_TREE ns##_RB_TREE; \
+    typedef struct ns##_RB_ITERATOR ns##_RB_ITERATOR; \
     typedef int (*ns##_RB_COMP)(const void *, const void *); \
     typedef void (*ns##_RB_VISIT)(const ns##_RB_NODE *, void *); \
     STACK_DEFINE(fns, ns##_RB, ns##_RB_NODE *); \
@@ -116,13 +117,26 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
         int count; \
     }; \
     \
+    struct ns##_RB_ITERATOR { \
+        ns##_RB_TREE *tree;\
+        ns##_RB_STACK stack; \
+        ns##_RB_NODE **nodes; \
+        ns##_RB_NODE *node; \
+        ns##_RB_NODE *next; \
+    }; \
     ns##_RB_TREE *fns##_rb_create(ns##_RB_COMP comp); \
     void fns##_rb_destroy(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args); \
     int fns##_rb_insert(ns##_RB_TREE *tree, keytype key, valuetype value); \
     int fns##_rb_delete(ns##_RB_TREE *tree, keytype key, ns##_RB_VISIT visit, void *args); \
     void fns##_rb_clear(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args); \
     int fns##_rb_find(ns##_RB_TREE *tree, keytype key, valuetype *value); \
-    int fns##_rb_iterate(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args);
+    int fns##_rb_iterate(ns##_RB_TREE *tree, ns##_RB_VISIT visit, void *args); \
+    ns##_RB_ITERATOR *fns##_rb_create_iterator(ns##_RB_TREE *tree); \
+    void fns##_rb_destroy_iterator(ns##_RB_ITERATOR *it); \
+    void fns##_rb_it_init(ns##_RB_ITERATOR *it); \
+    int fns##_rb_it_next(ns##_RB_ITERATOR *it); \
+    int fns##_rb_it_value(ns##_RB_ITERATOR *it, valuetype *value); \
+    int fns##_rb_it_key(ns##_RB_ITERATOR *it, keytype *key);
 
 #define RBTREE_IMPLEMENT(ns, fns, keytype, valuetype) \
     STACK_IMPLEMENT(fns, ns##_RB, ns##_RB_NODE *); \
@@ -475,6 +489,124 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
         } \
         \
         LZH_FREE(nodes); \
+        return 0; \
+    } \
+    ns##_RB_ITERATOR *fns##_rb_create_iterator(ns##_RB_TREE *tree) { \
+        ns##_RB_ITERATOR *it = NULL; \
+        \
+        if (!tree) { \
+            return NULL; \
+        } \
+        \
+        it = malloc(sizeof(ns##_RB_ITERATOR)); \
+        memset(it, 0, sizeof(ns##_RB_ITERATOR)); \
+        \
+        it->tree = tree; \
+        return it; \
+    } \
+    void fns##_rb_destroy_iterator(ns##_RB_ITERATOR *it) { \
+        if (!it) { \
+            return; \
+        } \
+        \
+        if (it->nodes) { \
+            free(it->nodes); \
+        } \
+        free(it); \
+    } \
+    void fns##_rb_it_init(ns##_RB_ITERATOR *it) { \
+        ns##_RB_TREE *tree = NULL; \
+        ns##_RB_STACK *stack = NULL; \
+        ns##_RB_NODE **nodes = NULL; \
+        int count = 0; \
+        \
+        if (!it) { \
+            return; \
+        } \
+        \
+        tree = it->tree; \
+        if (!tree) { \
+            return; \
+        } \
+        \
+        if (it->nodes) { \
+            free(it->nodes); \
+            it->nodes = NULL; \
+        } \
+        \
+        count = tree->count; \
+        if (count <= 0) { \
+            return; \
+        } \
+        \
+        nodes = malloc(count * sizeof(ns##_RB_NODE *)); \
+        memset(nodes, 0, count * sizeof(ns##_RB_NODE *)); \
+        \
+        stack = &it->stack;\
+        stack->elems = nodes; \
+        stack->num = 0; \
+        stack->size = count; \
+        it->nodes = nodes; \
+        it->node = NULL; \
+        it->next = tree->root; \
+    } \
+    int fns##_rb_it_next(ns##_RB_ITERATOR *it) { \
+        ns##_RB_STACK *stack = NULL; \
+        ns##_RB_NODE *node = NULL; \
+        int ret = -1; \
+        \
+        if (!it) { \
+            return -1; \
+        } \
+        \
+        stack = &it->stack; \
+        node = it->next; \
+        \
+        if ((node && !rb_node_is_nil((RB_NODE *)node)) || stack->num > 0) { \
+            while (node && !rb_node_is_nil((RB_NODE *)node)) { \
+                fns##_stack_push(stack, node); \
+                node = node->left; \
+            } \
+            \
+            if (stack->num > 0) { \
+                fns##_stack_pop(stack, &node); \
+                ret = 0; \
+                it->node = node; \
+                it->next = node->right; \
+            } \
+        } \
+        return ret; \
+    } \
+    int fns##_rb_it_value(ns##_RB_ITERATOR *it, valuetype *value) { \
+        ns##_RB_NODE *node = NULL; \
+        \
+        if (!it || !value) { \
+            return -1; \
+        } \
+        \
+        node = it->node; \
+        \
+        if (!node) { \
+            return -1; \
+        } \
+        \
+        *value = node->value; \
+        return 0; \
+    } \
+    int fns##_rb_it_key(ns##_RB_ITERATOR *it, keytype *key) { \
+        ns##_RB_NODE *node = NULL; \
+        \
+        if (!it || !key) { \
+            return -1; \
+        } \
+        \
+        node = it->node; \
+        \
+        if (!node) { \
+            return -1; \
+        } \
+        \
+        *key = node->key; \
         return 0; \
     } \
 

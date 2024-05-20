@@ -21,29 +21,35 @@ LZH_BOOL lzh_get_exe_path(char *buff, int *len)
 {
     char *path = NULL;
     int size = 0;
+    LZH_BOOL ret = LZH_FALSE;
 
     if (!len) {
-        return LZH_FALSE;
+        return ret;
     }
 
     path = SDL_GetBasePath();
     if (!path || !*path) {
-        return LZH_FALSE;
+        return ret;
     }
 
     size = (int)strlen(path);
     *len = size;
 
     if (!buff) {
-        return LZH_TRUE;
+        goto end;
     }
 
     if (*len < size) {
-        return LZH_FALSE;
+        goto end;
     }
 
     strcpy(buff, path);
-    return LZH_TRUE;
+    ret = LZH_TRUE;
+end:
+    if (path) {
+        SDL_free(path);
+    }
+    return ret;
 }
 
 int lzh_random_int(int min, int max)

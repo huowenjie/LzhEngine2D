@@ -17,7 +17,18 @@ Scene::Scene(LZH_ENGINE *eg, const std::string &name)
 
 Scene::~Scene()
 {
-    lzh_scene_destroy(sceneObj);
+    for (
+        std::map<std::string, Object *>::iterator it = sceneObjects.begin(); 
+        it != sceneObjects.end(); ++it
+    ) {
+        if (it->second) {
+            Object *obj = it->second;
+            delete obj;
+        }
+    }
+
+    sceneObjects.clear();
+    //lzh_scene_destroy(sceneObj);
 }
 
 void Scene::LoadScene()
@@ -30,11 +41,16 @@ void Scene::LoadScene()
     lzh_scene_manager_load(manager, sceneName.c_str());
 }
 
-void Scene::AddObjectToScene(Object *obj)
+void Scene::AddObjectToScene(Object *obj, bool isAutoDel)
 {
     if (obj && sceneObj) {
         obj->isAddedScene = true;
         lzh_scene_add_object(sceneObj, obj->object);
+
+        if (isAutoDel) {
+            std::string name = obj->GetName();
+            sceneObjects.insert(std::map<std::string, Object *>::value_type(name, obj));
+        }
     }
 }
 

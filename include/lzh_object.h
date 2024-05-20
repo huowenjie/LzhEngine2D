@@ -21,6 +21,12 @@ LZH_API void lzh_object_set_parent(LZH_OBJECT *object, LZH_OBJECT *parent);
 /* 添加子对象 */
 LZH_API void lzh_object_add_child(LZH_OBJECT *object, LZH_OBJECT *child);
 
+/* 查找子对象 */
+LZH_API LZH_OBJECT *lzh_object_find_child(LZH_OBJECT *object, const char *name);
+
+/* 递归查找子对象 */
+LZH_API LZH_OBJECT *lzh_object_find_child_recursion(LZH_OBJECT *object, const char *name);
+
 /* 移除子对象，移除后返回该对象 */
 LZH_API void lzh_object_del_child(LZH_OBJECT *object, const char *name);
 

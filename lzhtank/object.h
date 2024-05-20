@@ -2,6 +2,7 @@
 #define __OBJECT_H__
 
 #include <lzh_engine.h>
+#include <string>
 
 /*===========================================================================*/
 /* 对象 */
@@ -14,14 +15,38 @@ class Object
 
 public:
     Object(LZH_ENGINE *eg);
-    ~Object();
+    Object(LZH_ENGINE *eg, LZH_OBJECT *obj);
+    virtual ~Object();
 
 public:
+    // 设置当前所属场景
     void SetCurrentScene(Scene *scene);
 
+    // 设置获取名称
+    void SetName(const std::string &name);
+    std::string GetName() const;
+
+    // 设置位置
+    void SetPosition(float x, float y);
+
+    // 获取位置
+    void GetPosition(float *x, float *y);
+
+    // 设置旋转角度
+    void SetRotate(float angle);
+
+    // 获取旋转角度
+    float GetRotateAngle();
+
+    // 查找子对象
+    Object *FindChild(const std::string &name);
+
+    // 递归查找子对象
+    Object *FindChildRecursion(const std::string &name);
+
 protected:
-    virtual void Update(LZH_ENGINE *eg) = 0;
-    virtual void FixedUpdate(LZH_ENGINE *eg) = 0;
+    virtual void Update(LZH_ENGINE *eg);
+    virtual void FixedUpdate(LZH_ENGINE *eg);
 
 protected:
     static void UpdateTank(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args);

@@ -99,6 +99,64 @@ void lzh_object_add_child(LZH_OBJECT *object, LZH_OBJECT *child)
     lzh_object_set_parent(child, object);
 }
 
+LZH_OBJECT *lzh_object_find_child(LZH_OBJECT *object, const char *name)
+{
+    LZH_OBJ_RB_TREE *children = NULL;
+    LZH_HASH_CODE code = 0;
+    LZH_OBJECT *child = NULL;
+
+    if (!object) {
+        return NULL;
+    }
+
+    if (!name || !*name) {
+        return NULL;
+    }
+
+    code = lzh_gen_hash_code(name);
+    children = object->children;
+
+    lzh_obj_rb_find(children, code, &child);
+    return child;
+}
+
+LZH_OBJECT *lzh_object_find_child_recursion(LZH_OBJECT *object, const char *name)
+{
+    LZH_OBJ_RB_TREE *children = NULL;
+    LZH_HASH_CODE code = 0;
+    LZH_OBJECT *child = NULL;
+
+    if (!object) {
+        return NULL;
+    }
+
+    if (!name || !*name) {
+        return NULL;
+    }
+
+    code = lzh_gen_hash_code(name);
+    children = object->children;
+
+    /* 首先查找当前对象的子节点，查不到则沿着子节点查下去 */
+    if (lzh_obj_rb_find(children, code, &child) == -1) {
+        LZH_OBJ_RB_ITERATOR *it = lzh_obj_rb_create_iterator(children);
+
+        while (lzh_obj_rb_it_next(it) != -1) {
+            LZH_OBJECT *obj = NULL;
+            lzh_obj_rb_it_value(it, &obj);
+
+            child = lzh_object_find_child_recursion(obj, name);
+            if (child) {
+                break;
+            }
+        }
+
+        lzh_obj_rb_destroy_iterator(it);
+    }
+
+    return child;
+}
+
 void lzh_object_del_child(LZH_OBJECT *object, const char *name)
 {
     LZH_HASH_CODE code = 0;
@@ -191,7 +249,17 @@ LZH_ENGINE *lzh_object_get_engine(LZH_OBJECT *object)
 
 void lzh_object_set_name(LZH_OBJECT *object, const char *name)
 {
-    if (object) {
+    if (!object) {
+        return;
+    }
+
+    if (object->parent) {
+        LZH_OBJECT *parent = object->parent;
+
+        lzh_obj_rb_delete(parent->children, object->base.hash, NULL, NULL);
+        lzh_base_set_name((LZH_BASE *)object, name);
+        lzh_obj_rb_insert(parent->children, object->base.hash, object);
+    } else {
         lzh_base_set_name((LZH_BASE *)object, name);
     }
 }

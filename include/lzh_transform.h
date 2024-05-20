@@ -16,6 +16,12 @@ extern "C" {
 /* 获取对象 */
 LZH_API LZH_OBJECT *lzh_transform_get_object(LZH_TRANSFORM *transform);
 
+/* 设置位置 */
+LZH_API void lzh_transform_set_pos(LZH_TRANSFORM *transform, float x, float y, float z);
+
+/* 获取位置 */
+LZH_API void lzh_transform_get_pos(LZH_TRANSFORM *transform, float *x, float *y, float *z);
+
 /* 平移 */
 LZH_API void lzh_transform_translate(LZH_TRANSFORM *transform, float x, float y, float z);
 
@@ -31,23 +37,17 @@ LZH_API void lzh_transform_rotate_x(LZH_TRANSFORM *transform, float angle);
 /* 绕 y 轴旋转 */
 LZH_API void lzh_transform_rotate_y(LZH_TRANSFORM *transform, float angle);
 
-/* 获取当前世界坐标 */
-LZH_API void lzh_transform_world_pos(LZH_TRANSFORM *transform, float *x, float *y, float *z);
+/* 设置绕 z 轴旋转角度 */
+LZH_API void lzh_transform_set_rotate_z(LZH_TRANSFORM *transform, float angle);
 
-/* 获取当前本地坐标 */
-LZH_API void lzh_transform_local_pos(LZH_TRANSFORM *transform, float *x, float *y, float *z);
+/* 设置绕 x 轴旋转角度 */
+LZH_API void lzh_transform_set_rotate_x(LZH_TRANSFORM *transform, float angle);
 
-/* 获取在世界坐标下绕 z 轴的旋转 */
-LZH_API float lzh_transform_world_angle_z(LZH_TRANSFORM *transform);
+/* 设置绕 y 轴旋转角度 */
+LZH_API void lzh_transform_set_rotate_y(LZH_TRANSFORM *transform, float angle);
 
-/* 获取在本地坐标下绕 z 轴的旋转 */
-LZH_API float lzh_transform_local_angle_z(LZH_TRANSFORM *transform);
-
-/* 获取在世界坐标下的缩放系数 */
-LZH_API void lzh_transform_world_scale(LZH_TRANSFORM *transform, float *sx, float *sy, float *sz);
-
-/* 获取在本地坐标下的缩放系数 */
-LZH_API void lzh_transform_local_scale(LZH_TRANSFORM *transform, float *sx, float *sy, float *sz);
+/* 获取绕 z 轴旋转角度 */
+LZH_API float lzh_transform_get_rotate_z(LZH_TRANSFORM *transform);
 
 /* 获取前进向量（沿 x 轴正方向） */
 LZH_API void lzh_transform_get_forward(LZH_TRANSFORM *transform, float *x, float *y, float *z);

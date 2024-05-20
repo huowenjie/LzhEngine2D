@@ -10,6 +10,9 @@
 static void lzh_transform_rotate(
     LZH_TRANSFORM *transform, const LZH_VEC3F *axis, float angle);
 
+static void lzh_transform_set_rotate(
+    LZH_TRANSFORM *transform, const LZH_VEC3F *axis, float angle);
+
 /*===========================================================================*/
 
 LZH_OBJECT *lzh_transform_get_object(LZH_TRANSFORM *transform)
@@ -18,6 +21,34 @@ LZH_OBJECT *lzh_transform_get_object(LZH_TRANSFORM *transform)
         return transform->base.object;
     }
     return NULL;
+}
+
+void lzh_transform_set_pos(LZH_TRANSFORM *transform, float x, float y, float z)
+{
+    if (transform) {
+        LZH_VEC3F vec = lzh_vec3f_xyz(x, y, z);
+        transform->local_pos = vec;
+        lzh_transform_flush(transform);
+    }
+}
+
+void lzh_transform_get_pos(LZH_TRANSFORM *transform, float *x, float *y, float *z)
+{
+    if (transform) {
+        LZH_VEC3F *vec = &transform->local_pos;
+
+        if (x) {
+            *x = vec->x;
+        }
+
+        if (y) {
+            *y = vec->y;
+        }
+
+        if (z) {
+            *z = vec->z;
+        }
+    }
 }
 
 void lzh_transform_translate(LZH_TRANSFORM *transform, float x, float y, float z)
@@ -62,30 +93,37 @@ void lzh_transform_rotate_y(LZH_TRANSFORM *transform, float angle)
     }
 }
 
-void lzh_transform_world_pos(LZH_TRANSFORM *transform, float *x, float *y, float *z)
+void lzh_transform_set_rotate_z(LZH_TRANSFORM *transform, float angle)
 {
+    if (transform) {
+        LZH_VEC3F u = lzh_vec3f_xyz(0.0f, 0.0f, 1.0f);
+        lzh_transform_set_rotate(transform, &u, angle);
+    }
 }
 
-void lzh_transform_local_pos(LZH_TRANSFORM *transform, float *x, float *y, float *z)
+void lzh_transform_set_rotate_x(LZH_TRANSFORM *transform, float angle)
 {
+    if (transform) {
+        LZH_VEC3F u = lzh_vec3f_xyz(1.0f, 0.0f, 0.0f);
+        lzh_transform_set_rotate(transform, &u, angle);
+    }
 }
 
-float lzh_transform_world_angle_z(LZH_TRANSFORM *transform)
+void lzh_transform_set_rotate_y(LZH_TRANSFORM *transform, float angle)
 {
+    if (transform) {
+        LZH_VEC3F u = lzh_vec3f_xyz(0.0f, 1.0f, 0.0f);
+        lzh_transform_set_rotate(transform, &u, angle);
+    }
+}
+
+float lzh_transform_get_rotate_z(LZH_TRANSFORM *transform)
+{
+    if (transform) {
+        float theta = lzh_quat4f_get_theta(&transform->local_rotate);
+        return LZH_R2A(theta);
+    }
     return 0.0f;
-}
-
-float lzh_transform_local_angle_z(LZH_TRANSFORM *transform)
-{
-    return 0.0f;
-}
-
-void lzh_transform_world_scale(LZH_TRANSFORM *transform, float *sx, float *sy, float *sz)
-{
-}
-
-void lzh_transform_local_scale(LZH_TRANSFORM *transform, float *sx, float *sy, float *sz)
-{
 }
 
 void lzh_transform_get_forward(LZH_TRANSFORM *transform, float *x, float *y, float *z)
@@ -189,6 +227,16 @@ void lzh_transform_rotate(
     if (transform && axis) {
         LZH_QUAT4F quat = lzh_quat4f_rotation(axis, LZH_A2R(angle));
         transform->local_rotate = lzh_quat4f_mul(&transform->local_rotate, &quat);
+        lzh_transform_flush(transform);
+    }
+}
+
+void lzh_transform_set_rotate(
+    LZH_TRANSFORM *transform, const LZH_VEC3F *axis, float angle)
+{
+    if (transform && axis) {
+        LZH_QUAT4F quat = lzh_quat4f_rotation(axis, LZH_A2R(angle));
+        transform->local_rotate = quat;
         lzh_transform_flush(transform);
     }
 }

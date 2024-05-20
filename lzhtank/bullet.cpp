@@ -46,7 +46,6 @@ void Bullet::Update(LZH_ENGINE *eg)
 
 void Bullet::FixedUpdate(LZH_ENGINE *eg)
 {
-
 }
 
 /*===========================================================================*/
