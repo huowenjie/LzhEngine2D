@@ -52,9 +52,6 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     /* 创建对象渲染树 */
     scene->render_tree = scene_obj_rb_create(lzh_scene_objs_comp);
 
-    /* 创建对象映射表 */
-    scene->object_map = object_map_rb_create(lzh_scene_object_map_comp);
-
     /* 创建深度排序树 */
     scene->sort_tree = scene_sort_rb_create(lzh_scene_sort_comp);
 
@@ -87,7 +84,6 @@ void lzh_scene_destroy(LZH_SCENE *scene)
 void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
 {
     SCENE_OBJ_RB_TREE *render_tree = NULL;
-    OBJECT_MAP_RB_TREE *object_map = NULL;
 
     if (!scene || !object) {
         return;
@@ -98,22 +94,13 @@ void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
         return;
     }
 
-    object_map = scene->object_map;
-    if (!object_map) {
-        return;
-    }
-
-    scene_obj_rb_insert(render_tree, object->render_sort, object);
-    object_map_rb_insert(object_map, object->base.hash, object);
+    scene_obj_rb_insert(render_tree, object->base.hash, object);
 }
 
 void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
 {
     SCENE_OBJ_RB_TREE *render_tree = NULL;
-    OBJECT_MAP_RB_TREE *object_map = NULL;
-    LZH_HASH_CODE code = 0;
-
-    LZH_OBJECT *object = NULL;
+    LZH_HASH_CODE hash = 0;
 
     if (!scene) {
         return;
@@ -128,18 +115,8 @@ void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
         return;
     }
 
-    object_map = scene->object_map;
-    if (!object_map) {
-        return;
-    }
-
-    code = lzh_gen_hash_code(name);
-    if (object_map_rb_find(object_map, code, &object) != 0) {
-        return;
-    }
-
-    scene_obj_rb_delete(render_tree, object->render_sort, lzh_scene_objs_visit_free, NULL);
-    object_map_rb_delete(object_map, code, NULL, NULL);
+    hash = lzh_gen_hash_code(name);
+    scene_obj_rb_delete(render_tree, hash, lzh_scene_objs_visit_free, NULL);
 }
 
 void lzh_scene_set_name(LZH_SCENE *scene, const char *name)

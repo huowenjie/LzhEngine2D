@@ -21,7 +21,7 @@
  * scene_obj_rb_find
  * scene_obj_rb_iterate
  */
-RBTREE_DECLARE(SCENE_OBJ, scene_obj, int, LZH_OBJECT *)
+RBTREE_DECLARE(SCENE_OBJ, scene_obj, LZH_HASH_CODE, LZH_OBJECT *)
 
 /**
  * 定义摄像机深度排序树
@@ -39,21 +39,6 @@ RBTREE_DECLARE(SCENE_OBJ, scene_obj, int, LZH_OBJECT *)
  */
 RBTREE_DECLARE(SCENE_SORT, scene_sort, float, LZH_OBJECT *)
 
-/**
- * 定义Hash-对象映射表，用户快速定位对象
- * 
- * OBJECT_MAP_RB_NODE
- * OBJECT_MAP_RB_TREE
- * 
- * object_map_rb_create
- * object_map_rb_destroy
- * object_map_rb_insert
- * object_map_rb_delete
- * object_map_rb_find
- * object_map_rb_iterate
- */
-RBTREE_DECLARE(OBJECT_MAP, object_map, LZH_HASH_CODE, LZH_OBJECT *)
-
 struct LZH_SCENE
 {
     /* 基类 */
@@ -61,9 +46,6 @@ struct LZH_SCENE
 
     /* 对象渲染树 */
     SCENE_OBJ_RB_TREE *render_tree;
-
-    /* 对象映射表 */
-    OBJECT_MAP_RB_TREE *object_map;
 
     /* 深度排序树 */
     SCENE_SORT_RB_TREE *sort_tree;
@@ -74,9 +56,6 @@ struct LZH_SCENE
 
 /* 移除场景 */
 void lzh_scene_remove(LZH_SCENE *scene);
-
-/* 映射表比较 */
-int lzh_scene_object_map_comp(const void *a, const void *b);
 
 /* 排序表回调 */
 int lzh_scene_sort_comp(const void *a, const void *b);

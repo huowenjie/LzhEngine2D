@@ -54,7 +54,7 @@ LZH_API void lzh_collider_destroy(LZH_COLLIDER *collider);
 
 /* 设置碰撞器参数 */
 LZH_API void lzh_collider_set_param(
-    LZH_COLLIDER *collider, const LZH_COLLIDER_PARAM *type);
+    LZH_COLLIDER *collider, const LZH_COLLIDER_PARAM *param);
 
 /* 设置碰撞回调 */
 LZH_API void lzh_collider_set_callback(LZH_COLLIDER *collider, LZH_COLLIDER_CB cb);

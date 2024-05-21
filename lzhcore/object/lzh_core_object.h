@@ -36,9 +36,6 @@ struct LZH_OBJECT {
     /* 组件链表 */
     LZH_CPNT_RB_TREE *components;
 
-    /* 渲染层级和顺序 */
-    int render_sort;
-
     /* 变换组件 */
     LZH_TRANSFORM *transform;
 

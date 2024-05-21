@@ -60,7 +60,7 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
     base->base.draw = lzh_sprite_draw;
     base->type = LZH_CPNT_SPRITE;
     base->remove_component = lzh_sprite_remove;
-    
+
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW;
     sprite->frame_count = 1;
     sprite->anim_fps = 30;
@@ -125,17 +125,7 @@ LZH_SPRITE *lzh_sprite_create_from_sheets(
 
 void lzh_sprite_destroy(LZH_SPRITE *sprite)
 {
-    if (sprite) {
-        /* 从所属对象组件表中移除组件对象 */
-        if (sprite->base.object) {
-            LZH_OBJECT *obj = sprite->base.object;
-            lzh_cpnt_rb_delete(obj->components, LZH_CPNT_SPRITE, NULL, NULL);
-            sprite->base.object = NULL;
-        }
-
-        quit_sprite_vertex(sprite);
-        lzh_sprite_remove((LZH_COMPONENT *)sprite);
-    }
+    lzh_cpnt_destroy((LZH_COMPONENT *)sprite);
 }
 
 void lzh_sprite_get_img_size(LZH_SPRITE *sprite, int index, float *w, float *h)
@@ -452,10 +442,14 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
     }
 
     sprite = (LZH_SPRITE *)base;
-    object = sprite->base.object;
-    engine = object->base.engine;
 
-    if (!object || !engine) {
+    object = sprite->base.object;
+    if (!object) {
+        return;
+    }
+
+    engine = object->base.engine;
+    if (!engine) {
         return;
     }
 
@@ -492,6 +486,7 @@ void lzh_sprite_remove(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
         LZH_SPRITE *sprite = (LZH_SPRITE *)cpnt;
+        quit_sprite_vertex(sprite);
 
         if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
             LZH_TEXTURE **textures = sprite->textures;

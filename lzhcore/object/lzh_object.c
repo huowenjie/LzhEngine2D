@@ -13,11 +13,6 @@
 /*===========================================================================*/
 
 static int global_order = 1;
-static int global_sort = 0;
-
-/* 更新内部参数 */
-static void update_object_center(LZH_OBJECT *obj);
-static void update_object_forward(LZH_OBJECT *obj);
 
 /* 场景渲染队列渲染回调 */
 static void lzh_object_update(LZH_BASE *base, void *args);
@@ -62,7 +57,6 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->parent = NULL;
     obj->children = lzh_obj_rb_create(lzh_object_rb_comp);
     obj->components = lzh_cpnt_rb_create(lzh_cpnt_rb_comp);
-    obj->render_sort = global_sort++;
     obj->transform = lzh_transform_create(engine);
     obj->transform->base.object = obj;
 
@@ -299,25 +293,6 @@ void lzh_object_show_object(LZH_OBJECT *object, LZH_BOOL show)
 
 /*===========================================================================*/
 
-void update_object_center(LZH_OBJECT *obj)
-{
-    if (obj) {
-        // obj->rx = obj->x + (obj->w / 2.0f);
-        // obj->ry = obj->y + (obj->h / 2.0f);
-    }
-}
-
-void update_object_forward(LZH_OBJECT *obj)
-{
-    if (obj) {
-        // float angle = obj->angle;
-        // float theta = angle * (PI / 180.0f);
-
-        // LZH_VEC2F forward = lzh_vec2f_xy(0.0f, -1.0f);
-        // obj->forward = lzh_vec2f_rotate(&forward, theta);
-    }
-}
-
 void lzh_object_update(LZH_BASE *base, void *args)
 {
     if (base) {
@@ -390,12 +365,8 @@ void lzh_object_draw(LZH_BASE *base, void *args)
             lzh_obj_rb_iterate(object->children, lzh_object_rb_visit_draw, args);
         }
 
+        /* 向最终的排序树插入绘制对象 */
         lzh_scene_objs_insert(object, (LZH_SCENE *)args);
-
-        /* 绘制组件 */
-        /*if (object->components) {
-            lzh_cpnt_rb_iterate(object->components, lzh_cpnt_rb_visit_draw, NULL);
-        }*/
     }
 }
 
@@ -403,11 +374,6 @@ void lzh_object_sort_draw(LZH_BASE *base, void *args)
 {
     if (base) {
         LZH_OBJECT *object = (LZH_OBJECT *)base;
-
-        /* 绘制子树 */
-        /*if (object->children) {
-            lzh_obj_rb_iterate(object->children, lzh_object_rb_visit_sort_draw, args);
-        }*/
 
         /* 绘制组件 */
         if (object->components) {

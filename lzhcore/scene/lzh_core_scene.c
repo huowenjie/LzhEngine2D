@@ -15,12 +15,6 @@ void lzh_scene_remove(LZH_SCENE *scene)
             scene->sort_tree = NULL;
         }
 
-        /* ÒÆ³ýÓ³Éä±í */
-        if (scene->object_map) {
-            object_map_rb_destroy(scene->object_map, NULL, NULL);
-            scene->object_map = NULL;
-        }
-
         /* ÒÆ³ý²ã¼¶äÖÈ¾Ê÷ */
         if (scene->render_tree) {
             scene_obj_rb_destroy(scene->render_tree, lzh_scene_objs_visit_free, NULL);
@@ -30,20 +24,6 @@ void lzh_scene_remove(LZH_SCENE *scene)
         lzh_base_quit((LZH_BASE *)scene);
         LZH_FREE(scene);
     }
-}
-
-int lzh_scene_object_map_comp(const void *a, const void *b)
-{
-    LZH_HASH_CODE i1 = *((LZH_HASH_CODE *)a);
-    LZH_HASH_CODE i2 = *((LZH_HASH_CODE *)b);
-
-    if (i1 < i2) {
-        return -1;
-    } else if (i1 > i2) {
-        return 1;
-    }
-
-    return 0;
 }
 
 int lzh_scene_sort_comp(const void *a, const void *b)
@@ -73,8 +53,8 @@ void lzh_scene_sort_visit_draw(const SCENE_SORT_RB_NODE *node, void *args)
 
 int lzh_scene_objs_comp(const void *a, const void *b)
 {
-    int i1 = *((int *)a);
-    int i2 = *((int *)b);
+    LZH_HASH_CODE i1 = *((int *)a);
+    LZH_HASH_CODE i2 = *((int *)b);
 
     if (i1 < i2) {
         return -1;
@@ -187,14 +167,10 @@ LZH_BOOL lzh_scene_objs_insert(LZH_OBJECT *object, LZH_SCENE *scene)
 
 /*===========================================================================*/
 
-RBTREE_IMPLEMENT(SCENE_OBJ, scene_obj, int, LZH_OBJECT *)
+RBTREE_IMPLEMENT(SCENE_OBJ, scene_obj, LZH_HASH_CODE, LZH_OBJECT *)
 
 /*===========================================================================*/
 
 RBTREE_IMPLEMENT(SCENE_SORT, scene_sort, float, LZH_OBJECT *)
-
-/*===========================================================================*/
-
-RBTREE_IMPLEMENT(OBJECT_MAP, object_map, LZH_HASH_CODE, LZH_OBJECT *)
 
 /*===========================================================================*/
