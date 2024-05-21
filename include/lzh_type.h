@@ -41,8 +41,8 @@ typedef struct LZH_SCENE            LZH_SCENE;
 typedef struct LZH_SPRITE           LZH_SPRITE;
 typedef struct LZH_CAMERA           LZH_CAMERA;
 typedef struct LZH_TRANSFORM        LZH_TRANSFORM;
+typedef struct LZH_COLLIDER         LZH_COLLIDER;
 typedef struct LZH_ENGINE           LZH_ENGINE;
-typedef struct LZH_QUAD_TREE        LZH_QUAD_TREE;
 typedef struct LZH_SCENE_MANAGER    LZH_SCENE_MANAGER;
 typedef LZH_UINT32                  LZH_HASH_CODE;
 

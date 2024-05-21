@@ -24,7 +24,7 @@ struct LZH_TRANSFORM {
     LZH_VEC3F leftward;         /* 左，沿 y 轴正方向，相对向前对象的坐标系 */
     LZH_VEC3F rightward;        /* 右，沿 y 轴负方向，相对向前对象的坐标系 */
 
-    LZH_MAT4X4F model_mat;  /* 模型矩阵 */
+    LZH_MAT4X4F model_mat;      /* 模型矩阵 */
 };
 
 /* 创建组件 */

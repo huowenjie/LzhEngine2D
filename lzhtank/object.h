@@ -38,6 +38,9 @@ public:
     // 获取旋转角度
     float GetRotateAngle();
 
+    // 获取世界旋转角度
+    float GetRotateWorldAngle();
+
     // 查找子对象
     Object *FindChild(const std::string &name);
 

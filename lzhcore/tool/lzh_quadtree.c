@@ -1,7 +1,8 @@
-#include <lzh_quadtree.h>
 #include <lzh_mem.h>
 #include <lzh_object.h>
 #include <string.h>
+
+#include "lzh_quadtree.h"
 
 /*===========================================================================*/
 

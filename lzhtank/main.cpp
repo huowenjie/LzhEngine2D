@@ -3,7 +3,7 @@
 #include <lzh_engine.h>
 
 #include "globalres.h"
-#include "tank.h"
+#include "player.h"
 #include "camera.h"
 #include "scene.h"
 #include "bullet.h"
@@ -39,7 +39,7 @@ end:
 void Run(LZH_ENGINE *engine)
 {
     Scene scene(engine, "tutorial level");
-    Tank player(engine);
+    Player player(engine);
     Camera camera(engine);
 
     player.SetCurrentScene(&scene);

@@ -11,11 +11,13 @@
 Bullet::Bullet(LZH_ENGINE *engine) : Object(engine)
 {
     bulletSp = lzh_sprite_create(engine, get_tank_bullet_path());
+    moveSpeed = 5.0f;
+    fireDistance = 100.0f;
+
     lzh_object_add_component(object, bulletSp);
     lzh_object_set_name(object, "bullet");
 
-    moveSpeed = 5.0f;
-    fireDistance = 100.0f;
+    lzh_transform_scale(transform, 0.5f, 0.5f, 1.0f);
 }
 
 Bullet::~Bullet()

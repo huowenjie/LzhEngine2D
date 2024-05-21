@@ -10,7 +10,7 @@
 class Tank : public Object
 {
 public:
-    Tank(LZH_ENGINE *engine);
+    Tank(LZH_ENGINE *eg);
     virtual ~Tank();
 
 protected:

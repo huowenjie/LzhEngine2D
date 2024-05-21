@@ -37,17 +37,20 @@ LZH_API void lzh_transform_rotate_x(LZH_TRANSFORM *transform, float angle);
 /* 绕 y 轴旋转 */
 LZH_API void lzh_transform_rotate_y(LZH_TRANSFORM *transform, float angle);
 
-/* 设置绕 z 轴旋转角度 */
+/* 设置绕 z 轴旋转角度（局部） */
 LZH_API void lzh_transform_set_rotate_z(LZH_TRANSFORM *transform, float angle);
 
-/* 设置绕 x 轴旋转角度 */
+/* 设置绕 x 轴旋转角度（局部） */
 LZH_API void lzh_transform_set_rotate_x(LZH_TRANSFORM *transform, float angle);
 
-/* 设置绕 y 轴旋转角度 */
+/* 设置绕 y 轴旋转角度（局部） */
 LZH_API void lzh_transform_set_rotate_y(LZH_TRANSFORM *transform, float angle);
 
-/* 获取绕 z 轴旋转角度 */
+/* 获取绕 z 轴旋转角度（局部） */
 LZH_API float lzh_transform_get_rotate_z(LZH_TRANSFORM *transform);
+
+/* 获取绕 z 轴旋转角度（世界） */
+LZH_API float lzh_transform_get_rotate_wz(LZH_TRANSFORM *transform);
 
 /* 获取前进向量（沿 x 轴正方向） */
 LZH_API void lzh_transform_get_forward(LZH_TRANSFORM *transform, float *x, float *y, float *z);

@@ -1,7 +1,6 @@
 #include <lzh_object.h>
 #include <lzh_sprite.h>
 #include <lzh_transform.h>
-#include <lzh_keyboard.h>
 
 #include "globalres.h"
 #include "scene.h"
@@ -10,13 +9,13 @@
 
 /*===========================================================================*/
 
-Tank::Tank(LZH_ENGINE *engine) : Object(engine)
+Tank::Tank(LZH_ENGINE *eg) : Object(eg)
 {
-    chassis = lzh_object_create(engine);
-    turret = lzh_object_create(engine);
+    chassis = lzh_object_create(eg);
+    turret = lzh_object_create(eg);
 
-    chassisSp = lzh_sprite_create(engine, get_tank_res_path());
-    turretSp = lzh_sprite_create(engine, get_tank_turret_path());
+    chassisSp = lzh_sprite_create(eg, get_tank_res_path());
+    turretSp = lzh_sprite_create(eg, get_tank_turret_path());
 
     chassisTransform = lzh_object_get_transform(chassis);
     turretTransform = lzh_object_get_transform(turret);
@@ -64,7 +63,7 @@ void Tank::Fire()
         Object *turret = FindChildRecursion("turret");
 
         if (turret) {
-            r = turret->GetRotateAngle();
+            r = turret->GetRotateWorldAngle();
             bullet->SetRotate(r);
             delete turret;
         }
@@ -77,56 +76,6 @@ void Tank::Fire()
 
 void Tank::Update(LZH_ENGINE *eg)
 {
-    float delta = 0.0f;
-    float ms = 0.0f;
-    float rs = 0.0f;
-    float ts = 0.0f;
-
-    float x = 0.0f;
-    float y = 0.0f;
-
-    if (!eg) {
-        return;
-    }
-
-    delta = lzh_engine_interval(eg);
-    ms = moveSpeed * delta;
-    rs = rotateSpeed * delta;
-    ts = turretRotateSpeed * delta;
-
-    if (lzh_get_key_status(KEY_CODE_W)) {
-        lzh_transform_get_forward(transform, &x, &y, NULL);
-        x *= ms;
-        y *= ms;
-        lzh_transform_translate(transform, x, y, 0.0f);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_S)) {
-        lzh_transform_get_backward(transform, &x, &y, NULL);
-        x *= ms;
-        y *= ms;
-        lzh_transform_translate(transform, x, y, 0.0f);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_A)) {
-        lzh_transform_rotate_z(transform, rs);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_D)) {
-        lzh_transform_rotate_z(transform, -rs);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_Q)) {
-        lzh_transform_rotate_z(turretTransform, ts);
-    }
-
-    if (lzh_get_key_status(KEY_CODE_E)) {
-        lzh_transform_rotate_z(turretTransform, -ts);
-    }
-
-    if (lzh_get_key_down(eg, KEY_CODE_SPACE)) {
-        Fire();
-    }
 }
 
 void Tank::FixedUpdate(LZH_ENGINE *eg)

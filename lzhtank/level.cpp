@@ -2,7 +2,6 @@
 #include <lzh_mem.h>
 #include <lzh_engine.h>
 #include <lzh_keyboard.h>
-#include <lzh_quadtree.h>
 #include <lzh_systool.h>
 #include <lzh_object.h>
 #include <lzh_sprite.h>

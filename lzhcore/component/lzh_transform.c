@@ -126,6 +126,34 @@ float lzh_transform_get_rotate_z(LZH_TRANSFORM *transform)
     return 0.0f;
 }
 
+float lzh_transform_get_rotate_wz(LZH_TRANSFORM *transform)
+{
+    LZH_OBJECT *object = NULL;
+    LZH_QUAT4F rotate;
+    float theta = 0.0f;
+
+    if (!transform) {
+        return 0.0f;
+    }
+
+    rotate = transform->local_rotate;
+    object = transform->base.object;
+
+    while (object) {
+        object = object->parent;
+
+        if (object) {
+            transform = object->transform;
+            if (transform) {
+                rotate = lzh_quat4f_mul(&transform->local_rotate, &rotate);
+            }
+        }
+    }
+
+    theta = lzh_quat4f_get_theta(&rotate);
+    return LZH_R2A(theta);
+}
+
 void lzh_transform_get_forward(LZH_TRANSFORM *transform, float *x, float *y, float *z)
 {
     LZH_VEC3F forward = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);

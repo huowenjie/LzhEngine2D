@@ -89,6 +89,14 @@ float Object::GetRotateAngle()
     return 0.0f;
 }
 
+float Object::GetRotateWorldAngle()
+{
+    if (transform) {
+        return lzh_transform_get_rotate_wz(transform);
+    }
+    return 0.0f;
+}
+
 Object *Object::FindChild(const std::string &name)
 {
     if (name.empty()) {
