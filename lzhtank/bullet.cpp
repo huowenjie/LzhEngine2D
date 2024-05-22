@@ -7,6 +7,8 @@
 
 #include "globalres.h"
 #include "bullet.h"
+#include "explode.h"
+#include "scene.h"
 
 /*===========================================================================*/
 
@@ -54,6 +56,22 @@ void Bullet::SetFromObject(Object *from)
 
 /*===========================================================================*/
 
+void Bullet::BulletExplode()
+{
+    if (currentScene) {
+        Explode *explode = new Explode(engine);
+
+        float x = 0.0f;
+        float y = 0.0f;
+
+        GetPosition(&x, &y);
+        explode->SetPosition(x, y);
+        currentScene->AddObjectToScene(explode, true);
+    }
+}
+
+/*===========================================================================*/
+
 void Bullet::Update(LZH_ENGINE *eg)
 {
     float delta = 0.0f;
@@ -88,6 +106,7 @@ void Bullet::ColliderCb(LZH_OBJECT *self, LZH_OBJECT *target)
         return;
     }
 
+    BulletExplode();
     printf(
         "-------Bullet::ColliderCb--self = %s, target = %s\n",
         lzh_object_get_name(self), lzh_object_get_name(target)

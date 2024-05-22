@@ -71,6 +71,7 @@ void Tank::Fire()
 
         GetPosition(&x, &y);
         bullet->SetPosition(x, y);
+        bullet->SetCurrentScene(currentScene);
 
         Object *turret = FindChildRecursion("turret");
 

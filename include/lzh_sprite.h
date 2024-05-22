@@ -40,6 +40,9 @@ LZH_API void lzh_sprite_set_start_frame(LZH_SPRITE *sprite, int start);
 /* 设置播放结束帧 */
 LZH_API void lzh_sprite_set_end_frame(LZH_SPRITE *sprite, int end);
 
+/* 设置是否循环播放 */
+LZH_API void lzh_sprite_set_replay(LZH_SPRITE *sprite, LZH_BOOL replay);
+
 /*
  * 设置关键帧回调，在某一帧播放结束后调用关键帧回调, 只能从支持动画的精灵上
  * 设置，帧数从0开始算。

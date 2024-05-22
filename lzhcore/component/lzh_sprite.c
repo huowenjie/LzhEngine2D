@@ -176,6 +176,17 @@ void lzh_sprite_set_end_frame(LZH_SPRITE *sprite, int end)
     }
 }
 
+void lzh_sprite_set_replay(LZH_SPRITE *sprite, LZH_BOOL replay)
+{
+    if (sprite) {
+        if (replay) {
+            sprite->state |= SSC_REPLAY;
+        } else {
+            sprite->state &= (~SSC_REPLAY);
+        }
+    }
+}
+
 void lzh_sprite_set_keyframe(
     LZH_SPRITE *sprite, int frame, LZH_KEYFRAME_CB cb, void *args)
 {
@@ -462,7 +473,20 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
         return;
     }
 
+    /* 在播放过一次的情况下，检查是否允许重复播放，不允许重复播放则当帧数返回 0 帧时停止 */
+    if (IS_SP_STATE(sprite->state, SSC_ONCE) && 
+        !IS_SP_STATE(sprite->state, SSC_REPLAY)) {
+        if (sprite->cur_frame == sprite->start_frame) {
+            return;
+        }
+    }
+
     cur_frame = calc_images_frame(sprite);
+
+    /* 播放过一次, 做一个标记 */
+    if (sprite->frame_count > 1 && cur_frame == sprite->end_frame) {
+        sprite->state |= SSC_ONCE;
+    }
 
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
         LZH_TEXTURE **textures = sprite->textures;

@@ -17,6 +17,9 @@ public:
     void SetFromObject(Object *from);
 
 protected:
+    void BulletExplode();
+
+protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
     virtual void ColliderCb(LZH_OBJECT *self, LZH_OBJECT *target);
