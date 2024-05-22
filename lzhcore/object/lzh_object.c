@@ -64,6 +64,7 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->update_param = NULL;
     obj->fixed_update = NULL;
     obj->fixed_update_param = NULL;
+    obj->object_state = LZH_OS_NONE;
 
     /* ÉèÖÃÄ¬ÈÏÃû³Æ */
     lzh_base_set_name(base, lzh_gen_new_name(global_order++));
@@ -186,6 +187,8 @@ void lzh_object_add_component(LZH_OBJECT *object, void *cpnt)
 
         if (elem->type == LZH_CPNT_TRANSFORM) {
             return;
+        } else if (elem->type == LZH_CPNT_COLLIDER) {
+            object->object_state |= LZH_OS_ADD_COLLIDER;
         }
 
         elem->object = object;
@@ -197,6 +200,10 @@ void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt)
 {
     if (object && object->components && cpnt) {
         LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
+
+        if (elem->type == LZH_CPNT_COLLIDER) {
+            object->object_state &= (~LZH_OS_ADD_COLLIDER);
+        }
 
         elem->object = NULL;
         lzh_cpnt_rb_delete(object->components, elem->type, NULL, NULL);

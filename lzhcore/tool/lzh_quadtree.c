@@ -3,6 +3,9 @@
 #include <string.h>
 
 #include "lzh_quadtree.h"
+#include "../component/lzh_component.h"
+#include "../component/lzh_core_collider.h"
+#include "../object/lzh_core_object.h"
 
 /*===========================================================================*/
 
@@ -84,13 +87,16 @@ static void split_quad_node(LZH_QUAD_NODE *node);
 static void insert_object(LZH_QUAD_NODE *node, LZH_OBJECT *object);
 
 /* 查找节点 */
-void find_quad_node(
+static void find_quad_node(
     LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count,
     int offset);
 
 /* 查找对象 */
-void find_object(
+static void find_object(
     LZH_QUAD_NODE *node, const LZH_OBJECT *target, LZH_OBJECT **other, int *count);
+
+/* 获取对象矩形 */
+static LZH_BOOL get_object_rect(const LZH_OBJECT *object, LZH_RECTF *rect);
 
 /*===========================================================================*/
 
@@ -330,8 +336,9 @@ void add_quad_node(LZH_QUAD_NODE *node, LZH_OBJECT *object)
         return;
     }
 
-    //objrect = lzh_object_get_rect(object);
-    /* TODO */
+    if (!get_object_rect(object, &objrect)) {
+        return;
+    }
 
     /* 获取象限索引 */
     index = get_quad_node_index(node, &objrect);
@@ -477,8 +484,9 @@ void find_quad_node(
         return;
     }
 
-    //objrect = lzh_object_get_rect(target);
-    /* TODO */
+    if (!get_object_rect(target, &objrect)) {
+        return;
+    }
 
     /* 获取象限索引 */
     index = get_quad_node_index(node, &objrect);
@@ -546,6 +554,23 @@ void find_object(
     }
 
     *count = j;
+}
+
+LZH_BOOL get_object_rect(const LZH_OBJECT *object, LZH_RECTF *rect)
+{
+    LZH_COLLIDER *collider = NULL;
+
+    if (!object || !rect) {
+        return LZH_FALSE;
+    }
+
+    collider = (LZH_COLLIDER *)lzh_cpnt_get_type(object->components, LZH_CPNT_COLLIDER);
+    if (!collider) {
+        return LZH_FALSE;
+    }
+
+    *rect = lzh_collider_rectf(collider);
+    return LZH_TRUE;
 }
 
 /*===========================================================================*/

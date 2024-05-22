@@ -26,7 +26,7 @@ Tank::Tank(LZH_ENGINE *eg) : Object(eg)
     lzh_object_add_child(object, turret);
     lzh_object_add_child(object, chassis);
 
-    lzh_object_set_name(object, "tank");
+    // 只单独命名两个子对象
     lzh_object_set_name(chassis, "chassis");
     lzh_object_set_name(turret, "turret");
 
@@ -68,7 +68,7 @@ void Tank::Fire()
             delete turret;
         }
 
-        currentScene->AddObjectToScene(bullet);
+        currentScene->AddObjectToScene(bullet, true);
     }
 }
 

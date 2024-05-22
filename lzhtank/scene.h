@@ -22,7 +22,7 @@ public:
     void LoadScene();
 
     // 添加对象至场景
-    void AddObjectToScene(Object *obj, bool isAutoDel = true);
+    void AddObjectToScene(Object *obj, bool isAutoDel = false);
 
     // 设置主相机
     void SetMainCamera(Camera *camera);
