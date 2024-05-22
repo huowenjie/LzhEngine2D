@@ -15,8 +15,8 @@ Object::Object(LZH_ENGINE *eg)
     isAddedScene = false;
     currentScene = NULL;
 
-    lzh_object_set_update(object, Object::UpdateTank, this);
-    lzh_object_set_fixedupdate(object, Object::FixedUpdateTank, this);
+    lzh_object_set_update(object, Object::UpdateObject, this);
+    lzh_object_set_fixedupdate(object, Object::FixedUpdateObject, this);
 }
 
 Object::Object(LZH_ENGINE *eg, LZH_OBJECT *obj)
@@ -28,8 +28,8 @@ Object::Object(LZH_ENGINE *eg, LZH_OBJECT *obj)
     isAddedScene = true;
     currentScene = NULL;
 
-    lzh_object_set_update(object, Object::UpdateTank, this);
-    lzh_object_set_fixedupdate(object, Object::FixedUpdateTank, this);
+    lzh_object_set_update(object, Object::UpdateObject, this);
+    lzh_object_set_fixedupdate(object, Object::FixedUpdateObject, this);
 }
 
 Object::~Object()
@@ -131,6 +131,11 @@ Object *Object::FindChildRecursion(const std::string &name)
     return newObj;
 }
 
+LZH_OBJECT *Object::GetObjectHandle()
+{
+    return object;
+}
+
 void Object::Update(LZH_ENGINE *eg)
 {
 }
@@ -139,7 +144,12 @@ void Object::FixedUpdate(LZH_ENGINE *eg)
 {
 }
 
-void Object::UpdateTank(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
+void Object::ColliderCb(LZH_OBJECT *self, LZH_OBJECT *target)
+{
+
+}
+
+void Object::UpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
 {
     if (eg && obj && args) {
         Object *inst = (Object *)args;
@@ -147,11 +157,19 @@ void Object::UpdateTank(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
     }
 }
 
-void Object::FixedUpdateTank(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
+void Object::FixedUpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
 {
     if (eg && obj && args) {
         Object *inst = (Object *)args;
         inst->FixedUpdate(eg);
+    }
+}
+
+void Object::ColliderObjectCb(LZH_OBJECT *self, LZH_OBJECT *target, void *args)
+{
+    if (self && target && args) {
+        Object *inst = (Object *)args;
+        inst->ColliderCb(self, target);
     }
 }
 

@@ -31,6 +31,8 @@ protected:
     LZH_TRANSFORM *chassisTransform;
     LZH_TRANSFORM *turretTransform;
 
+    LZH_COLLIDER *collider;
+
     // ÒÆ¶¯ËÙ¶È
     float moveSpeed;
 

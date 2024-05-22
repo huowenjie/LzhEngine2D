@@ -44,7 +44,7 @@ typedef struct LZH_COLLIDER_PARAM {
 } LZH_COLLIDER_PARAM;
 
 /* 碰撞回调 */
-typedef void (*LZH_COLLIDER_CB)(LZH_OBJECT *self, LZH_OBJECT *target);
+typedef void (*LZH_COLLIDER_CB)(LZH_OBJECT *self, LZH_OBJECT *target, void *args);
 
 /* 创建碰撞组件 */
 LZH_API LZH_COLLIDER *lzh_collider_create(LZH_ENGINE *engine);
@@ -57,7 +57,8 @@ LZH_API void lzh_collider_set_param(
     LZH_COLLIDER *collider, const LZH_COLLIDER_PARAM *param);
 
 /* 设置碰撞回调 */
-LZH_API void lzh_collider_set_callback(LZH_COLLIDER *collider, LZH_COLLIDER_CB cb);
+LZH_API void lzh_collider_set_callback(
+    LZH_COLLIDER *collider, LZH_COLLIDER_CB cb, void *args);
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,7 @@
 #include <lzh_object.h>
 #include <lzh_sprite.h>
 #include <lzh_transform.h>
+#include <lzh_collider.h>
 
 #include "globalres.h"
 #include "scene.h"
@@ -20,8 +21,15 @@ Tank::Tank(LZH_ENGINE *eg) : Object(eg)
     chassisTransform = lzh_object_get_transform(chassis);
     turretTransform = lzh_object_get_transform(turret);
 
+    collider = lzh_collider_create(eg);
+    
+    moveSpeed = 5.0f;
+    rotateSpeed = 60.0f;
+    turretRotateSpeed = 60.0f;
+
     lzh_object_add_component(chassis, chassisSp);
     lzh_object_add_component(turret, turretSp);
+    lzh_object_add_component(object, collider);
 
     lzh_object_add_child(object, turret);
     lzh_object_add_child(object, chassis);
@@ -33,9 +41,13 @@ Tank::Tank(LZH_ENGINE *eg) : Object(eg)
     lzh_transform_scale(turretTransform, 0.5f, 0.5f, 0.5f);
     lzh_transform_translate(turretTransform, 0.0f, 0.0f, 0.1f);
 
-    moveSpeed = 5.0f;
-    rotateSpeed = 60.0f;
-    turretRotateSpeed = 60.0f;
+    LZH_COLLIDER_PARAM param;
+    param.type = BOX_2D;
+    param.box2d.x = -0.5f;
+    param.box2d.y = 0.5f;
+    param.box2d.w = 1.0f;
+    param.box2d.h = 1.0f;
+    lzh_collider_set_param(collider, &param);
 }
 
 Tank::~Tank()
@@ -69,6 +81,7 @@ void Tank::Fire()
         }
 
         currentScene->AddObjectToScene(bullet, true);
+        bullet->SetFromObject(this);
     }
 }
 
@@ -80,7 +93,6 @@ void Tank::Update(LZH_ENGINE *eg)
 
 void Tank::FixedUpdate(LZH_ENGINE *eg)
 {
-
 }
 
 /*===========================================================================*/

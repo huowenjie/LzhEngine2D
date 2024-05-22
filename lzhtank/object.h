@@ -47,13 +47,18 @@ public:
     // 递归查找子对象
     Object *FindChildRecursion(const std::string &name);
 
+    // 获取对象指针
+    LZH_OBJECT *GetObjectHandle();
+
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
+    virtual void ColliderCb(LZH_OBJECT *self, LZH_OBJECT *target);
 
 protected:
-    static void UpdateTank(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args);
-    static void FixedUpdateTank(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args);
+    static void UpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args);
+    static void FixedUpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args);
+    static void ColliderObjectCb(LZH_OBJECT *self, LZH_OBJECT *target, void *args);
 
 protected:
     LZH_ENGINE *engine;

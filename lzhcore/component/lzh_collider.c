@@ -2,6 +2,7 @@
 
 #include "lzh_core_collider.h"
 #include "lzh_core_transform.h"
+#include "lzh_core_camera.h"
 
 #include "../object/lzh_core_object.h"
 #include "../engine/lzh_core_engine.h"
@@ -92,10 +93,12 @@ void lzh_collider_set_param(
     }
 }
 
-void lzh_collider_set_callback(LZH_COLLIDER *collider, LZH_COLLIDER_CB cb)
+void lzh_collider_set_callback(
+    LZH_COLLIDER *collider, LZH_COLLIDER_CB cb, void *args)
 {
     if (collider) {
         collider->callback = cb;
+        collider->args = args;
     }
 }
 
@@ -126,9 +129,8 @@ void lzh_collider_update(LZH_BASE *base, void *args)
 
     LZH_SCENE_MANAGER *sm = NULL;
     LZH_SCENE *cur_scene = NULL;
+    LZH_CAMERA *camera = NULL;
 
-    int w = 0;
-    int h = 0;
     LZH_RECTF region;
 
     if (!base) {
@@ -158,13 +160,24 @@ void lzh_collider_update(LZH_BASE *base, void *args)
     }
 
     cur_scene = sm->scene_active;
-    if (!cur_scene) {
+    if (!cur_scene || !cur_scene->main_camera) {
+        return;
+    }
+
+    camera = (LZH_CAMERA *)lzh_cpnt_get_type(
+        cur_scene->main_camera->components, LZH_CPNT_CAMERA);
+    if (!camera) {
         return;
     }
 
     /* 默认的碰撞区域为屏幕大小的区域 */
-    lzh_engine_win_size(engine, &w, &h);
-    lzh_rectf_init(&region, 0.0f, 0.0f, (float)w, (float)h);
+    lzh_rectf_init(
+        &region,
+        -camera->view_port_w / 2.0f,
+        -camera->view_port_h / 2.0f,
+        camera->view_port_w,
+        camera->view_port_h
+    );
     lzh_quad_tree_init_root(quad, &region);
 
     /* 遍历并添加要检测的碰撞对象 */
@@ -173,7 +186,7 @@ void lzh_collider_update(LZH_BASE *base, void *args)
     /* 检测到碰撞之后，调用回调函数通知用户 */
     collide_obj = get_collider_object(collider, object);
     if (collide_obj && collider->callback) {
-        collider->callback(object, collide_obj);
+        collider->callback(object, collide_obj, collider->args);
     }
 
     /* 清除四叉树节点 */

@@ -13,7 +13,8 @@ Camera::Camera(LZH_ENGINE *eg) : Object(eg)
     lzh_object_add_component(object, camera);
     lzh_object_set_name(object, "camera");
 
-    lzh_camera_set_viewport(camera, 2.0f, 2.0f);
+    lzh_camera_set_viewport(camera, 16.0f, 12.0f);
+
     lzh_camera_set_perspective(camera, LZH_FALSE);
     lzh_camera_lookat(camera, 0.0f, 0.0f, 0.0f);
     lzh_transform_translate(transform, 0.0f, 0.0f, 2.0f);

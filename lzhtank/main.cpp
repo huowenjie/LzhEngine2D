@@ -43,7 +43,10 @@ void Run(LZH_ENGINE *engine)
     Player player(engine);
     Camera camera(engine);
 
-    tank.SetPosition(0.0f, 5.0f);
+    tank.SetName("target");
+    player.SetName("player");
+
+    tank.SetPosition(0.0f, 10.0f);
 
     tank.SetCurrentScene(&scene);
     player.SetCurrentScene(&scene);
