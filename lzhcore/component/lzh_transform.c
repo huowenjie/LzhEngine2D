@@ -32,6 +32,30 @@ void lzh_transform_set_pos(LZH_TRANSFORM *transform, float x, float y, float z)
     }
 }
 
+void lzh_transform_set_x(LZH_TRANSFORM *transform, float x)
+{
+    if (transform) {
+        transform->local_pos.x = x;
+        lzh_transform_flush(transform);
+    }
+}
+
+void lzh_transform_set_y(LZH_TRANSFORM *transform, float y)
+{
+    if (transform) {
+        transform->local_pos.y = y;
+        lzh_transform_flush(transform);
+    }
+}
+
+void lzh_transform_set_z(LZH_TRANSFORM *transform, float z)
+{
+    if (transform) {
+        transform->local_pos.z = z;
+        lzh_transform_flush(transform);
+    }
+}
+
 void lzh_transform_get_pos(LZH_TRANSFORM *transform, float *x, float *y, float *z)
 {
     if (transform) {

@@ -7,6 +7,7 @@
 #include "camera.h"
 #include "scene.h"
 #include "bullet.h"
+#include "explode.h"
 
 /*===========================================================================*/
 

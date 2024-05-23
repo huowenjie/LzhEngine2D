@@ -66,6 +66,7 @@ void Bullet::BulletExplode()
 
         GetPosition(&x, &y);
         explode->SetPosition(x, y);
+        explode->SetDepth(0.5f);
         currentScene->AddObjectToScene(explode, true);
     }
 }
@@ -107,6 +108,7 @@ void Bullet::ColliderCb(LZH_OBJECT *self, LZH_OBJECT *target)
     }
 
     BulletExplode();
+
     printf(
         "-------Bullet::ColliderCb--self = %s, target = %s\n",
         lzh_object_get_name(self), lzh_object_get_name(target)

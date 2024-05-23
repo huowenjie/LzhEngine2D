@@ -20,7 +20,6 @@ typedef enum {
     SSC_SHOW = 0x00000004U,         /* 显示精灵 */
     SSC_PLAY = 0x00000008U,         /* 播放帧动画 */
     SSC_REPLAY = 0x00000010U,       /* 是否循环播放 */
-    SSC_ONCE = 0x00000020U,         /* 是否播放过一次 */
 } SPRITE_STATE_CODE;
 
 /* 关键帧 */

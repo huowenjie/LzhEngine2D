@@ -120,6 +120,13 @@ LZH_BOOL lzh_scene_objs_insert(LZH_OBJECT *object, LZH_SCENE *scene)
     LZH_VEC3F view_dir = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     float len = 0.0f;
 
+    LZH_MAT4X4F ca_mat = lzh_mat4x4f_unit();
+    LZH_MAT4X4F obj_mat = lzh_mat4x4f_unit();
+    LZH_VEC4F ca_tmp = lzh_vec4f_xyzw(0.0f, 0.0f, 0.0f, 1.0f);
+    LZH_VEC4F obj_tmp = lzh_vec4f_xyzw(0.0f, 0.0f, 0.0f, 1.0f);
+
+    float cos_val = 0.0f;
+
     if (!object || !scene) {
         return LZH_FALSE;
     }
@@ -147,19 +154,37 @@ LZH_BOOL lzh_scene_objs_insert(LZH_OBJECT *object, LZH_SCENE *scene)
         return LZH_FALSE;
     }
 
+    /* 提取仿射矩阵 */
+    ca_mat = lzh_mat4x4f_get_translate(&camera_trans->model_mat);
+    obj_mat = lzh_mat4x4f_get_translate(&object_trans->model_mat);
+
     camera_pos = camera_trans->local_pos;
     object_pos = object_trans->local_pos;
+    
+    /* 变换为世界坐标 */
+    ca_tmp = lzh_vec4f_vec3f(&camera_pos, 1.0f);
+    obj_tmp = lzh_vec4f_vec3f(&object_pos, 1.0f);
+
+    ca_tmp = lzh_mat4x4f_mul_vec(&ca_mat, &ca_tmp);
+    obj_tmp = lzh_mat4x4f_mul_vec(&obj_mat, &obj_tmp);
+
+    camera_pos = lzh_vec3f_xyz(ca_tmp.x, ca_tmp.y, ca_tmp.z);
+    object_pos = lzh_vec3f_xyz(obj_tmp.x, obj_tmp.y, obj_tmp.z);
+
     sort_dir = lzh_vec3f_sub(&object_pos, &camera_pos);
 
     /* 物体和摄像机之间的距离 */
     len = lzh_vec3f_length(&sort_dir);
 
     view_dir = lzh_vec3f_sub(&camera->target, &camera_pos);
+    view_dir = lzh_vec3f_normalize(&view_dir);
+    sort_dir = lzh_vec3f_normalize(&sort_dir);
+
+    /* 计算夹角的余弦值 */
+    cos_val = lzh_vec3f_dot(&view_dir, &sort_dir);
 
     /* 物体和摄像机坐标系 z 轴方向的夹角 */
-    if (lzh_vec3f_dot(&view_dir, &sort_dir) < 0.0f) {
-        len = -len;
-    }
+    len *= cos_val;
 
     scene_sort_rb_insert(sort_tree, len, object);
     return LZH_TRUE;

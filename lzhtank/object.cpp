@@ -63,7 +63,15 @@ std::string Object::GetName() const
 void Object::SetPosition(float x, float y)
 {
     if (transform) {
-        lzh_transform_set_pos(transform, x, y, 0.0f);
+        lzh_transform_set_x(transform, x);
+        lzh_transform_set_y(transform, y);
+    }
+}
+
+void Object::SetDepth(float depth)
+{
+    if (transform) {
+        lzh_transform_set_z(transform, depth);
     }
 }
 

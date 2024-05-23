@@ -19,6 +19,15 @@ LZH_API LZH_OBJECT *lzh_transform_get_object(LZH_TRANSFORM *transform);
 /* 设置位置 */
 LZH_API void lzh_transform_set_pos(LZH_TRANSFORM *transform, float x, float y, float z);
 
+/* 设置 x 坐标 */
+LZH_API void lzh_transform_set_x(LZH_TRANSFORM *transform, float x);
+
+/* 设置 y 坐标 */
+LZH_API void lzh_transform_set_y(LZH_TRANSFORM *transform, float y);
+
+/* 设置 z 坐标 */
+LZH_API void lzh_transform_set_z(LZH_TRANSFORM *transform, float z);
+
 /* 获取位置 */
 LZH_API void lzh_transform_get_pos(LZH_TRANSFORM *transform, float *x, float *y, float *z);
 

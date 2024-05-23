@@ -74,6 +74,7 @@ LZH_ENGINE *lzh_engine_create(
     if (!glctx) {
         goto err;
     }
+
     lzh_load_openglapi();
     glViewport(0, 0, width, height);
 

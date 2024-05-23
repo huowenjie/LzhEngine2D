@@ -29,6 +29,9 @@ public:
     // 设置位置
     void SetPosition(float x, float y);
 
+    // 设置深度
+    void SetDepth(float depth);
+
     // 获取位置
     void GetPosition(float *x, float *y);
 
