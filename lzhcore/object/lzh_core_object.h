@@ -7,10 +7,6 @@
 /* 对象(内部) */
 /*===========================================================================*/
 
-/* 定义对象状态 */
-#define LZH_OS_NONE         0x00000000U /* 无特殊状态 */
-#define LZH_OS_ADD_COLLIDER 0x00000001U /* 添加碰撞组件 */
-
 /**
  * 定义子对象树
  * 
@@ -25,6 +21,27 @@
  * lzh_obj_rb_iterate
  */
 RBTREE_DECLARE(LZH_OBJ, lzh_obj, LZH_HASH_CODE, LZH_OBJECT *)
+
+/**
+ * 定义扩展参数树
+ * 
+ * LZH_EXT_RB_NODE
+ * LZH_EXT_RB_TREE
+ * 
+ * lzh_ext_rb_create
+ * lzh_ext_rb_destroy
+ * lzh_ext_rb_insert
+ * lzh_ext_rb_delete
+ * lzh_ext_rb_find
+ * lzh_ext_rb_iterate
+ * lzh_ext_rb_create_iterator
+ * lzh_ext_rb_destroy_iterator
+ * lzh_ext_rb_it_init
+ * lzh_ext_rb_it_next
+ * lzh_ext_rb_it_value
+ * lzh_ext_rb_it_key
+ */
+RBTREE_DECLARE(LZH_EXT, lzh_ext, LZH_HASH_CODE, LZH_UINTPTR)
 
 /* 对象结构 */
 struct LZH_OBJECT {
@@ -55,9 +72,8 @@ struct LZH_OBJECT {
     void *fixed_update_param;
 
     /*---------------------------------------------------*/
-
-    /* 对象状态 */
-    LZH_UINT32 object_state;
+    /* 扩展对象，用于存储各种数据地址 */
+    LZH_EXT_RB_TREE *extension;
 };
 
 /* 移除子对象，不更改父对象的信息 */

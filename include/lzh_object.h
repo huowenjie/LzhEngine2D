@@ -56,6 +56,16 @@ LZH_API void lzh_object_set_name(LZH_OBJECT *object, const char *name);
 /* 获取对象名称 */
 LZH_API const char *lzh_object_get_name(LZH_OBJECT *object);
 
+/* 添加扩展数据 */
+LZH_API void lzh_object_add_extension(
+    LZH_OBJECT *object, const char *name, void *ext);
+
+/* 删除并返回扩展数据 */
+LZH_API void lzh_object_del_extension(LZH_OBJECT *object, const char *name);
+
+/* 获取扩展数据 */
+LZH_API void *lzh_object_get_extension(LZH_OBJECT *object, const char *name);
+
 /* 设置对象更新回调 */
 LZH_API void lzh_object_set_update(
     LZH_OBJECT *object, LZH_OBJECT_UPDATE update, void *param);

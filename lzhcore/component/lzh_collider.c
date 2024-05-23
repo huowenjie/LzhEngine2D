@@ -203,7 +203,7 @@ void add_collider(const SCENE_OBJ_RB_NODE *node, void *args)
     LZH_OBJECT *object = node->value;
     if (object) {
         /* 判断本对象是否添加了碰撞组件 */
-        if ((object->object_state & LZH_OS_ADD_COLLIDER) == LZH_OS_ADD_COLLIDER) {
+        if (lzh_cpnt_get_type(object->components, LZH_CPNT_COLLIDER)) {
             lzh_quad_tree_add(quad, object);
         }
     }

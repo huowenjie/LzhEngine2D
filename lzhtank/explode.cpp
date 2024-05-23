@@ -8,6 +8,7 @@
 
 Explode::Explode(LZH_ENGINE *eg) : Object(eg)
 {
+    objType = OT_Explode;
     explodeSp = NULL;
 
     int count = get_tank_explode_count();

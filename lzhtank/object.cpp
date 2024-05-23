@@ -6,8 +6,12 @@
 
 /*===========================================================================*/
 
+/* 将对象指针保存在 LZH_OBJECT 的扩展区 */
+#define OBJECT_INSTANCE "object"
+
 Object::Object(LZH_ENGINE *eg)
 {
+    objType = OT_Object;
     engine = eg;
     object = lzh_object_create(eg);
     transform = lzh_object_get_transform(object);
@@ -17,10 +21,12 @@ Object::Object(LZH_ENGINE *eg)
 
     lzh_object_set_update(object, Object::UpdateObject, this);
     lzh_object_set_fixedupdate(object, Object::FixedUpdateObject, this);
+    lzh_object_add_extension(object, OBJECT_INSTANCE, this);
 }
 
 Object::Object(LZH_ENGINE *eg, LZH_OBJECT *obj)
 {
+    objType = OT_Object;
     engine = eg;
     object = obj;
     transform = lzh_object_get_transform(object);
@@ -30,10 +36,12 @@ Object::Object(LZH_ENGINE *eg, LZH_OBJECT *obj)
 
     lzh_object_set_update(object, Object::UpdateObject, this);
     lzh_object_set_fixedupdate(object, Object::FixedUpdateObject, this);
+    lzh_object_add_extension(object, OBJECT_INSTANCE, this);
 }
 
 Object::~Object()
 {
+    lzh_object_del_extension(object, OBJECT_INSTANCE);
     lzh_object_set_update(object, NULL, NULL);
     lzh_object_set_fixedupdate(object, NULL, NULL);
 
@@ -139,9 +147,14 @@ Object *Object::FindChildRecursion(const std::string &name)
     return newObj;
 }
 
-LZH_OBJECT *Object::GetObjectHandle()
+LZH_OBJECT *Object::GetObjectHandle() const
 {
     return object;
+}
+
+Object::ObjectType Object::GetObjectType() const
+{
+    return objType;
 }
 
 void Object::Update(LZH_ENGINE *eg)
@@ -152,7 +165,7 @@ void Object::FixedUpdate(LZH_ENGINE *eg)
 {
 }
 
-void Object::ColliderCb(LZH_OBJECT *self, LZH_OBJECT *target)
+void Object::ColliderCb(Object *self, Object *target)
 {
 
 }
@@ -177,7 +190,10 @@ void Object::ColliderObjectCb(LZH_OBJECT *self, LZH_OBJECT *target, void *args)
 {
     if (self && target && args) {
         Object *inst = (Object *)args;
-        inst->ColliderCb(self, target);
+        Object *selfObj = (Object *)lzh_object_get_extension(self, OBJECT_INSTANCE);
+        Object *targObj = (Object *)lzh_object_get_extension(target, OBJECT_INSTANCE);
+
+        inst->ColliderCb(selfObj, targObj);
     }
 }
 

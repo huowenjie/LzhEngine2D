@@ -22,7 +22,7 @@ protected:
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
-    virtual void ColliderCb(LZH_OBJECT *self, LZH_OBJECT *target);
+    virtual void ColliderCb(Object *self, Object *target);
 
 protected:
     LZH_SPRITE *bulletSp;
@@ -33,6 +33,9 @@ protected:
 
     // 射程
     float fireDistance;
+
+    // 是否爆炸
+    bool isExplode;
 
     // 发射对象
     Object *fromObject;

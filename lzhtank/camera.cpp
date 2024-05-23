@@ -8,6 +8,7 @@
 
 Camera::Camera(LZH_ENGINE *eg) : Object(eg)
 {
+    objType = OT_Camera;
     camera = lzh_camera_create(eg);
 
     lzh_object_add_component(object, camera);

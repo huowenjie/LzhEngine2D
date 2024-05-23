@@ -12,6 +12,7 @@
 
 Tank::Tank(LZH_ENGINE *eg) : Object(eg)
 {
+    objType = OT_Tank;
     chassis = lzh_object_create(eg);
     turret = lzh_object_create(eg);
 
@@ -55,6 +56,11 @@ Tank::~Tank()
 }
 
 /*===========================================================================*/
+
+void Tank::BeAttacked(Object *from)
+{
+    
+}
 
 void Tank::Fire()
 {

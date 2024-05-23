@@ -13,6 +13,10 @@ public:
     Tank(LZH_ENGINE *eg);
     virtual ~Tank();
 
+public:
+    // ±»¹¥»÷
+    void BeAttacked(Object *from);
+
 protected:
     // ¿ª»ð·¢ÉäÅÚµ¯
     void Fire();

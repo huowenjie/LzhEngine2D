@@ -24,6 +24,9 @@ public:
     // 添加对象至场景
     void AddObjectToScene(Object *obj, bool isAutoDel = false);
 
+    // 从场景移除对象
+    void DelObjectFromScene(Object *obj);
+
     // 设置主相机
     void SetMainCamera(Camera *camera);
 

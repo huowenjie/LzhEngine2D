@@ -64,7 +64,7 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->update_param = NULL;
     obj->fixed_update = NULL;
     obj->fixed_update_param = NULL;
-    obj->object_state = LZH_OS_NONE;
+    obj->extension = lzh_ext_rb_create(lzh_object_rb_comp);
 
     /* ÉèÖÃÄ¬ÈÏÃû³Æ */
     lzh_base_set_name(base, lzh_gen_new_name(global_order++));
@@ -187,10 +187,7 @@ void lzh_object_add_component(LZH_OBJECT *object, void *cpnt)
 
         if (elem->type == LZH_CPNT_TRANSFORM) {
             return;
-        } else if (elem->type == LZH_CPNT_COLLIDER) {
-            object->object_state |= LZH_OS_ADD_COLLIDER;
         }
-
         elem->object = object;
         lzh_cpnt_rb_insert(object->components, elem->type, elem);
     }
@@ -200,10 +197,6 @@ void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt)
 {
     if (object && object->components && cpnt) {
         LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
-
-        if (elem->type == LZH_CPNT_COLLIDER) {
-            object->object_state &= (~LZH_OS_ADD_COLLIDER);
-        }
 
         elem->object = NULL;
         lzh_cpnt_rb_delete(object->components, elem->type, NULL, NULL);
@@ -269,6 +262,35 @@ const char *lzh_object_get_name(LZH_OBJECT *object)
 {
     if (object) {
         return object->base.name;
+    }
+    return NULL;
+}
+
+void lzh_object_add_extension(
+    LZH_OBJECT *object, const char *name, void *ext)
+{
+    if (object && name && *name) {
+        LZH_HASH_CODE code = lzh_gen_hash_code(name);
+        lzh_ext_rb_insert(object->extension, code, (LZH_UINTPTR)ext);
+    }
+}
+
+void lzh_object_del_extension(LZH_OBJECT *object, const char *name)
+{
+    if (object && name && *name) {
+        LZH_HASH_CODE code = lzh_gen_hash_code(name);
+        lzh_ext_rb_delete(object->extension, code, NULL, NULL);
+    }
+}
+
+void *lzh_object_get_extension(LZH_OBJECT *object, const char *name)
+{
+    if (object && name && *name) {
+        LZH_HASH_CODE code = lzh_gen_hash_code(name);
+        LZH_UINTPTR ext = 0;
+
+        lzh_ext_rb_find(object->extension, code, &ext);
+        return (void *)ext;
     }
     return NULL;
 }

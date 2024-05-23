@@ -7,7 +7,14 @@
 void lzh_object_remove(LZH_OBJECT *object)
 {
     if (object) {        
-        lzh_base_quit((LZH_BASE *)object);
+        if (object->extension) {
+            lzh_ext_rb_destroy(object->extension, NULL, NULL);
+            object->extension = NULL;
+        }
+
+        if (object->transform) {
+            lzh_transform_destroy(object->transform);
+        }
 
         if (object->components) {
             lzh_cpnt_rb_destroy(object->components, lzh_cpnt_rb_visit, NULL);
@@ -19,10 +26,7 @@ void lzh_object_remove(LZH_OBJECT *object)
             object->children = NULL;
         }
 
-        if (object->transform) {
-            lzh_transform_destroy(object->transform);
-        }
-
+        lzh_base_quit((LZH_BASE *)object);
         LZH_FREE(object);
     }
 }
@@ -103,5 +107,6 @@ void lzh_object_rb_visit_sort_draw(const LZH_OBJ_RB_NODE *node, void *args)
 /*===========================================================================*/
 
 RBTREE_IMPLEMENT(LZH_OBJ, lzh_obj, LZH_HASH_CODE, LZH_OBJECT *)
+RBTREE_IMPLEMENT(LZH_EXT, lzh_ext, LZH_HASH_CODE, LZH_UINTPTR)
 
 /*===========================================================================*/

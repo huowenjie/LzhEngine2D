@@ -54,6 +54,13 @@ void Scene::AddObjectToScene(Object *obj, bool isAutoDel)
     }
 }
 
+void Scene::DelObjectFromScene(Object *obj)
+{
+    if (obj && sceneObj) {
+        lzh_scene_del_object(sceneObj, obj->GetName().c_str());
+    }
+}
+
 void Scene::SetMainCamera(Camera *camera)
 {
     if (camera) {

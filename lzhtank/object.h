@@ -14,6 +14,15 @@ class Object
     friend class Scene;
 
 public:
+    enum ObjectType {
+        OT_Object = 0,
+        OT_Player,
+        OT_Tank,
+        OT_Camera,
+        OT_Explode
+    };
+
+public:
     Object(LZH_ENGINE *eg);
     Object(LZH_ENGINE *eg, LZH_OBJECT *obj);
     virtual ~Object();
@@ -51,12 +60,15 @@ public:
     Object *FindChildRecursion(const std::string &name);
 
     // 获取对象指针
-    LZH_OBJECT *GetObjectHandle();
+    LZH_OBJECT *GetObjectHandle() const;
+
+    // 获取对象类型
+    ObjectType GetObjectType() const;
 
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
-    virtual void ColliderCb(LZH_OBJECT *self, LZH_OBJECT *target);
+    virtual void ColliderCb(Object *self, Object *target);
 
 protected:
     static void UpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args);
@@ -64,6 +76,7 @@ protected:
     static void ColliderObjectCb(LZH_OBJECT *self, LZH_OBJECT *target, void *args);
 
 protected:
+    ObjectType objType;
     LZH_ENGINE *engine;
     LZH_OBJECT *object;
     LZH_TRANSFORM *transform;

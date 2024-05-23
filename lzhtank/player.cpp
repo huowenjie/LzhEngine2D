@@ -8,6 +8,7 @@
 
 Player::Player(LZH_ENGINE *eg) : Tank(eg)
 {
+    objType = OT_Player;
 }
 
 Player::~Player()

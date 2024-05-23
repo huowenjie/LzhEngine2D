@@ -9,6 +9,7 @@
 #include "bullet.h"
 #include "explode.h"
 #include "scene.h"
+#include "tank.h"
 
 /*===========================================================================*/
 
@@ -18,6 +19,7 @@ Bullet::Bullet(LZH_ENGINE *eg) : Object(eg)
     collider = lzh_collider_create(eg);
     moveSpeed = 5.0f;
     fireDistance = 100.0f;
+    isExplode = false;
     fromObject = NULL;
 
     lzh_object_add_component(object, bulletSp);
@@ -68,6 +70,7 @@ void Bullet::BulletExplode()
         explode->SetPosition(x, y);
         explode->SetDepth(0.5f);
         currentScene->AddObjectToScene(explode, true);
+        isExplode = true;
     }
 }
 
@@ -97,22 +100,39 @@ void Bullet::FixedUpdate(LZH_ENGINE *eg)
 {
 }
 
-void Bullet::ColliderCb(LZH_OBJECT *self, LZH_OBJECT *target)
+void Bullet::ColliderCb(Object *self, Object *target)
 {
+    if (!self || !target) {
+        return;
+    }
+
     if (!fromObject) {
         return;
     }
 
-    if (fromObject->GetObjectHandle() == target) {
+    if (fromObject == target) {
         return;
     }
 
+    if (isExplode) {
+        return;
+    }
+
+    // ²¥·Å¶¯»­
     BulletExplode();
 
-    printf(
-        "-------Bullet::ColliderCb--self = %s, target = %s\n",
-        lzh_object_get_name(self), lzh_object_get_name(target)
-    );
+    if (target->GetObjectType() == OT_Tank) {
+        Tank *tank = (Tank *)target;
+        tank->BeAttacked(fromObject);
+
+        // TODO
+        printf(
+            "-------Bullet::ColliderCb--self = %s, target = %s\n",
+            self->GetName().c_str(), target->GetName().c_str()
+        );
+    }
+
+    currentScene->DelObjectFromScene(this);
 }
 
 /*===========================================================================*/

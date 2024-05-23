@@ -32,6 +32,7 @@ typedef unsigned char               LZH_BYTE;
 typedef int                         LZH_INT32;
 typedef unsigned int                LZH_UINT32;
 typedef int                         LZH_BOOL;
+typedef unsigned long long          LZH_UINTPTR;
 
 #define LZH_TRUE                    1
 #define LZH_FALSE                   0
