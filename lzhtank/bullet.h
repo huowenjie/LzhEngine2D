@@ -7,14 +7,14 @@
 /* bullet */
 /*===========================================================================*/
 
-class Bullet : public Object
+class Bullet : public GameObject
 {
 public:
     Bullet(LZH_ENGINE *eg);
     virtual ~Bullet();
 
 public:
-    void SetFromObject(Object *from);
+    void SetFromObject(GameObject *from);
 
 protected:
     void BulletExplode();
@@ -22,7 +22,7 @@ protected:
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
-    virtual void ColliderCb(Object *self, Object *target);
+    virtual void ColliderCb(GameObject *self, GameObject *target);
 
 protected:
     LZH_SPRITE *bulletSp;
@@ -38,7 +38,7 @@ protected:
     bool isExplode;
 
     // ∑¢…‰∂‘œÛ
-    Object *fromObject;
+    GameObject *fromObject;
 };
 
 /*===========================================================================*/

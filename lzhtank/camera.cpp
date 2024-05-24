@@ -6,7 +6,7 @@
 
 /*===========================================================================*/
 
-Camera::Camera(LZH_ENGINE *eg) : Object(eg)
+Camera::Camera(LZH_ENGINE *eg) : GameObject(eg)
 {
     objType = OT_Camera;
     camera = lzh_camera_create(eg);

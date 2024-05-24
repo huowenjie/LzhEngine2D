@@ -10,7 +10,7 @@
 
 /*===========================================================================*/
 
-Tank::Tank(LZH_ENGINE *eg) : Object(eg)
+Tank::Tank(LZH_ENGINE *eg) : GameObject(eg)
 {
     objType = OT_Tank;
     chassis = lzh_object_create(eg);
@@ -57,7 +57,7 @@ Tank::~Tank()
 
 /*===========================================================================*/
 
-void Tank::BeAttacked(Object *from)
+void Tank::BeAttacked(GameObject *from)
 {
     
 }
@@ -79,7 +79,7 @@ void Tank::Fire()
         bullet->SetPosition(x, y);
         bullet->SetCurrentScene(currentScene);
 
-        Object *turret = FindChildRecursion("turret");
+        GameObject *turret = FindChildRecursion("turret");
 
         if (turret) {
             r = turret->GetRotateWorldAngle();

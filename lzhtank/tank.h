@@ -7,7 +7,7 @@
 /* tank */
 /*===========================================================================*/
 
-class Tank : public Object
+class Tank : public GameObject
 {
 public:
     Tank(LZH_ENGINE *eg);
@@ -15,7 +15,7 @@ public:
 
 public:
     // ±»¹¥»÷
-    void BeAttacked(Object *from);
+    void BeAttacked(GameObject *from);
 
 protected:
     // ¿ª»ð·¢ÉäÅÚµ¯

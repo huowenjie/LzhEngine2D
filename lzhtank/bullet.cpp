@@ -13,7 +13,7 @@
 
 /*===========================================================================*/
 
-Bullet::Bullet(LZH_ENGINE *eg) : Object(eg)
+Bullet::Bullet(LZH_ENGINE *eg) : GameObject(eg)
 {
     bulletSp = lzh_sprite_create(eg, get_tank_bullet_path());
     collider = lzh_collider_create(eg);
@@ -40,7 +40,7 @@ Bullet::Bullet(LZH_ENGINE *eg) : Object(eg)
     param.box2d.w = 0.5f;
     param.box2d.h = 0.5f;
     lzh_collider_set_param(collider, &param);
-    lzh_collider_set_callback(collider, Object::ColliderObjectCb, this);
+    lzh_collider_set_callback(collider, GameObject::ColliderObjectCb, this);
 }
 
 Bullet::~Bullet()
@@ -49,7 +49,7 @@ Bullet::~Bullet()
 
 /*===========================================================================*/
 
-void Bullet::SetFromObject(Object *from)
+void Bullet::SetFromObject(GameObject *from)
 {
     if (from) {
         fromObject = from;
@@ -100,7 +100,7 @@ void Bullet::FixedUpdate(LZH_ENGINE *eg)
 {
 }
 
-void Bullet::ColliderCb(Object *self, Object *target)
+void Bullet::ColliderCb(GameObject *self, GameObject *target)
 {
     if (!self || !target) {
         return;

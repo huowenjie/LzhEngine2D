@@ -9,7 +9,7 @@
 /* 将对象指针保存在 LZH_OBJECT 的扩展区 */
 #define OBJECT_INSTANCE "object"
 
-Object::Object(LZH_ENGINE *eg)
+GameObject::GameObject(LZH_ENGINE *eg)
 {
     objType = OT_Object;
     engine = eg;
@@ -19,12 +19,12 @@ Object::Object(LZH_ENGINE *eg)
     isAddedScene = false;
     currentScene = NULL;
 
-    lzh_object_set_update(object, Object::UpdateObject, this);
-    lzh_object_set_fixedupdate(object, Object::FixedUpdateObject, this);
+    lzh_object_set_update(object, GameObject::UpdateObject, this);
+    lzh_object_set_fixedupdate(object, GameObject::FixedUpdateObject, this);
     lzh_object_add_extension(object, OBJECT_INSTANCE, this);
 }
 
-Object::Object(LZH_ENGINE *eg, LZH_OBJECT *obj)
+GameObject::GameObject(LZH_ENGINE *eg, LZH_OBJECT *obj)
 {
     objType = OT_Object;
     engine = eg;
@@ -34,12 +34,12 @@ Object::Object(LZH_ENGINE *eg, LZH_OBJECT *obj)
     isAddedScene = true;
     currentScene = NULL;
 
-    lzh_object_set_update(object, Object::UpdateObject, this);
-    lzh_object_set_fixedupdate(object, Object::FixedUpdateObject, this);
+    lzh_object_set_update(object, GameObject::UpdateObject, this);
+    lzh_object_set_fixedupdate(object, GameObject::FixedUpdateObject, this);
     lzh_object_add_extension(object, OBJECT_INSTANCE, this);
 }
 
-Object::~Object()
+GameObject::~GameObject()
 {
     lzh_object_del_extension(object, OBJECT_INSTANCE);
     lzh_object_set_update(object, NULL, NULL);
@@ -50,25 +50,25 @@ Object::~Object()
     }
 }
 
-void Object::SetCurrentScene(Scene *scene)
+void GameObject::SetCurrentScene(Scene *scene)
 {
     currentScene = scene;
 }
 
-void Object::SetName(const std::string &name)
+void GameObject::SetName(const std::string &name)
 {
     if (!name.empty()) {
         lzh_object_set_name(object, name.c_str());
     }
 }
 
-std::string Object::GetName() const
+std::string GameObject::GetName() const
 {
     const char *name = lzh_object_get_name(object);
     return std::string(name);
 }
 
-void Object::SetPosition(float x, float y)
+void GameObject::SetPosition(float x, float y)
 {
     if (transform) {
         lzh_transform_set_x(transform, x);
@@ -76,28 +76,28 @@ void Object::SetPosition(float x, float y)
     }
 }
 
-void Object::SetDepth(float depth)
+void GameObject::SetDepth(float depth)
 {
     if (transform) {
         lzh_transform_set_z(transform, depth);
     }
 }
 
-void Object::GetPosition(float *x, float *y)
+void GameObject::GetPosition(float *x, float *y)
 {
     if (transform) {
         lzh_transform_get_pos(transform, x, y, NULL);
     }
 }
 
-void Object::SetRotate(float angle)
+void GameObject::SetRotate(float angle)
 {
     if (transform) {
         lzh_transform_set_rotate_z(transform, angle);
     }
 }
 
-float Object::GetRotateAngle()
+float GameObject::GetRotateAngle()
 {
     if (transform) {
         return lzh_transform_get_rotate_z(transform);
@@ -105,7 +105,7 @@ float Object::GetRotateAngle()
     return 0.0f;
 }
 
-float Object::GetRotateWorldAngle()
+float GameObject::GetRotateWorldAngle()
 {
     if (transform) {
         return lzh_transform_get_rotate_wz(transform);
@@ -113,7 +113,7 @@ float Object::GetRotateWorldAngle()
     return 0.0f;
 }
 
-Object *Object::FindChild(const std::string &name)
+GameObject *GameObject::FindChild(const std::string &name)
 {
     if (name.empty()) {
         return NULL;
@@ -124,13 +124,13 @@ Object *Object::FindChild(const std::string &name)
         return NULL;
     }
 
-    Object *newObj = new Object(engine, obj);
+    GameObject *newObj = new GameObject(engine, obj);
     newObj->currentScene = currentScene;
 
     return newObj;
 }
 
-Object *Object::FindChildRecursion(const std::string &name)
+GameObject *GameObject::FindChildRecursion(const std::string &name)
 {
     if (name.empty()) {
         return NULL;
@@ -141,57 +141,57 @@ Object *Object::FindChildRecursion(const std::string &name)
         return NULL;
     }
 
-    Object *newObj = new Object(engine, obj);
+    GameObject *newObj = new GameObject(engine, obj);
     newObj->currentScene = currentScene;
 
     return newObj;
 }
 
-LZH_OBJECT *Object::GetObjectHandle() const
+LZH_OBJECT *GameObject::GetObjectHandle() const
 {
     return object;
 }
 
-Object::ObjectType Object::GetObjectType() const
+GameObject::ObjectType GameObject::GetObjectType() const
 {
     return objType;
 }
 
-void Object::Update(LZH_ENGINE *eg)
+void GameObject::Update(LZH_ENGINE *eg)
 {
 }
 
-void Object::FixedUpdate(LZH_ENGINE *eg)
+void GameObject::FixedUpdate(LZH_ENGINE *eg)
 {
 }
 
-void Object::ColliderCb(Object *self, Object *target)
+void GameObject::ColliderCb(GameObject *self, GameObject *target)
 {
 
 }
 
-void Object::UpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
+void GameObject::UpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
 {
     if (eg && obj && args) {
-        Object *inst = (Object *)args;
+        GameObject *inst = (GameObject *)args;
         inst->Update(eg);
     }
 }
 
-void Object::FixedUpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
+void GameObject::FixedUpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
 {
     if (eg && obj && args) {
-        Object *inst = (Object *)args;
+        GameObject *inst = (GameObject *)args;
         inst->FixedUpdate(eg);
     }
 }
 
-void Object::ColliderObjectCb(LZH_OBJECT *self, LZH_OBJECT *target, void *args)
+void GameObject::ColliderObjectCb(LZH_OBJECT *self, LZH_OBJECT *target, void *args)
 {
     if (self && target && args) {
-        Object *inst = (Object *)args;
-        Object *selfObj = (Object *)lzh_object_get_extension(self, OBJECT_INSTANCE);
-        Object *targObj = (Object *)lzh_object_get_extension(target, OBJECT_INSTANCE);
+        GameObject *inst = (GameObject *)args;
+        GameObject *selfObj = (GameObject *)lzh_object_get_extension(self, OBJECT_INSTANCE);
+        GameObject *targObj = (GameObject *)lzh_object_get_extension(target, OBJECT_INSTANCE);
 
         inst->ColliderCb(selfObj, targObj);
     }

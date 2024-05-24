@@ -7,7 +7,7 @@
 /* explode */
 /*===========================================================================*/
 
-class Explode : public Object
+class Explode : public GameObject
 {
 public:
     Explode(LZH_ENGINE *eg);

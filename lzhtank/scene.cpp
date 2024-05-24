@@ -18,11 +18,11 @@ Scene::Scene(LZH_ENGINE *eg, const std::string &name)
 Scene::~Scene()
 {
     for (
-        std::map<std::string, Object *>::iterator it = sceneObjects.begin(); 
+        std::map<std::string, GameObject *>::iterator it = sceneObjects.begin(); 
         it != sceneObjects.end(); ++it
     ) {
         if (it->second) {
-            Object *obj = it->second;
+            GameObject *obj = it->second;
             delete obj;
         }
     }
@@ -41,7 +41,7 @@ void Scene::LoadScene()
     lzh_scene_manager_load(manager, sceneName.c_str());
 }
 
-void Scene::AddObjectToScene(Object *obj, bool isAutoDel)
+void Scene::AddObjectToScene(GameObject *obj, bool isAutoDel)
 {
     if (obj && sceneObj) {
         obj->isAddedScene = true;
@@ -49,12 +49,12 @@ void Scene::AddObjectToScene(Object *obj, bool isAutoDel)
 
         if (isAutoDel) {
             std::string name = obj->GetName();
-            sceneObjects.insert(std::map<std::string, Object *>::value_type(name, obj));
+            sceneObjects.insert(std::map<std::string, GameObject *>::value_type(name, obj));
         }
     }
 }
 
-void Scene::DelObjectFromScene(Object *obj)
+void Scene::DelObjectFromScene(GameObject *obj)
 {
     if (obj && sceneObj) {
         lzh_scene_del_object(sceneObj, obj->GetName().c_str());

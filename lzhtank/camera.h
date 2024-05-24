@@ -7,7 +7,7 @@
 /* ÉãÏñ»ú */
 /*===========================================================================*/
 
-class Camera : public Object
+class Camera : public GameObject
 {
 public:
     Camera(LZH_ENGINE *engine);

@@ -6,7 +6,7 @@
 
 /*===========================================================================*/
 
-Explode::Explode(LZH_ENGINE *eg) : Object(eg)
+Explode::Explode(LZH_ENGINE *eg) : GameObject(eg)
 {
     objType = OT_Explode;
     explodeSp = NULL;

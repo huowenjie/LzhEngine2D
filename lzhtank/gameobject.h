@@ -1,15 +1,16 @@
-#ifndef __OBJECT_H__
-#define __OBJECT_H__
+#ifndef __GAMEOBJECT_H__
+#define __GAMEOBJECT_H__
 
 #include <lzh_engine.h>
 #include <string>
+#include "object.h"
 
 /*===========================================================================*/
 /* 对象 */
 /*===========================================================================*/
 
 class Scene;
-class Object
+class GameObject : public Object
 {
     friend class Scene;
 
@@ -23,9 +24,9 @@ public:
     };
 
 public:
-    Object(LZH_ENGINE *eg);
-    Object(LZH_ENGINE *eg, LZH_OBJECT *obj);
-    virtual ~Object();
+    GameObject(LZH_ENGINE *eg);
+    GameObject(LZH_ENGINE *eg, LZH_OBJECT *obj);
+    virtual ~GameObject();
 
 public:
     // 设置当前所属场景
@@ -54,10 +55,10 @@ public:
     float GetRotateWorldAngle();
 
     // 查找子对象
-    Object *FindChild(const std::string &name);
+    GameObject *FindChild(const std::string &name);
 
     // 递归查找子对象
-    Object *FindChildRecursion(const std::string &name);
+    GameObject *FindChildRecursion(const std::string &name);
 
     // 获取对象指针
     LZH_OBJECT *GetObjectHandle() const;
@@ -68,7 +69,7 @@ public:
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
-    virtual void ColliderCb(Object *self, Object *target);
+    virtual void ColliderCb(GameObject *self, GameObject *target);
 
 protected:
     static void UpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args);
@@ -90,4 +91,4 @@ protected:
 
 /*===========================================================================*/
 
-#endif /* __OBJECT_H__ */
+#endif /* __GAMEOBJECT_H__ */
