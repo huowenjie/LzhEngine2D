@@ -1,7 +1,7 @@
 #include <lzh_scene.h>
 
 #include "camera.h"
-#include "object.h"
+#include "gameobject.h"
 #include "scene.h"
 
 /*===========================================================================*/

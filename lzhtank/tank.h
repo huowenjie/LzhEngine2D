@@ -1,7 +1,7 @@
 #ifndef __TANK_H__
 #define __TANK_H__
 
-#include "object.h"
+#include "gameobject.h"
 
 /*===========================================================================*/
 /* tank */

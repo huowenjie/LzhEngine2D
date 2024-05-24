@@ -9,13 +9,19 @@
 void lzh_scene_remove(LZH_SCENE *scene)
 {
     if (scene) {
+        /* ÒÆ³ýÊÍ·ÅÊ÷ */
+        if (scene->del_tree) {
+            scene_del_rb_destroy(scene->del_tree, NULL, NULL);
+            scene->del_tree = NULL;
+        }
+
         /* ÒÆ³ýÅÅÐòÊ÷ */
         if (scene->sort_tree) {
             scene_sort_rb_destroy(scene->sort_tree, NULL, NULL);
             scene->sort_tree = NULL;
         }
 
-        /* ÒÆ³ý²ã¼¶äÖÈ¾Ê÷ */
+        /* ÒÆ³ýäÖÈ¾Ê÷ */
         if (scene->render_tree) {
             scene_obj_rb_destroy(scene->render_tree, lzh_scene_objs_visit_free, NULL);
             scene->render_tree = NULL;
@@ -70,6 +76,16 @@ void lzh_scene_objs_visit_free(const SCENE_OBJ_RB_NODE *node, void *args)
     if (node) {
         LZH_OBJECT *object = node->value;
         lzh_object_remove(object);
+    }
+}
+
+void lzh_scene_del_visit_free(const SCENE_DEL_RB_NODE *node, void *args)
+{
+    if (node && node->value && args) {
+        LZH_SCENE *scene = (LZH_SCENE *)args;
+        if (scene->render_tree) {
+            scene_obj_rb_delete(scene->render_tree, node->key, lzh_scene_objs_visit_free, NULL);
+        }
     }
 }
 
@@ -197,5 +213,9 @@ RBTREE_IMPLEMENT(SCENE_OBJ, scene_obj, LZH_HASH_CODE, LZH_OBJECT *)
 /*===========================================================================*/
 
 RBTREE_IMPLEMENT(SCENE_SORT, scene_sort, float, LZH_OBJECT *)
+
+/*===========================================================================*/
+
+RBTREE_IMPLEMENT(SCENE_DEL, scene_del, LZH_HASH_CODE, LZH_OBJECT *)
 
 /*===========================================================================*/

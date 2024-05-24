@@ -55,6 +55,9 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     /* 创建深度排序树 */
     scene->sort_tree = scene_sort_rb_create(lzh_scene_sort_comp);
 
+    /* 创建场景释放树 */
+    scene->del_tree = scene_del_rb_create(lzh_scene_objs_comp);
+
     /* 初始化场景主相机 */
     scene->main_camera = NULL;
 
@@ -101,6 +104,7 @@ void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
 {
     SCENE_OBJ_RB_TREE *render_tree = NULL;
     LZH_HASH_CODE hash = 0;
+    LZH_OBJECT *obj = NULL;
 
     if (!scene) {
         return;
@@ -116,7 +120,12 @@ void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
     }
 
     hash = lzh_gen_hash_code(name);
-    scene_obj_rb_delete(render_tree, hash, lzh_scene_objs_visit_free, NULL);
+    scene_obj_rb_find(render_tree, hash, &obj);
+
+    if (obj) {
+        /* 不能直接删除对象，要先放入删除树，在帧末尾再清理对象 */
+        scene_del_rb_insert(scene->del_tree, hash, obj);
+    }
 }
 
 void lzh_scene_set_name(LZH_SCENE *scene, const char *name)

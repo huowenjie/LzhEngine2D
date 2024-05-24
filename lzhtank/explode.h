@@ -1,7 +1,7 @@
 #ifndef __EXPLODE_H__
 #define __EXPLODE_H__
 
-#include "object.h"
+#include "gameobject.h"
 
 /*===========================================================================*/
 /* explode */

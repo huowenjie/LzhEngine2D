@@ -185,6 +185,18 @@ void lzh_sm_draw(LZH_SCENE_MANAGER *manager)
     }
 }
 
+void lzh_sm_clear_objects(LZH_SCENE_MANAGER *manager)
+{
+    if (manager && manager->scene_active) {
+        LZH_SCENE *active = manager->scene_active;
+        if (active && active->del_tree) {
+            /* 清理释放树上的对象 */
+            scene_del_rb_clear(
+                active->del_tree, lzh_scene_del_visit_free, active);
+        }
+    }
+}
+
 /*===========================================================================*/
 
 int scene_comp(const void *a, const void *b)

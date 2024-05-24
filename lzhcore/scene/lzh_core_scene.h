@@ -39,6 +39,28 @@ RBTREE_DECLARE(SCENE_OBJ, scene_obj, LZH_HASH_CODE, LZH_OBJECT *)
  */
 RBTREE_DECLARE(SCENE_SORT, scene_sort, float, LZH_OBJECT *)
 
+/**
+ * 定义场景释放树
+ * 本帧结束之后，对需要删除的对象统一删除
+ * 
+ * SCENE_DEL_RB_NODE
+ * SCENE_DEL_RB_TREE
+ * 
+ * scene_del_rb_create
+ * scene_del_rb_destroy
+ * scene_del_rb_insert
+ * scene_del_rb_delete
+ * scene_del_rb_find
+ * scene_del_rb_iterate
+ * scene_del_rb_create_iterator
+ * scene_del_rb_destroy_iterator
+ * scene_del_rb_it_init
+ * scene_del_rb_it_next
+ * scene_del_rb_it_value
+ * scene_del_rb_it_key
+ */
+RBTREE_DECLARE(SCENE_DEL, scene_del, LZH_HASH_CODE, LZH_OBJECT *)
+
 struct LZH_SCENE
 {
     /* 基类 */
@@ -49,6 +71,9 @@ struct LZH_SCENE
 
     /* 深度排序树 */
     SCENE_SORT_RB_TREE *sort_tree;
+
+    /* 场景释放树 */
+    SCENE_DEL_RB_TREE *del_tree;
 
     /* 场景主相机 */
     LZH_OBJECT *main_camera;
@@ -64,6 +89,9 @@ void lzh_scene_sort_visit_draw(const SCENE_SORT_RB_NODE *node, void *args);
 /* 对象树回调 */
 int lzh_scene_objs_comp(const void *a, const void *b);
 void lzh_scene_objs_visit_free(const SCENE_OBJ_RB_NODE *node, void *args);
+
+/* 释放树回调 */
+void lzh_scene_del_visit_free(const SCENE_DEL_RB_NODE *node, void *args);
 
 /* 对象树迭代 */
 void lzh_scene_objs_visit_update(const SCENE_OBJ_RB_NODE *node, void *args);

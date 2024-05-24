@@ -498,7 +498,7 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
             return NULL; \
         } \
         \
-        it = malloc(sizeof(ns##_RB_ITERATOR)); \
+        it = LZH_MALLOC(sizeof(ns##_RB_ITERATOR)); \
         memset(it, 0, sizeof(ns##_RB_ITERATOR)); \
         \
         it->tree = tree; \
@@ -510,9 +510,9 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
         } \
         \
         if (it->nodes) { \
-            free(it->nodes); \
+            LZH_FREE(it->nodes); \
         } \
-        free(it); \
+        LZH_FREE(it); \
     } \
     void fns##_rb_it_init(ns##_RB_ITERATOR *it) { \
         ns##_RB_TREE *tree = NULL; \
@@ -530,7 +530,7 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
         } \
         \
         if (it->nodes) { \
-            free(it->nodes); \
+            LZH_FREE(it->nodes); \
             it->nodes = NULL; \
         } \
         \
@@ -539,7 +539,7 @@ LZH_API int rb_node_is_nil(RB_NODE *node);
             return; \
         } \
         \
-        nodes = malloc(count * sizeof(ns##_RB_NODE *)); \
+        nodes = LZH_MALLOC(count * sizeof(ns##_RB_NODE *)); \
         memset(nodes, 0, count * sizeof(ns##_RB_NODE *)); \
         \
         stack = &it->stack;\
