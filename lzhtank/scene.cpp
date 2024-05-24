@@ -13,22 +13,12 @@ Scene::Scene(LZH_ENGINE *eg, const std::string &name)
     sceneName = name;
 
     lzh_scene_set_name(sceneObj, name.c_str());
+    lzh_scene_set_last_callback(sceneObj, Scene::SceneLastHandle, this);
 }
 
 Scene::~Scene()
 {
-    for (
-        std::map<std::string, GameObject *>::iterator it = sceneObjects.begin(); 
-        it != sceneObjects.end(); ++it
-    ) {
-        if (it->second) {
-            GameObject *obj = it->second;
-            delete obj;
-        }
-    }
-
-    sceneObjects.clear();
-    //lzh_scene_destroy(sceneObj);
+    ClearGameObject();
 }
 
 void Scene::LoadScene()
@@ -41,16 +31,10 @@ void Scene::LoadScene()
     lzh_scene_manager_load(manager, sceneName.c_str());
 }
 
-void Scene::AddObjectToScene(GameObject *obj, bool isAutoDel)
+void Scene::AddObjectToScene(GameObject *obj)
 {
     if (obj && sceneObj) {
-        obj->isAddedScene = true;
-        lzh_scene_add_object(sceneObj, obj->object);
-
-        if (isAutoDel) {
-            std::string name = obj->GetName();
-            sceneObjects.insert(std::map<std::string, GameObject *>::value_type(name, obj));
-        }
+        lzh_scene_add_object(sceneObj, obj->GetObjectHandle());
     }
 }
 
@@ -61,10 +45,64 @@ void Scene::DelObjectFromScene(GameObject *obj)
     }
 }
 
+void Scene::ToFreeGameObject(GameObject *obj)
+{
+    if (obj) {
+        std::string name = obj->GetName();
+        if (!name.empty()) {
+            toFreeObjects.insert(
+                std::map<std::string, GameObject *>::value_type(obj->GetName(), obj));
+        }
+    }
+}
+
+void Scene::FreeGameObject(const std::string &name)
+{
+    if (!name.empty()) {
+        std::map<std::string, GameObject *>::iterator it = toFreeObjects.find(name);
+        if (it != toFreeObjects.end()) {
+            GameObject *obj = it->second;
+            if (obj) {
+                delete obj;
+                it->second = NULL;
+            }
+            toFreeObjects.erase(name);
+        }
+    }
+}
+
+void Scene::ClearGameObject()
+{
+    for (
+        std::map<std::string, GameObject *>::iterator it = toFreeObjects.begin(); 
+        it != toFreeObjects.end(); ++it
+    ) {
+        if (it->second) {
+            GameObject *obj = it->second;
+            delete obj;
+        }
+    }
+
+    toFreeObjects.clear();
+}
+
+void Scene::LastUpdate()
+{
+    ClearGameObject();
+}
+
+void Scene::SceneLastHandle(LZH_SCENE *scene, void *args)
+{
+    if (args) {
+        Scene *scene = (Scene *)args;
+        scene->LastUpdate();
+    }
+}
+
 void Scene::SetMainCamera(Camera *camera)
 {
     if (camera) {
-        lzh_scene_set_main_camera(sceneObj, camera->object);
+        lzh_scene_set_main_camera(sceneObj, camera->GetObjectHandle());
     }
 }
 

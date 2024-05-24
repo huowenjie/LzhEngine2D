@@ -2,6 +2,7 @@
 #include <lzh_transform.h>
 #include <stddef.h>
 
+#include "scene.h"
 #include "gameobject.h"
 
 /*===========================================================================*/
@@ -9,45 +10,31 @@
 /* 将对象指针保存在 LZH_OBJECT 的扩展区 */
 #define OBJECT_INSTANCE "object"
 
-GameObject::GameObject(LZH_ENGINE *eg)
+GameObject::GameObject(LZH_ENGINE *eg, Scene *scene)
 {
     objType = OT_Object;
     engine = eg;
     object = lzh_object_create(eg);
     transform = lzh_object_get_transform(object);
+    currentScene = scene;
 
-    isAddedScene = false;
-    currentScene = NULL;
-
-    lzh_object_set_update(object, GameObject::UpdateObject, this);
-    lzh_object_set_fixedupdate(object, GameObject::FixedUpdateObject, this);
-    lzh_object_add_extension(object, OBJECT_INSTANCE, this);
+    InitGameObject();
 }
 
-GameObject::GameObject(LZH_ENGINE *eg, LZH_OBJECT *obj)
+GameObject::GameObject(LZH_ENGINE *eg, LZH_OBJECT *obj, Scene *scene)
 {
     objType = OT_Object;
     engine = eg;
     object = obj;
     transform = lzh_object_get_transform(object);
+    currentScene = scene;
 
-    isAddedScene = true;
-    currentScene = NULL;
-
-    lzh_object_set_update(object, GameObject::UpdateObject, this);
-    lzh_object_set_fixedupdate(object, GameObject::FixedUpdateObject, this);
-    lzh_object_add_extension(object, OBJECT_INSTANCE, this);
+    InitGameObject();
 }
 
 GameObject::~GameObject()
 {
-    lzh_object_del_extension(object, OBJECT_INSTANCE);
-    lzh_object_set_update(object, NULL, NULL);
-    lzh_object_set_fixedupdate(object, NULL, NULL);
-
-    if (!isAddedScene) {
-        lzh_object_destroy(object);
-    }
+    QuitGameObject();
 }
 
 void GameObject::SetCurrentScene(Scene *scene)
@@ -65,6 +52,9 @@ void GameObject::SetName(const std::string &name)
 std::string GameObject::GetName() const
 {
     const char *name = lzh_object_get_name(object);
+    // if (name && *name) {
+    //     return std::string();
+    // }
     return std::string(name);
 }
 
@@ -124,7 +114,7 @@ GameObject *GameObject::FindChild(const std::string &name)
         return NULL;
     }
 
-    GameObject *newObj = new GameObject(engine, obj);
+    GameObject *newObj = new GameObject(engine, obj, currentScene);
     newObj->currentScene = currentScene;
 
     return newObj;
@@ -141,7 +131,7 @@ GameObject *GameObject::FindChildRecursion(const std::string &name)
         return NULL;
     }
 
-    GameObject *newObj = new GameObject(engine, obj);
+    GameObject *newObj = new GameObject(engine, obj, currentScene);
     newObj->currentScene = currentScene;
 
     return newObj;
@@ -155,6 +145,32 @@ LZH_OBJECT *GameObject::GetObjectHandle() const
 GameObject::ObjectType GameObject::GetObjectType() const
 {
     return objType;
+}
+
+void GameObject::InitGameObject()
+{
+    if (currentScene) {
+        currentScene->AddObjectToScene(this);        
+    }
+
+    if (object) {
+        lzh_object_set_update(object, GameObject::UpdateObject, this);
+        lzh_object_set_fixedupdate(object, GameObject::FixedUpdateObject, this);
+        lzh_object_add_extension(object, OBJECT_INSTANCE, this);
+    }
+}
+
+void GameObject::QuitGameObject()
+{
+    if (object) {
+        lzh_object_del_extension(object, OBJECT_INSTANCE);
+        lzh_object_set_update(object, NULL, NULL);
+        lzh_object_set_fixedupdate(object, NULL, NULL);
+    }
+
+    if (currentScene) {
+        currentScene->DelObjectFromScene(this);
+    }
 }
 
 void GameObject::Update(LZH_ENGINE *eg)

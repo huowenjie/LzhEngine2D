@@ -6,7 +6,7 @@
 
 /*===========================================================================*/
 
-Player::Player(LZH_ENGINE *eg) : Tank(eg)
+Player::Player(LZH_ENGINE *eg, Scene *scene) : Tank(eg, scene)
 {
     objType = OT_Player;
 }

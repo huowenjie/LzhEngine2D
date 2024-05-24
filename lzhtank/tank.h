@@ -10,7 +10,7 @@
 class Tank : public GameObject
 {
 public:
-    Tank(LZH_ENGINE *eg);
+    Tank(LZH_ENGINE *eg, Scene *scene);
     virtual ~Tank();
 
 public:

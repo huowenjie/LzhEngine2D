@@ -10,7 +10,7 @@
 class Bullet : public GameObject
 {
 public:
-    Bullet(LZH_ENGINE *eg);
+    Bullet(LZH_ENGINE *eg, Scene *scene);
     virtual ~Bullet();
 
 public:

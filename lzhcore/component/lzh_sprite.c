@@ -68,6 +68,7 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
     sprite->cur_frame = 0;
     sprite->start_frame = 0;
     sprite->end_frame = 0;
+    sprite->prev_frame = -1;
 
     init_sprite_vertex(sprite);
     add_sprite_texture(engine, sprite, &res, 1);
@@ -109,6 +110,7 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     sprite->cur_frame = 0;
     sprite->start_frame = 0;
     sprite->end_frame = count - 1;
+    sprite->prev_frame = -1;
 
     init_sprite_vertex(sprite);
     add_sprite_texture(engine, sprite, res_list, count);
@@ -473,7 +475,7 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
         return;
     }
 
-    cur_frame = calc_images_frame(sprite);
+    cur_frame = sprite->cur_frame;
 
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
         LZH_TEXTURE **textures = sprite->textures;
@@ -487,10 +489,13 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
     if (sprite->kf_list && IS_SP_STATE(sprite->state, SSC_PLAY)) {
         struct LZH_KEYFRAME *kf = sprite->kf_list + cur_frame;
 
-        if (kf->kf_cb) {
+        if (sprite->prev_frame != cur_frame && kf->kf_cb) {
             kf->kf_cb(kf->args);
         }
     }
+
+    calc_images_frame(sprite);
+    sprite->prev_frame = cur_frame;
 }
 
 void lzh_sprite_remove(LZH_COMPONENT *cpnt)

@@ -64,6 +64,9 @@ void lzh_sm_draw(LZH_SCENE_MANAGER *manager);
 /* 场景对象清理 */
 void lzh_sm_clear_objects(LZH_SCENE_MANAGER *manager);
 
+/* 场景收尾过程 */
+void lzh_sm_last_handle(LZH_SCENE_MANAGER *manager);
+
 /*===========================================================================*/
 
 #endif /* __LZH_SCENE_MANAGER_H__ */

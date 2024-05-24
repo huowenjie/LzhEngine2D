@@ -10,7 +10,7 @@
 class Camera : public GameObject
 {
 public:
-    Camera(LZH_ENGINE *engine);
+    Camera(LZH_ENGINE *engine, Scene *scene);
     virtual ~Camera();
 
 protected:

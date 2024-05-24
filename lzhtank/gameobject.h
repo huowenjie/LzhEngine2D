@@ -12,8 +12,6 @@
 class Scene;
 class GameObject : public Object
 {
-    friend class Scene;
-
 public:
     enum ObjectType {
         OT_Object = 0,
@@ -24,8 +22,8 @@ public:
     };
 
 public:
-    GameObject(LZH_ENGINE *eg);
-    GameObject(LZH_ENGINE *eg, LZH_OBJECT *obj);
+    GameObject(LZH_ENGINE *eg, Scene *scene);
+    GameObject(LZH_ENGINE *eg, LZH_OBJECT *obj, Scene *scene);
     virtual ~GameObject();
 
 public:
@@ -67,6 +65,10 @@ public:
     ObjectType GetObjectType() const;
 
 protected:
+    void InitGameObject();
+    void QuitGameObject();
+
+protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
     virtual void ColliderCb(GameObject *self, GameObject *target);
@@ -81,9 +83,6 @@ protected:
     LZH_ENGINE *engine;
     LZH_OBJECT *object;
     LZH_TRANSFORM *transform;
-
-    // 是否被添加至场景
-    bool isAddedScene;
 
     // 当前所属场景对象
     Scene *currentScene;

@@ -48,6 +48,7 @@ struct LZH_SPRITE {
     int cur_frame;                      /* 当前播放帧 */
     int start_frame;                    /* 开始播放帧 */
     int end_frame;                      /* 结束播放帧 */
+    int prev_frame;                     /* 上一帧 */
 
     struct LZH_KEYFRAME *kf_list;       /* 关键帧回调列表 */
 };

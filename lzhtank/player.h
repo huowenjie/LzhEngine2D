@@ -10,7 +10,7 @@
 class Player : public Tank
 {
 public:
-    Player(LZH_ENGINE *eg);
+    Player(LZH_ENGINE *eg, Scene *scene);
     virtual ~Player();
 
 protected:

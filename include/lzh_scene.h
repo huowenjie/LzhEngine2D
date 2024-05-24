@@ -32,6 +32,10 @@ LZH_API const char *lzh_scene_get_name(LZH_SCENE *scene);
 /* 设置场景主相机，本方法不会将相机对象添加到渲染树 */
 LZH_API void lzh_scene_set_main_camera(LZH_SCENE *scene, LZH_OBJECT *camera);
 
+/* 设置收尾过程回调 */
+LZH_API void lzh_scene_set_last_callback(
+    LZH_SCENE *scene, LZH_SCENE_LAST cb, void *args);
+
 /*===========================================================================*/
 
 /* 获取场景管理器 */

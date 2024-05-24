@@ -179,7 +179,7 @@ void lzh_sm_draw(LZH_SCENE_MANAGER *manager)
 {
     if (manager && manager->scene_active) {
         LZH_BASE *active = (LZH_BASE *)manager->scene_active;
-        if (active && active->draw) {
+        if (active->draw) {
             active->draw(active, active->draw_param);
         }
     }
@@ -189,10 +189,20 @@ void lzh_sm_clear_objects(LZH_SCENE_MANAGER *manager)
 {
     if (manager && manager->scene_active) {
         LZH_SCENE *active = manager->scene_active;
-        if (active && active->del_tree) {
+        if (active->del_tree) {
             /* 清理释放树上的对象 */
             scene_del_rb_clear(
                 active->del_tree, lzh_scene_del_visit_free, active);
+        }
+    }
+}
+
+void lzh_sm_last_handle(LZH_SCENE_MANAGER *manager)
+{
+    if (manager && manager->scene_active) {
+        LZH_SCENE *active = manager->scene_active;
+        if (active->last_handle) {
+            active->last_handle(active, active->last_handle_args);
         }
     }
 }

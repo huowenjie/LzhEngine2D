@@ -231,6 +231,9 @@ void lzh_engine_update(LZH_ENGINE *engine)
         /* 清理场景需要删除的对象 */
         lzh_sm_clear_objects(engine->scene_manager);
 
+        /* 剩余工作 */
+        lzh_sm_last_handle(engine->scene_manager);
+
         start = SDL_GetPerformanceCounter();
         frequency = SDL_GetPerformanceFrequency();
         engine->delta_time = ((start - prev_time) * 1000.0f) / (float)frequency;

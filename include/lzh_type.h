@@ -65,6 +65,9 @@ typedef void (*LZH_OBJECT_FIXEDUPDATE)(LZH_ENGINE *, LZH_OBJECT *, void *);
 /* 关键帧回调 */
 typedef LZH_UINT32 (*LZH_KEYFRAME_CB)(void *);
 
+/* 场景收尾 */
+typedef void (*LZH_SCENE_LAST)(LZH_SCENE *, void *);
+
 #ifdef __cplusplus
 }
 #endif

@@ -13,7 +13,7 @@
 
 /*===========================================================================*/
 
-Bullet::Bullet(LZH_ENGINE *eg) : GameObject(eg)
+Bullet::Bullet(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 {
     bulletSp = lzh_sprite_create(eg, get_tank_bullet_path());
     collider = lzh_collider_create(eg);
@@ -45,6 +45,7 @@ Bullet::Bullet(LZH_ENGINE *eg) : GameObject(eg)
 
 Bullet::~Bullet()
 {
+    lzh_collider_set_callback(collider, NULL, NULL);
 }
 
 /*===========================================================================*/
@@ -61,7 +62,7 @@ void Bullet::SetFromObject(GameObject *from)
 void Bullet::BulletExplode()
 {
     if (currentScene) {
-        Explode *explode = new Explode(engine);
+        Explode *explode = new Explode(engine, currentScene);
 
         float x = 0.0f;
         float y = 0.0f;
@@ -69,7 +70,6 @@ void Bullet::BulletExplode()
         GetPosition(&x, &y);
         explode->SetPosition(x, y);
         explode->SetDepth(0.5f);
-        currentScene->AddObjectToScene(explode, true);
         isExplode = true;
     }
 }
@@ -132,7 +132,7 @@ void Bullet::ColliderCb(GameObject *self, GameObject *target)
         );
     }
 
-    currentScene->DelObjectFromScene(this);
+    currentScene->ToFreeGameObject(this);
 }
 
 /*===========================================================================*/

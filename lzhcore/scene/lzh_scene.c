@@ -61,6 +61,10 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     /* 初始化场景主相机 */
     scene->main_camera = NULL;
 
+    /* 收尾过程 */
+    scene->last_handle = NULL;
+    scene->last_handle_args = NULL;
+
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name());
 
@@ -167,6 +171,14 @@ void lzh_scene_set_main_camera(LZH_SCENE *scene, LZH_OBJECT *camera)
         if (cpnt) {
             lzh_camera_flush((LZH_CAMERA *)cpnt);
         }
+    }
+}
+
+void lzh_scene_set_last_callback(LZH_SCENE *scene, LZH_SCENE_LAST cb, void *args)
+{
+    if (scene) {
+        scene->last_handle = cb;
+        scene->last_handle_args = args;
     }
 }
 

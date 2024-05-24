@@ -10,8 +10,12 @@
 class Explode : public GameObject
 {
 public:
-    Explode(LZH_ENGINE *eg);
+    Explode(LZH_ENGINE *eg, Scene *scene);
     virtual ~Explode();
+
+protected:
+    void LastFrame();
+    static LZH_UINT32 LastFrameCb(void *args);
 
 protected:
     LZH_SPRITE *explodeSp;

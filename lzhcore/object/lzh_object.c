@@ -243,7 +243,24 @@ LZH_ENGINE *lzh_object_get_engine(LZH_OBJECT *object)
 
 void lzh_object_set_name(LZH_OBJECT *object, const char *name)
 {
-    if (!object) {
+    LZH_HASH_CODE code = 0;
+    LZH_ENGINE *engine = NULL;
+    LZH_SCENE_MANAGER *manager = NULL;
+
+    if (!object || !name || !*name) {
+        return;
+    }
+
+    /* 获取原有对象的名称 */
+    code = lzh_gen_hash_code(object->base.name);
+
+    engine = object->base.engine;
+    if (!engine) {
+        return;    
+    }
+
+    manager = engine->scene_manager;
+    if (!manager) {
         return;
     }
 
@@ -255,6 +272,15 @@ void lzh_object_set_name(LZH_OBJECT *object, const char *name)
         lzh_obj_rb_insert(parent->children, object->base.hash, object);
     } else {
         lzh_base_set_name((LZH_BASE *)object, name);
+    }
+
+    /* 更新场景树中对象的名称，其实这里将对象推到渲染循环的后方处理较为妥当，暂时这么处理 */
+    if (manager->scene_active) {
+        LZH_SCENE *active = manager->scene_active;
+        scene_obj_rb_delete(active->render_tree, code, NULL, NULL);
+
+        code = lzh_gen_hash_code(name);
+        scene_obj_rb_insert(active->render_tree, code, object);
     }
 }
 

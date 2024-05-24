@@ -77,6 +77,10 @@ struct LZH_SCENE
 
     /* 场景主相机 */
     LZH_OBJECT *main_camera;
+
+    /* 场景收尾回调 */
+    LZH_SCENE_LAST last_handle;
+    void *last_handle_args;
 };
 
 /* 移除场景 */

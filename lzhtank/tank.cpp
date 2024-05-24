@@ -10,7 +10,7 @@
 
 /*===========================================================================*/
 
-Tank::Tank(LZH_ENGINE *eg) : GameObject(eg)
+Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 {
     objType = OT_Tank;
     chassis = lzh_object_create(eg);
@@ -65,7 +65,7 @@ void Tank::BeAttacked(GameObject *from)
 void Tank::Fire()
 {
     if (currentScene) {
-        Bullet *bullet = new Bullet(engine);
+        Bullet *bullet = new Bullet(engine, currentScene);
 
         if (!bullet) {
             return;
@@ -77,7 +77,6 @@ void Tank::Fire()
 
         GetPosition(&x, &y);
         bullet->SetPosition(x, y);
-        bullet->SetCurrentScene(currentScene);
 
         GameObject *turret = FindChildRecursion("turret");
 
@@ -87,7 +86,6 @@ void Tank::Fire()
             delete turret;
         }
 
-        currentScene->AddObjectToScene(bullet, true);
         bullet->SetFromObject(this);
     }
 }

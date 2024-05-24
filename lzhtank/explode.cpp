@@ -3,10 +3,11 @@
 
 #include "globalres.h"
 #include "explode.h"
+#include "scene.h"
 
 /*===========================================================================*/
 
-Explode::Explode(LZH_ENGINE *eg) : GameObject(eg)
+Explode::Explode(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 {
     objType = OT_Explode;
     explodeSp = NULL;
@@ -22,10 +23,28 @@ Explode::Explode(LZH_ENGINE *eg) : GameObject(eg)
 
     sprintf(name, "Explode%d", code++);
     lzh_object_set_name(object, name);
+
+    lzh_sprite_set_keyframe(explodeSp, count - 1, Explode::LastFrameCb, this);
 }
 
 Explode::~Explode()
 {
+    int count = get_tank_explode_count();
+    lzh_sprite_set_keyframe(explodeSp, count - 1, NULL, NULL);
+}
+
+void Explode::LastFrame()
+{
+    currentScene->ToFreeGameObject(this);
+}
+
+LZH_UINT32 Explode::LastFrameCb(void *args)
+{
+    if (args) {
+        Explode *exp = (Explode *)args;
+        exp->LastFrame();
+    }
+    return 0;
 }
 
 /*===========================================================================*/
