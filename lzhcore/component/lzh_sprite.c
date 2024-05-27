@@ -485,6 +485,12 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
         }
     }
 
+    if (cur_frame == sprite->start_frame && sprite->prev_frame == sprite->end_frame) {
+        if (!IS_SP_STATE(sprite->state, SSC_REPLAY)) {
+            return;
+        }
+    }
+
     /* 调用关键帧回调 */
     if (sprite->kf_list && IS_SP_STATE(sprite->state, SSC_PLAY)) {
         struct LZH_KEYFRAME *kf = sprite->kf_list + cur_frame;

@@ -26,14 +26,17 @@ protected:
     virtual void FixedUpdate(LZH_ENGINE *eg);
 
 protected:
-    LZH_OBJECT *chassis;
-    LZH_OBJECT *turret;
+    GameObject *chassis;
+    GameObject *turret;
+
+    // LZH_OBJECT *chassis;
+    // LZH_OBJECT *turret;
 
     LZH_SPRITE *chassisSp;
     LZH_SPRITE *turretSp;
 
-    LZH_TRANSFORM *chassisTransform;
-    LZH_TRANSFORM *turretTransform;
+    // LZH_TRANSFORM *chassisTransform;
+    // LZH_TRANSFORM *turretTransform;
 
     LZH_COLLIDER *collider;
 
@@ -45,6 +48,9 @@ protected:
 
     // 炮塔旋转速度
     float turretRotateSpeed;
+
+    // 生命值
+    int tankhp;
 };
 
 /*===========================================================================*/

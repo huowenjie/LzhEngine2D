@@ -65,6 +65,7 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->fixed_update = NULL;
     obj->fixed_update_param = NULL;
     obj->extension = lzh_ext_rb_create(lzh_object_rb_comp);
+    obj->current_scene = NULL;
 
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name(global_order++));
@@ -87,6 +88,14 @@ void lzh_object_set_parent(LZH_OBJECT *object, LZH_OBJECT *parent)
         lzh_obj_rb_insert(parent->children, object->base.hash, object);
         object->parent = parent;
     }
+}
+
+LZH_OBJECT *lzh_object_get_parent(LZH_OBJECT *object)
+{
+    if (object) {
+        return object->parent;
+    }
+    return NULL;
 }
 
 void lzh_object_add_child(LZH_OBJECT *object, LZH_OBJECT *child)
@@ -245,7 +254,6 @@ void lzh_object_set_name(LZH_OBJECT *object, const char *name)
 {
     LZH_HASH_CODE code = 0;
     LZH_ENGINE *engine = NULL;
-    LZH_SCENE_MANAGER *manager = NULL;
 
     if (!object || !name || !*name) {
         return;
@@ -259,11 +267,6 @@ void lzh_object_set_name(LZH_OBJECT *object, const char *name)
         return;    
     }
 
-    manager = engine->scene_manager;
-    if (!manager) {
-        return;
-    }
-
     if (object->parent) {
         LZH_OBJECT *parent = object->parent;
 
@@ -275,8 +278,8 @@ void lzh_object_set_name(LZH_OBJECT *object, const char *name)
     }
 
     /* 更新场景树中对象的名称，其实这里将对象推到渲染循环的后方处理较为妥当，暂时这么处理 */
-    if (manager->scene_active) {
-        LZH_SCENE *active = manager->scene_active;
+    if (object->current_scene) {
+        LZH_SCENE *active = object->current_scene;
         scene_obj_rb_delete(active->render_tree, code, NULL, NULL);
 
         code = lzh_gen_hash_code(name);
@@ -317,6 +320,21 @@ void *lzh_object_get_extension(LZH_OBJECT *object, const char *name)
 
         lzh_ext_rb_find(object->extension, code, &ext);
         return (void *)ext;
+    }
+    return NULL;
+}
+
+void lzh_object_set_current_scene(LZH_OBJECT *object, LZH_SCENE *scene)
+{
+    if (object) {
+        object->current_scene = scene;
+    }
+}
+
+LZH_SCENE *lzh_object_get_current_scene(LZH_OBJECT *object)
+{
+    if (object) {
+        return object->current_scene;
     }
     return NULL;
 }

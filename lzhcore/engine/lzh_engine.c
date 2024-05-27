@@ -228,11 +228,11 @@ void lzh_engine_update(LZH_ENGINE *engine)
         lzh_sm_draw(engine->scene_manager);
         SDL_GL_SwapWindow(window);
 
-        /* 清理场景需要删除的对象 */
-        lzh_sm_clear_objects(engine->scene_manager);
-
         /* 剩余工作 */
         lzh_sm_last_handle(engine->scene_manager);
+
+        /* 清理场景需要删除的对象 */
+        lzh_sm_clear_objects(engine->scene_manager);
 
         start = SDL_GetPerformanceCounter();
         frequency = SDL_GetPerformanceFrequency();

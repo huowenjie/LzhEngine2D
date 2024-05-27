@@ -124,10 +124,8 @@ void lzh_collider_update(LZH_BASE *base, void *args)
     LZH_COLLIDER *collider = NULL;
     LZH_OBJECT *object = NULL;
     LZH_OBJECT *collide_obj = NULL;
-    LZH_ENGINE *engine = NULL;
     LZH_QUAD_TREE *quad = NULL;
 
-    LZH_SCENE_MANAGER *sm = NULL;
     LZH_SCENE *cur_scene = NULL;
     LZH_CAMERA *camera = NULL;
 
@@ -144,22 +142,12 @@ void lzh_collider_update(LZH_BASE *base, void *args)
         return;
     }
 
-    engine = object->base.engine;
-    if (!engine) {
-        return;
-    }
-
     quad = collider->quad;
     if (!quad) {
         return;
     }
 
-    sm = engine->scene_manager;
-    if (!sm || !sm->scene_active) {
-        return;
-    }
-
-    cur_scene = sm->scene_active;
+    cur_scene = object->current_scene;
     if (!cur_scene || !cur_scene->main_camera) {
         return;
     }

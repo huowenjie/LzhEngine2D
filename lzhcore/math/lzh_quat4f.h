@@ -74,8 +74,17 @@ LZH_VEC3F lzh_quat4f_rotate(const LZH_QUAT4F *q, const LZH_VEC3F *v);
 /* 创建一个绕旋转轴 u 旋转 theta 角度（单位：弧度）的旋转 */
 LZH_QUAT4F lzh_quat4f_rotation(const LZH_VEC3F *u, float theta);
 
-/* 从旋转四元数中获取角度 */
-float lzh_quat4f_get_theta(const LZH_QUAT4F *q);
+/* 从旋转四元数中获取欧拉角 yaw */
+float lzh_quat4f_get_theta_z(const LZH_QUAT4F *q);
+
+/* 从旋转四元数中获取欧拉角 pitch */
+float lzh_quat4f_get_theta_y(const LZH_QUAT4F *q);
+
+/* 从旋转四元数中获取欧拉角 roll */
+float lzh_quat4f_get_theta_x(const LZH_QUAT4F *q);
+
+/* 欧拉角转换为四元数 */
+LZH_QUAT4F lzh_quat4f_euler2quat(float yaw, float pitch, float roll);
 
 /* 从旋转四元数获取旋转轴 */
 LZH_VEC3F lzh_quat4f_get_axis(const LZH_QUAT4F *q);

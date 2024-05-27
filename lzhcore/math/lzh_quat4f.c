@@ -1,4 +1,5 @@
 #include <math.h>
+#include "lzh_mathdef.h"
 #include "lzh_quat4f.h"
 
 /*===========================================================================*/
@@ -227,12 +228,55 @@ LZH_QUAT4F lzh_quat4f_rotation(const LZH_VEC3F *u, float theta)
     return q;
 }
 
-float lzh_quat4f_get_theta(const LZH_QUAT4F *q)
+float lzh_quat4f_get_theta_z(const LZH_QUAT4F *q)
 {
     if (q) {
-        return 2.0f * acosf(q->s);
+        float s = 2.0f * (q->s * q->z + q->x * q->y);
+        float c = 1.0f - 2.0f * (q->y * q->y + q->z * q->z);
+        return atan2f(s, c);
     }
     return 0.0f;
+}
+
+float lzh_quat4f_get_theta_y(const LZH_QUAT4F *q)
+{
+    if (q) {
+        float s = 2.0f * (q->s * q->y - q->z * q->x);
+        if (fabsf(s) >= 1.0f) {
+            return copysignf(LZH_PI / 2.0f, s);
+        } else {
+            return asinf(s);
+        }
+    }
+    return 0.0f;
+}
+float lzh_quat4f_get_theta_x(const LZH_QUAT4F *q)
+{
+    if (q) {
+        float s = 2.0f * (q->s * q->x + q->y * q->z);
+        float c = 1.0f - 2.0f * (q->x * q->x + q->y * q->y);
+        return atan2f(s, c);
+    }
+    return 0.0f;    
+}
+
+LZH_QUAT4F lzh_quat4f_euler2quat(float yaw, float pitch, float roll)
+{
+    LZH_QUAT4F quat = lzh_quat4f_real(0.0f);
+
+    float cy = cos(yaw * 0.5f);
+    float sy = sin(yaw * 0.5f);
+    float cp = cos(pitch * 0.5f);
+    float sp = sin(pitch * 0.5f);
+    float cr = cos(roll * 0.5f);
+    float sr = sin(roll * 0.5f);
+ 
+    quat.s = cy * cp * cr + sy * sp * sr;
+    quat.x = cy * cp * sr - sy * sp * cr;
+    quat.y = sy * cp * sr + cy * sp * cr;
+    quat.z = sy * cp * cr - cy * sp * sr;
+
+    return quat;
 }
 
 LZH_VEC3F lzh_quat4f_get_axis(const LZH_QUAT4F *q)

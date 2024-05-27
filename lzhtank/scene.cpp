@@ -18,7 +18,8 @@ Scene::Scene(LZH_ENGINE *eg, const std::string &name)
 
 Scene::~Scene()
 {
-    ClearGameObject();
+    ClearFreeObject();
+    ClearSceneObjects();
 }
 
 void Scene::LoadScene()
@@ -29,6 +30,13 @@ void Scene::LoadScene()
     };
 
     lzh_scene_manager_load(manager, sceneName.c_str());
+}
+
+void Scene::AddObject(GameObject *obj)
+{
+    if (obj) {
+        InsertObject(obj);
+    }
 }
 
 void Scene::AddObjectToScene(GameObject *obj)
@@ -48,47 +56,25 @@ void Scene::DelObjectFromScene(GameObject *obj)
 void Scene::ToFreeGameObject(GameObject *obj)
 {
     if (obj) {
-        std::string name = obj->GetName();
-        if (!name.empty()) {
-            toFreeObjects.insert(
-                std::map<std::string, GameObject *>::value_type(obj->GetName(), obj));
-        }
+        sceneObjects.erase((LZH_UINTPTR)obj);
+        toFreeObjects.push_back(obj);
     }
 }
 
-void Scene::FreeGameObject(const std::string &name)
+void Scene::ClearFreeObject()
 {
-    if (!name.empty()) {
-        std::map<std::string, GameObject *>::iterator it = toFreeObjects.find(name);
-        if (it != toFreeObjects.end()) {
-            GameObject *obj = it->second;
-            if (obj) {
-                delete obj;
-                it->second = NULL;
-            }
-            toFreeObjects.erase(name);
-        }
-    }
-}
-
-void Scene::ClearGameObject()
-{
-    for (
-        std::map<std::string, GameObject *>::iterator it = toFreeObjects.begin(); 
-        it != toFreeObjects.end(); ++it
-    ) {
-        if (it->second) {
-            GameObject *obj = it->second;
+    while (!toFreeObjects.empty()) {
+        GameObject *obj = toFreeObjects.back();
+        if (obj) {
             delete obj;
         }
+        toFreeObjects.pop_back();
     }
-
-    toFreeObjects.clear();
 }
 
 void Scene::LastUpdate()
 {
-    ClearGameObject();
+    ClearFreeObject();
 }
 
 void Scene::SceneLastHandle(LZH_SCENE *scene, void *args)
@@ -104,6 +90,36 @@ void Scene::SetMainCamera(Camera *camera)
     if (camera) {
         lzh_scene_set_main_camera(sceneObj, camera->GetObjectHandle());
     }
+}
+
+void Scene::InsertObject(GameObject *sceneObj)
+{
+    if (sceneObj) {
+        sceneObjects.insert(
+            std::map<LZH_UINTPTR, GameObject *>::value_type((LZH_UINTPTR)sceneObj, sceneObj));
+    }
+}
+
+void Scene::RemoveObject(GameObject *sceneObj)
+{
+    sceneObjects.erase((LZH_UINTPTR)sceneObj);
+}
+
+void Scene::ClearSceneObjects()
+{
+    for (
+        std::map<LZH_UINTPTR, GameObject *>::iterator it = sceneObjects.begin(); 
+        it != sceneObjects.end(); ++it
+    ) {
+        if (it->second) {
+            GameObject *obj = it->second;
+
+            if (!obj->IsChild()) {
+                delete obj;
+            }
+        }
+    }
+    sceneObjects.clear();
 }
 
 /*===========================================================================*/

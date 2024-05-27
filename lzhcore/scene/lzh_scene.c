@@ -3,6 +3,7 @@
 #include <lzh_mem.h>
 #include <lzh_scene.h>
 #include <lzh_systool.h>
+#include <lzh_object.h>
 
 #include "../engine/lzh_core_engine.h"
 #include "../component/lzh_core_camera.h"
@@ -102,6 +103,7 @@ void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
     }
 
     scene_obj_rb_insert(render_tree, object->base.hash, object);
+    lzh_object_set_current_scene(object, scene);
 }
 
 void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
@@ -129,6 +131,7 @@ void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
     if (obj) {
         /* 不能直接删除对象，要先放入删除树，在帧末尾再清理对象 */
         scene_del_rb_insert(scene->del_tree, hash, obj);
+        lzh_object_set_current_scene(obj, NULL);
     }
 }
 

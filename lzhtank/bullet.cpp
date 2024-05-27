@@ -2,8 +2,8 @@
 #include <lzh_object.h>
 #include <lzh_transform.h>
 #include <lzh_collider.h>
-#include <stddef.h>
-#include <stdio.h>
+#include <cstddef>
+#include <cmath>
 
 #include "globalres.h"
 #include "bullet.h"
@@ -21,6 +21,7 @@ Bullet::Bullet(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     fireDistance = 100.0f;
     isExplode = false;
     fromObject = NULL;
+    flyingDistance = 0.0f;
 
     lzh_object_add_component(object, bulletSp);
     lzh_object_add_component(object, collider);
@@ -94,6 +95,14 @@ void Bullet::Update(LZH_ENGINE *eg)
     x *= speed;
     y *= speed;
     lzh_transform_translate(transform, x, y, 0.0f);
+
+    flyingDistance += std::sqrt(x * x + y * y);
+
+    if (flyingDistance > 10.0f) {
+        // 播放爆炸动画并销毁自己
+        BulletExplode();
+        currentScene->ToFreeGameObject(this);
+    }
 }
 
 void Bullet::FixedUpdate(LZH_ENGINE *eg)
@@ -124,12 +133,6 @@ void Bullet::ColliderCb(GameObject *self, GameObject *target)
     if (target->GetObjectType() == OT_Tank) {
         Tank *tank = (Tank *)target;
         tank->BeAttacked(fromObject);
-
-        // TODO
-        printf(
-            "-------Bullet::ColliderCb--self = %s, target = %s\n",
-            self->GetName().c_str(), target->GetName().c_str()
-        );
     }
 
     currentScene->ToFreeGameObject(this);

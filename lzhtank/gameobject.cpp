@@ -52,10 +52,14 @@ void GameObject::SetName(const std::string &name)
 std::string GameObject::GetName() const
 {
     const char *name = lzh_object_get_name(object);
-    // if (name && *name) {
-    //     return std::string();
-    // }
     return std::string(name);
+}
+
+void GameObject::Translate(float x, float y)
+{
+    if (transform) {
+        lzh_transform_translate(transform, x, y, 0.0f);
+    }
 }
 
 void GameObject::SetPosition(float x, float y)
@@ -87,6 +91,13 @@ void GameObject::SetRotate(float angle)
     }
 }
 
+void GameObject::SetScale(float x, float y)
+{
+    if (transform) {
+        lzh_transform_scale(transform, x, y, 1.0f);
+    }
+}
+
 float GameObject::GetRotateAngle()
 {
     if (transform) {
@@ -103,6 +114,13 @@ float GameObject::GetRotateWorldAngle()
     return 0.0f;
 }
 
+void GameObject::AddChild(GameObject *child)
+{
+    if (child) {
+        lzh_object_add_child(object, child->object);
+    }
+}
+
 GameObject *GameObject::FindChild(const std::string &name)
 {
     if (name.empty()) {
@@ -114,10 +132,8 @@ GameObject *GameObject::FindChild(const std::string &name)
         return NULL;
     }
 
-    GameObject *newObj = new GameObject(engine, obj, currentScene);
-    newObj->currentScene = currentScene;
-
-    return newObj;
+    GameObject *childObj = (GameObject *)lzh_object_get_extension(obj, OBJECT_INSTANCE);
+    return childObj;
 }
 
 GameObject *GameObject::FindChildRecursion(const std::string &name)
@@ -131,15 +147,23 @@ GameObject *GameObject::FindChildRecursion(const std::string &name)
         return NULL;
     }
 
-    GameObject *newObj = new GameObject(engine, obj, currentScene);
-    newObj->currentScene = currentScene;
+    GameObject *childObj = (GameObject *)lzh_object_get_extension(obj, OBJECT_INSTANCE);
+    return childObj;
+}
 
-    return newObj;
+bool GameObject::IsChild() const
+{
+    return lzh_object_get_parent(object) != NULL;
 }
 
 LZH_OBJECT *GameObject::GetObjectHandle() const
 {
     return object;
+}
+
+LZH_TRANSFORM *GameObject::GetTransform() const
+{
+    return lzh_object_get_transform(object);
 }
 
 GameObject::ObjectType GameObject::GetObjectType() const
@@ -168,7 +192,10 @@ void GameObject::QuitGameObject()
         lzh_object_set_fixedupdate(object, NULL, NULL);
     }
 
-    if (currentScene) {
+    // 有父对象，则移除子对象的过程由父对象完成
+    LZH_OBJECT *parent = lzh_object_get_parent(object);
+
+    if (currentScene && !parent) {
         currentScene->DelObjectFromScene(this);
     }
 }

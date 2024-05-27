@@ -144,7 +144,7 @@ void lzh_transform_set_rotate_y(LZH_TRANSFORM *transform, float angle)
 float lzh_transform_get_rotate_z(LZH_TRANSFORM *transform)
 {
     if (transform) {
-        float theta = lzh_quat4f_get_theta(&transform->local_rotate);
+        float theta = lzh_quat4f_get_theta_z(&transform->local_rotate);
         return LZH_R2A(theta);
     }
     return 0.0f;
@@ -174,7 +174,7 @@ float lzh_transform_get_rotate_wz(LZH_TRANSFORM *transform)
         }
     }
 
-    theta = lzh_quat4f_get_theta(&rotate);
+    theta = lzh_quat4f_get_theta_z(&rotate);
     return LZH_R2A(theta);
 }
 

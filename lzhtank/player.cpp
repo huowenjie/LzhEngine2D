@@ -9,6 +9,9 @@
 Player::Player(LZH_ENGINE *eg, Scene *scene) : Tank(eg, scene)
 {
     objType = OT_Player;
+
+    chassisTransform = chassis->GetTransform();
+    turretTransform = turret->GetTransform();
 }
 
 Player::~Player()

@@ -16,6 +16,10 @@ public:
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
+
+protected:
+    LZH_TRANSFORM *chassisTransform;
+    LZH_TRANSFORM *turretTransform;
 };
 
 

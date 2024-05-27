@@ -17,6 +17,9 @@ LZH_API LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine);
 /* 设置父对象 */
 LZH_API void lzh_object_set_parent(LZH_OBJECT *object, LZH_OBJECT *parent);
 
+/* 获取父对象 */
+LZH_API LZH_OBJECT *lzh_object_get_parent(LZH_OBJECT *object);
+
 /* 添加子对象 */
 LZH_API void lzh_object_add_child(LZH_OBJECT *object, LZH_OBJECT *child);
 
@@ -65,6 +68,12 @@ LZH_API void lzh_object_del_extension(LZH_OBJECT *object, const char *name);
 
 /* 获取扩展数据 */
 LZH_API void *lzh_object_get_extension(LZH_OBJECT *object, const char *name);
+
+/* 设置当前所属场景 */
+LZH_API void lzh_object_set_current_scene(LZH_OBJECT *object, LZH_SCENE *scene);
+
+/* 获取当前所属场景 */
+LZH_API LZH_SCENE *lzh_object_get_current_scene(LZH_OBJECT *object);
 
 /* 设置对象更新回调 */
 LZH_API void lzh_object_set_update(

@@ -4,6 +4,7 @@
 #include <lzh_engine.h>
 #include <string>
 #include <map>
+#include <vector>
 
 #include "object.h"
 
@@ -13,6 +14,7 @@
 
 class GameObject;
 class Camera;
+
 class Scene : public Object
 {
 public:
@@ -23,6 +25,9 @@ public:
     // 加载场景
     void LoadScene();
 
+    // 添加对象至管理列表
+    void AddObject(GameObject *obj);
+
     // 添加对象至场景
     void AddObjectToScene(GameObject *obj);
 
@@ -32,14 +37,21 @@ public:
     // 释放对象
     void ToFreeGameObject(GameObject *obj);
 
-    // 释放对象
-    void FreeGameObject(const std::string &name);
-
-    // 清理对象
-    void ClearGameObject();
+    // 清理待释放的对象
+    void ClearFreeObject();
 
     // 设置主相机
     void SetMainCamera(Camera *camera);
+
+protected:
+    // 插入场景对象
+    void InsertObject(GameObject *sceneObj);
+
+    // 移除场景对象
+    void RemoveObject(GameObject *sceneObj);
+
+    // 清理场景对象
+    void ClearSceneObjects();
 
 protected:
     void LastUpdate();
@@ -50,7 +62,12 @@ protected:
     LZH_ENGINE *engine;
 
     std::string sceneName;
-    std::map<std::string, GameObject *> toFreeObjects;
+
+    // 场景对象列表
+    std::map<LZH_UINTPTR, GameObject *> sceneObjects;
+
+    // 场景准备删除列表
+    std::vector<GameObject *> toFreeObjects;
 };
 
 /*===========================================================================*/

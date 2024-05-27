@@ -34,6 +34,9 @@ public:
     void SetName(const std::string &name);
     std::string GetName() const;
 
+    // 平移
+    void Translate(float x, float y);
+
     // 设置位置
     void SetPosition(float x, float y);
 
@@ -46,11 +49,18 @@ public:
     // 设置旋转角度
     void SetRotate(float angle);
 
+    // 设置缩放
+    void SetScale(float x, float y);
+
     // 获取旋转角度
     float GetRotateAngle();
 
     // 获取世界旋转角度
     float GetRotateWorldAngle();
+
+public:
+    // 添加子对象
+    void AddChild(GameObject *child);
 
     // 查找子对象
     GameObject *FindChild(const std::string &name);
@@ -58,8 +68,15 @@ public:
     // 递归查找子对象
     GameObject *FindChildRecursion(const std::string &name);
 
+    // 是否当前对象是子对象
+    bool IsChild() const;
+
+public:
     // 获取对象指针
     LZH_OBJECT *GetObjectHandle() const;
+
+    // 获取变换组件指针
+    LZH_TRANSFORM *GetTransform() const;
 
     // 获取对象类型
     ObjectType GetObjectType() const;
