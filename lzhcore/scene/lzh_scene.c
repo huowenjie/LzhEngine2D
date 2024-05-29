@@ -66,6 +66,9 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     scene->last_handle = NULL;
     scene->last_handle_args = NULL;
 
+    /* 创建 2d 物理引擎世界对象 */
+    scene->world2d = lzh_b2_world_create(NULL);
+
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name());
 

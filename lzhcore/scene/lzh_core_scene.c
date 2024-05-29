@@ -9,6 +9,12 @@
 void lzh_scene_remove(LZH_SCENE *scene)
 {
     if (scene) {
+        /* ÒÆ³ýÎïÀíÒýÇæ */
+        if (scene->world2d) {
+            lzh_b2_world_destroy(scene->world2d);
+            scene->world2d = NULL;
+        }
+
         /* ÒÆ³ýÊÍ·ÅÊ÷ */
         if (scene->del_tree) {
             scene_del_rb_destroy(scene->del_tree, NULL, NULL);

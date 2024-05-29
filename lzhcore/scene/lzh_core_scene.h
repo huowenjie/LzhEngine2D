@@ -3,6 +3,7 @@
 
 #include <lzh_rbtree.h>
 #include "../object/lzh_core_object.h"
+#include "../box2d/lzh_b2_api.h"
 
 /*===========================================================================*/
 /* 场景内部定义 */
@@ -81,6 +82,9 @@ struct LZH_SCENE
     /* 场景收尾回调 */
     LZH_SCENE_LAST last_handle;
     void *last_handle_args;
+
+    /* box2d 引擎世界对象 */
+    LZH_B2_WORLD *world2d;
 };
 
 /* 移除场景 */
