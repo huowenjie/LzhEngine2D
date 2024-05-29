@@ -24,6 +24,7 @@ protected:
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
+    virtual void ColliderCb(GameObject *self, GameObject *target);
 
 protected:
     GameObject *chassis;
@@ -51,6 +52,9 @@ protected:
 
     // 生命值
     int tankhp;
+
+    // 是否碰撞到别的对象
+    bool isCollideOther;
 };
 
 /*===========================================================================*/

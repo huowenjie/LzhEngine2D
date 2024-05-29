@@ -18,6 +18,7 @@ public:
         OT_Player,
         OT_Tank,
         OT_Camera,
+        OT_Bullet,
         OT_Explode
     };
 

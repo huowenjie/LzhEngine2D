@@ -48,6 +48,7 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     param.box2d.w = 1.0f;
     param.box2d.h = 1.0f;
     lzh_collider_set_param(collider, &param);
+    lzh_collider_set_callback(collider, GameObject::ColliderObjectCb, this);
 }
 
 Tank::~Tank()
@@ -106,10 +107,19 @@ void Tank::Fire()
 
 void Tank::Update(LZH_ENGINE *eg)
 {
+
 }
 
 void Tank::FixedUpdate(LZH_ENGINE *eg)
 {
+}
+
+void Tank::ColliderCb(GameObject *self, GameObject *target)
+{
+    GameObject::ObjectType type = target->GetObjectType();
+    if (type != OT_Explode || type != OT_Bullet) {
+        isCollideOther = true;
+    }
 }
 
 /*===========================================================================*/

@@ -70,6 +70,8 @@ void Player::Update(LZH_ENGINE *eg)
     if (lzh_get_key_down(eg, KEY_CODE_SPACE)) {
         Fire();
     }
+
+    Tank::Update(eg);
 }
 
 void Player::FixedUpdate(LZH_ENGINE *eg)
