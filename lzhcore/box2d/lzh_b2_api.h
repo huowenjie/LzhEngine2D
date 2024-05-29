@@ -4,7 +4,7 @@
 #include "../math/lzh_vec2f.h"
 
 /*===========================================================================*/
-/* lzh box2d c api */
+/* box2d 引擎 c api */
 /*===========================================================================*/
 
 #ifdef __cplusplus
@@ -13,8 +13,8 @@ extern "C" {
 
 /* box2d 对象 */
 typedef struct LZH_B2_OBJECT LZH_B2_OBJECT;
+typedef struct LZH_B2_WORLD LZH_B2_WORLD;
 
-typedef LZH_B2_OBJECT LZH_B2_WORLD;
 typedef LZH_B2_OBJECT LZH_B2_BODY;
 typedef LZH_B2_OBJECT LZH_B2_FIXUTRE;
 
@@ -29,6 +29,10 @@ typedef enum LZH_B2_BODY_TYPE {
 	BT_DYNAMIC      /* 质量和速度均由引擎完全接管 */
 } LZH_B2_BODY_TYPE;
 
+/* 接触回调 */
+typedef void (*LZH_B2_BEGIN_CONTACT)(void *dataA, void *dataB, void *args);
+typedef void (*LZH_B2_END_CONTACT)(void *dataA, void *dataB, void *args);
+
 /* 创建世界对象 */
 LZH_B2_WORLD *lzh_b2_world_create(const LZH_VEC2F *gravity);
 
@@ -39,7 +43,12 @@ void lzh_b2_world_destroy(LZH_B2_WORLD *world);
 void lzh_b2_world_set_gravity(LZH_B2_WORLD *world, const LZH_VEC2F *gravity);
 
 /* 设置接触回调 */
-//void lzh_b2_world_set_contact_cb(LZH_B2_WORLD *world, );
+void lzh_b2_world_set_begin_contact(
+    LZH_B2_WORLD *world, LZH_B2_BEGIN_CONTACT cb, void *args);
+
+/* 设置结束接触回调 */
+void lzh_b2_world_set_end_contact(
+    LZH_B2_WORLD *world, LZH_B2_END_CONTACT cb, void *args);
 
 /* 从世界对象中创建物理主体对象，pos 为位置 */
 LZH_B2_BODY *lzh_b2_body_create(
@@ -62,6 +71,9 @@ void lzh_b2_fixture_destroy(LZH_B2_BODY *body, LZH_B2_FIXUTRE *fixture);
 
 /* 设置密度 */
 void lzh_b2_fixture_set_density(LZH_B2_FIXUTRE *fixture, float density);
+
+/* 设置用户数据 */
+void lzh_b2_fixture_set_data(LZH_B2_FIXUTRE *fixture, void *data);
 
 /* 创建圆形形状 */
 LZH_B2_SHAPE_CIRCLE *lzh_b2_shape_circle_create(const LZH_VEC2F *center, float radius);

@@ -77,6 +77,9 @@ LZH_COLLIDER *lzh_collider_create(LZH_ENGINE *engine)
     base->remove_component = lzh_collider_remove;
 
     collider->quad = lzh_quad_tree_create();
+    collider->b2_body = NULL;
+    collider->b2_fixture = NULL;
+    /* 需要在挂载到对象的时候进行初始化 TODO */
     return collider;
 }
 

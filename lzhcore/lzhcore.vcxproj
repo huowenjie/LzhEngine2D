@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_WINDOWS;_CRT_SECURE_NO_WARNINGS;LZH_EXP;LZH_MEMORY_DEBUG;LZH_ENABLE_TRACE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_WINDOWS;_CRT_SECURE_NO_WARNINGS;LZH_EXP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_WINDOWS;_CRT_SECURE_NO_WARNINGS;LZH_EXP;LZH_MEMORY_DEBUG;LZH_ENABLE_TRACE</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,7 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_WINDOWS;_CRT_SECURE_NO_WARNINGS;LZH_EXP</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,10 +159,57 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="box2d\collision\b2_broad_phase.cpp" />
+    <ClCompile Include="box2d\collision\b2_chain_shape.cpp" />
+    <ClCompile Include="box2d\collision\b2_circle_shape.cpp" />
+    <ClCompile Include="box2d\collision\b2_collide_circle.cpp" />
+    <ClCompile Include="box2d\collision\b2_collide_edge.cpp" />
+    <ClCompile Include="box2d\collision\b2_collide_polygon.cpp" />
+    <ClCompile Include="box2d\collision\b2_collision.cpp" />
+    <ClCompile Include="box2d\collision\b2_distance.cpp" />
+    <ClCompile Include="box2d\collision\b2_dynamic_tree.cpp" />
+    <ClCompile Include="box2d\collision\b2_edge_shape.cpp" />
+    <ClCompile Include="box2d\collision\b2_polygon_shape.cpp" />
+    <ClCompile Include="box2d\collision\b2_time_of_impact.cpp" />
+    <ClCompile Include="box2d\common\b2_block_allocator.cpp" />
+    <ClCompile Include="box2d\common\b2_draw.cpp" />
+    <ClCompile Include="box2d\common\b2_math.cpp" />
+    <ClCompile Include="box2d\common\b2_settings.cpp" />
+    <ClCompile Include="box2d\common\b2_stack_allocator.cpp" />
+    <ClCompile Include="box2d\common\b2_timer.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_body.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_chain_circle_contact.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_chain_polygon_contact.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_circle_contact.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_contact.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_contact_manager.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_contact_solver.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_distance_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_edge_circle_contact.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_edge_polygon_contact.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_fixture.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_friction_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_gear_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_island.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_motor_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_mouse_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_polygon_circle_contact.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_polygon_contact.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_prismatic_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_pulley_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_revolute_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_weld_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_wheel_joint.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_world.cpp" />
+    <ClCompile Include="box2d\dynamics\b2_world_callbacks.cpp" />
+    <ClCompile Include="box2d\lzh_b2_api.cpp" />
+    <ClCompile Include="box2d\lzh_b2_contact_listener.cpp" />
+    <ClCompile Include="box2d\rope\b2_rope.cpp" />
     <ClCompile Include="component\lzh_camera.c" />
+    <ClCompile Include="component\lzh_collider.c" />
     <ClCompile Include="component\lzh_component.c" />
     <ClCompile Include="component\lzh_core_transform.c" />
-    <ClCompile Include="component\lzh_quadtree.c" />
     <ClCompile Include="component\lzh_sprite.c" />
     <ClCompile Include="component\lzh_transform.c" />
     <ClCompile Include="container\lzh_link.c" />
@@ -191,18 +238,19 @@
     <ClCompile Include="scene\lzh_core_scene.c" />
     <ClCompile Include="scene\lzh_scene.c" />
     <ClCompile Include="scene\lzh_scene_manager.c" />
+    <ClCompile Include="tool\lzh_quadtree.c" />
     <ClCompile Include="tool\lzh_rectf.c" />
     <ClCompile Include="tool\lzh_systool.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\lzh_camera.h" />
+    <ClInclude Include="..\include\lzh_collider.h" />
     <ClInclude Include="..\include\lzh_engine.h" />
     <ClInclude Include="..\include\lzh_keyboard.h" />
     <ClInclude Include="..\include\lzh_link.h" />
     <ClInclude Include="..\include\lzh_log.h" />
     <ClInclude Include="..\include\lzh_mem.h" />
     <ClInclude Include="..\include\lzh_object.h" />
-    <ClInclude Include="..\include\lzh_quadtree.h" />
     <ClInclude Include="..\include\lzh_rbtree.h" />
     <ClInclude Include="..\include\lzh_rectf.h" />
     <ClInclude Include="..\include\lzh_scene.h" />
@@ -211,8 +259,60 @@
     <ClInclude Include="..\include\lzh_systool.h" />
     <ClInclude Include="..\include\lzh_transform.h" />
     <ClInclude Include="..\include\lzh_type.h" />
+    <ClInclude Include="box2d\b2_api.h" />
+    <ClInclude Include="box2d\b2_block_allocator.h" />
+    <ClInclude Include="box2d\b2_body.h" />
+    <ClInclude Include="box2d\b2_broad_phase.h" />
+    <ClInclude Include="box2d\b2_chain_shape.h" />
+    <ClInclude Include="box2d\b2_circle_shape.h" />
+    <ClInclude Include="box2d\b2_collision.h" />
+    <ClInclude Include="box2d\b2_common.h" />
+    <ClInclude Include="box2d\b2_contact.h" />
+    <ClInclude Include="box2d\b2_contact_manager.h" />
+    <ClInclude Include="box2d\b2_distance.h" />
+    <ClInclude Include="box2d\b2_distance_joint.h" />
+    <ClInclude Include="box2d\b2_draw.h" />
+    <ClInclude Include="box2d\b2_dynamic_tree.h" />
+    <ClInclude Include="box2d\b2_edge_shape.h" />
+    <ClInclude Include="box2d\b2_fixture.h" />
+    <ClInclude Include="box2d\b2_friction_joint.h" />
+    <ClInclude Include="box2d\b2_gear_joint.h" />
+    <ClInclude Include="box2d\b2_growable_stack.h" />
+    <ClInclude Include="box2d\b2_joint.h" />
+    <ClInclude Include="box2d\b2_math.h" />
+    <ClInclude Include="box2d\b2_motor_joint.h" />
+    <ClInclude Include="box2d\b2_mouse_joint.h" />
+    <ClInclude Include="box2d\b2_polygon_shape.h" />
+    <ClInclude Include="box2d\b2_prismatic_joint.h" />
+    <ClInclude Include="box2d\b2_pulley_joint.h" />
+    <ClInclude Include="box2d\b2_revolute_joint.h" />
+    <ClInclude Include="box2d\b2_rope.h" />
+    <ClInclude Include="box2d\b2_settings.h" />
+    <ClInclude Include="box2d\b2_shape.h" />
+    <ClInclude Include="box2d\b2_stack_allocator.h" />
+    <ClInclude Include="box2d\b2_timer.h" />
+    <ClInclude Include="box2d\b2_time_of_impact.h" />
+    <ClInclude Include="box2d\b2_time_step.h" />
+    <ClInclude Include="box2d\b2_types.h" />
+    <ClInclude Include="box2d\b2_weld_joint.h" />
+    <ClInclude Include="box2d\b2_wheel_joint.h" />
+    <ClInclude Include="box2d\b2_world.h" />
+    <ClInclude Include="box2d\b2_world_callbacks.h" />
+    <ClInclude Include="box2d\box2d.h" />
+    <ClInclude Include="box2d\dynamics\b2_chain_circle_contact.h" />
+    <ClInclude Include="box2d\dynamics\b2_chain_polygon_contact.h" />
+    <ClInclude Include="box2d\dynamics\b2_circle_contact.h" />
+    <ClInclude Include="box2d\dynamics\b2_contact_solver.h" />
+    <ClInclude Include="box2d\dynamics\b2_edge_circle_contact.h" />
+    <ClInclude Include="box2d\dynamics\b2_edge_polygon_contact.h" />
+    <ClInclude Include="box2d\dynamics\b2_island.h" />
+    <ClInclude Include="box2d\dynamics\b2_polygon_circle_contact.h" />
+    <ClInclude Include="box2d\dynamics\b2_polygon_contact.h" />
+    <ClInclude Include="box2d\lzh_b2_api.h" />
+    <ClInclude Include="box2d\lzh_b2_contact_listener.h" />
     <ClInclude Include="component\lzh_component.h" />
     <ClInclude Include="component\lzh_core_camera.h" />
+    <ClInclude Include="component\lzh_core_collider.h" />
     <ClInclude Include="component\lzh_core_sprite.h" />
     <ClInclude Include="component\lzh_core_transform.h" />
     <ClInclude Include="engine\lzh_core_engine.h" />
@@ -324,6 +424,7 @@
     <ClInclude Include="sdl2\SDL_version.h" />
     <ClInclude Include="sdl2\SDL_video.h" />
     <ClInclude Include="sdl2\SDL_vulkan.h" />
+    <ClInclude Include="tool\lzh_quadtree.h" />
     <ClInclude Include="tool\lzh_stb_image.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,13 +1,19 @@
 #include <lzh_mem.h>
 
 #include "box2d.h"
-#include "lzh_b2_api.h"
+#include "lzh_b2_contact_listener.h"
 
 /*===========================================================================*/
 
 struct LZH_B2_OBJECT
 {
     void *object;
+};
+
+struct LZH_B2_WORLD 
+{
+    void *object;
+    LzhB2ContactListener *listener;
 };
 
 /*===========================================================================*/
@@ -26,6 +32,9 @@ LZH_B2_WORLD *lzh_b2_world_create(const LZH_VEC2F *gravity)
         return NULL;
     }
 
+    LzhB2ContactListener *contact = new LzhB2ContactListener();
+    bw->SetContactListener(contact);
+
     LZH_B2_WORLD *world = (LZH_B2_WORLD *)LZH_MALLOC(sizeof(LZH_B2_OBJECT));
     if (!world) {
         delete bw;
@@ -39,6 +48,12 @@ LZH_B2_WORLD *lzh_b2_world_create(const LZH_VEC2F *gravity)
 void lzh_b2_world_destroy(LZH_B2_WORLD *world)
 {
     if (world) {
+        if (world->listener) {
+            LzhB2ContactListener *listener = world->listener;
+            delete listener;
+            world->listener = NULL;
+        }
+
         if (world->object) {
             b2World *bw = (b2World *)world->object;
             delete bw;
@@ -55,6 +70,26 @@ void lzh_b2_world_set_gravity(LZH_B2_WORLD *world, const LZH_VEC2F *gravity)
         if (gravity) {
             bw->SetGravity(b2Vec2(gravity->x, gravity->y));
         }
+    }
+}
+
+void lzh_b2_world_set_begin_contact(
+    LZH_B2_WORLD *world, LZH_B2_BEGIN_CONTACT cb, void *args)
+{
+    if (world && world->listener) {
+        LzhB2ContactListener *listener = world->listener;
+        listener->beginContact = cb;
+        listener->beginContactParam = args;
+    }
+}
+
+void lzh_b2_world_set_end_contact(
+    LZH_B2_WORLD *world, LZH_B2_END_CONTACT cb, void *args)
+{
+    if (world && world->listener) {
+        LzhB2ContactListener *listener = world->listener;
+        listener->endContact = cb;
+        listener->endContactParam = args;
     }
 }
 
@@ -210,6 +245,15 @@ void lzh_b2_fixture_set_density(LZH_B2_FIXUTRE *fixture, float density)
     if (fixture && fixture->object) {
         b2Fixture *bf = (b2Fixture *)fixture->object;
         bf->SetDensity(density);
+    }
+}
+
+void lzh_b2_fixture_set_data(LZH_B2_FIXUTRE *fixture, void *data)
+{
+    if (fixture && fixture->object) {
+        b2Fixture *bf = (b2Fixture *)fixture->object;
+        b2FixtureUserData &userData = bf->GetUserData();
+        userData.pointer = (uintptr_t)data;
     }
 }
 

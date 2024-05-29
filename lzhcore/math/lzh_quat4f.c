@@ -264,12 +264,12 @@ LZH_QUAT4F lzh_quat4f_euler2quat(float yaw, float pitch, float roll)
 {
     LZH_QUAT4F quat = lzh_quat4f_real(0.0f);
 
-    float cy = cos(yaw * 0.5f);
-    float sy = sin(yaw * 0.5f);
-    float cp = cos(pitch * 0.5f);
-    float sp = sin(pitch * 0.5f);
-    float cr = cos(roll * 0.5f);
-    float sr = sin(roll * 0.5f);
+    float cy = cosf(yaw * 0.5f);
+    float sy = sinf(yaw * 0.5f);
+    float cp = cosf(pitch * 0.5f);
+    float sp = sinf(pitch * 0.5f);
+    float cr = cosf(roll * 0.5f);
+    float sr = sinf(roll * 0.5f);
  
     quat.s = cy * cp * cr + sy * sp * sr;
     quat.x = cy * cp * sr - sy * sp * cr;
