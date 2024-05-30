@@ -131,7 +131,7 @@ void lzh_camera_remove(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
         LZH_CAMERA *camera = (LZH_CAMERA *)cpnt;
-        lzh_cpnt_quit(cpnt);
+        lzh_cpnt_quit((LZH_COMPONENT *)camera);
         LZH_FREE(camera);
     }
 }

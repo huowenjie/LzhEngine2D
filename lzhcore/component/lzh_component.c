@@ -12,16 +12,19 @@ void lzh_cpnt_init(LZH_COMPONENT *cpnt, LZH_UINT32 type, LZH_OBJECT *object)
     cpnt->remove_component = NULL;
     cpnt->type = type;
 
-    //lzh_object_add_component(object, cpnt);
+    lzh_object_add_component(object, cpnt);
 }
 
 void lzh_cpnt_quit(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
         LZH_OBJECT *object = cpnt->object;
-        //lzh_object_del_component(object, cpnt);
 
-        cpnt->object = NULL;
+        if (object) {
+            lzh_object_del_component(object, cpnt);
+            cpnt->object = NULL;
+        }
+
         cpnt->remove_component = NULL;
         cpnt->type = 0;
         lzh_base_quit((LZH_BASE *)cpnt);
@@ -64,8 +67,9 @@ void lzh_cpnt_rb_visit(const LZH_CPNT_RB_NODE *node, void *args)
         return;
     }
 
-    /* 移除组件 */
     if (cpnt->remove_component) {
+        /* 在循环过程中禁止 lzh_cpnt_quit 移除组件 */
+        cpnt->object = NULL;
         cpnt->remove_component(cpnt);
     }
 }

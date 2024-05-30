@@ -41,18 +41,18 @@ void Run(LZH_ENGINE *engine)
 {
     Scene scene(engine, "tutorial level");
     Camera *camera = new Camera(engine, &scene);
-    //Tank *tank = new Tank(engine, &scene);
-    //Player *player = new Player(engine, &scene);
+    Tank *tank = new Tank(engine, &scene);
+    Player *player = new Player(engine, &scene);
 
-    //player->SetName("player");
-    //tank->SetName("target");
-    //tank->SetPosition(0.0f, 4.0f);
+    player->SetName("player");
+    tank->SetName("target");
+    tank->SetPosition(0.0f, 4.0f);
 
-    //scene.AddObject(camera);
-    //scene.AddObject(tank);
-    //scene.AddObject(player);
+    scene.AddObject(camera);
+    scene.AddObject(tank);
+    scene.AddObject(player);
 
-    //scene.SetMainCamera(camera);
+    scene.SetMainCamera(camera);
     scene.LoadScene();
 
     lzh_engine_update(engine);

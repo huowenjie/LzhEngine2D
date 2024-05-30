@@ -182,7 +182,7 @@ void lzh_collider_remove(LZH_COMPONENT *cpnt)
 
 void lzh_collider_update(LZH_BASE *base, void *args)
 {
-#if 0
+#if 1
     LZH_COLLIDER *collider = NULL;
     LZH_OBJECT *object = NULL;
     LZH_OBJECT *collide_obj = NULL;
