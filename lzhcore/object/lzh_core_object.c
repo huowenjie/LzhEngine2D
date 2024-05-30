@@ -4,9 +4,34 @@
 
 /*===========================================================================*/
 
+void lzh_object_add_component(LZH_OBJECT *object, void *cpnt)
+{
+    if (object && object->components && cpnt) {
+        LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
+
+        elem->object = object;
+        
+        if (elem->type == LZH_CPNT_TRANSFORM) {
+            return;
+        }
+        lzh_cpnt_rb_insert(object->components, elem->type, elem);
+    }
+}
+
+void lzh_object_del_component(LZH_OBJECT *object, void *cpnt)
+{
+    if (object && object->components && cpnt) {
+        LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
+
+        lzh_cpnt_rb_delete(object->components, elem->type, NULL, NULL);
+
+        elem->object = NULL;
+    }
+}
+
 void lzh_object_remove(LZH_OBJECT *object)
 {
-    if (object) {        
+    if (object) {
         if (object->extension) {
             lzh_ext_rb_destroy(object->extension, NULL, NULL);
             object->extension = NULL;

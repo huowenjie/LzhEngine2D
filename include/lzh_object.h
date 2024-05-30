@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 /* 创建对象 */
-LZH_API LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine);
+LZH_API LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine, LZH_SCENE *scene);
 
 /* 设置父对象 */
 LZH_API void lzh_object_set_parent(LZH_OBJECT *object, LZH_OBJECT *parent);
@@ -34,12 +34,6 @@ LZH_API void lzh_object_del_child(LZH_OBJECT *object, const char *name);
 
 /* 销毁对象，销毁时将子对象全部删除 */
 LZH_API void lzh_object_destroy(LZH_OBJECT *object);
-
-/* 添加组件 */
-LZH_API void lzh_object_add_component(LZH_OBJECT *object, void *cpnt);
-
-/* 移除组件并返回组件指针 */
-LZH_API void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt);
 
 /* 获取变换组件 */
 LZH_API LZH_TRANSFORM *lzh_object_get_transform(LZH_OBJECT *object);
@@ -68,9 +62,6 @@ LZH_API void lzh_object_del_extension(LZH_OBJECT *object, const char *name);
 
 /* 获取扩展数据 */
 LZH_API void *lzh_object_get_extension(LZH_OBJECT *object, const char *name);
-
-/* 设置当前所属场景 */
-LZH_API void lzh_object_set_current_scene(LZH_OBJECT *object, LZH_SCENE *scene);
 
 /* 获取当前所属场景 */
 LZH_API LZH_SCENE *lzh_object_get_current_scene(LZH_OBJECT *object);

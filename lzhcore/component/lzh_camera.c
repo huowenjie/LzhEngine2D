@@ -20,12 +20,12 @@ static void lzh_camera_pers_flush(LZH_CAMERA *camera);
 
 /*===========================================================================*/
 
-LZH_CAMERA *lzh_camera_create(LZH_ENGINE *engine)
+LZH_CAMERA *lzh_camera_create(LZH_ENGINE *engine, LZH_OBJECT *object)
 {
     LZH_CAMERA *camera = NULL;
     LZH_COMPONENT *base = NULL;
 
-    if (!engine) {
+    if (!engine || !object) {
         return NULL;
     }
 
@@ -36,12 +36,11 @@ LZH_CAMERA *lzh_camera_create(LZH_ENGINE *engine)
     memset(camera, 0, sizeof(LZH_CAMERA));
 
     base = &camera->base;
-    lzh_cpnt_init(base);
+    lzh_cpnt_init(base, LZH_CPNT_CAMERA, object);
 
     base->base.engine = engine;
-    base->type = LZH_CPNT_CAMERA;
     base->remove_component = lzh_camera_remove;
-
+    
     camera->type = LZH_CAMERA_PERSP;
     camera->view_port_w = 2.0f;
     camera->view_port_h = 2.0f;

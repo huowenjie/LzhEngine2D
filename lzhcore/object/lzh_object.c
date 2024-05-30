@@ -25,12 +25,12 @@ static const char *lzh_gen_new_name(int order);
 
 /*===========================================================================*/
 
-LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
+LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine, LZH_SCENE *scene)
 {
     LZH_OBJECT *obj = NULL;
     LZH_BASE *base = NULL;
 
-    if (!engine) {
+    if (!engine || !scene) {
         return NULL;
     }
 
@@ -57,7 +57,7 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->parent = NULL;
     obj->children = lzh_obj_rb_create(lzh_object_rb_comp);
     obj->components = lzh_cpnt_rb_create(lzh_cpnt_rb_comp);
-    obj->transform = lzh_transform_create(engine);
+    obj->transform = lzh_transform_create(engine, obj);
     obj->transform->base.object = obj;
 
     obj->update = NULL;
@@ -65,16 +65,26 @@ LZH_OBJECT *lzh_object_create(LZH_ENGINE *engine)
     obj->fixed_update = NULL;
     obj->fixed_update_param = NULL;
     obj->extension = lzh_ext_rb_create(lzh_object_rb_comp);
-    obj->current_scene = NULL;
+    obj->current_scene = scene;
 
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name(global_order++));
+
+    /* 将对象添加至场景 */
+    lzh_scene_add_object(scene, obj);
     return obj;
 }
 
 void lzh_object_set_parent(LZH_OBJECT *object, LZH_OBJECT *parent)
 {
+    LZH_SCENE *scene = NULL;
+
     if (!object) {
+        return;
+    }
+
+    scene = object->current_scene;
+    if (!scene) {
         return;
     }
 
@@ -87,6 +97,13 @@ void lzh_object_set_parent(LZH_OBJECT *object, LZH_OBJECT *parent)
     if (parent && object != parent) {
         lzh_obj_rb_insert(parent->children, object->base.hash, object);
         object->parent = parent;
+    }
+
+    /* 必须调整渲染树中的对象 */
+    if (object->parent) {
+        scene_obj_rb_delete(scene->render_tree, object->base.hash, NULL, NULL);
+    } else {
+        scene_obj_rb_insert(scene->render_tree, object->base.hash, object);
     }
 }
 
@@ -179,39 +196,21 @@ void lzh_object_del_child(LZH_OBJECT *object, const char *name)
 
 void lzh_object_destroy(LZH_OBJECT *object)
 {
-    if (object) {
+    if (object) {        
+        if (object->current_scene) {
+            /* 移除场景中的本对象 */
+            lzh_scene_del_object(object->current_scene, object->base.name);
+            object->current_scene = NULL;
+        }
+
         if (object->parent) {
             /* 移除父节点中缓存的子对象 */
             LZH_OBJECT *parent = object->parent;
             lzh_obj_rb_delete(parent->children, object->base.hash, lzh_object_rb_visit, NULL);
         }
+
         lzh_object_remove(object);
     }
-}
-
-void lzh_object_add_component(LZH_OBJECT *object, void *cpnt)
-{
-    if (object && object->components && cpnt) {
-        LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
-
-        if (elem->type == LZH_CPNT_TRANSFORM) {
-            return;
-        }
-        elem->object = object;
-        lzh_cpnt_rb_insert(object->components, elem->type, elem);
-    }
-}
-
-void *lzh_object_del_component(LZH_OBJECT *object, void *cpnt)
-{
-    if (object && object->components && cpnt) {
-        LZH_COMPONENT *elem = (LZH_COMPONENT *)cpnt;
-
-        elem->object = NULL;
-        lzh_cpnt_rb_delete(object->components, elem->type, NULL, NULL);
-        return cpnt;
-    }
-    return NULL;
 }
 
 LZH_TRANSFORM *lzh_object_get_transform(LZH_OBJECT *object)
@@ -322,13 +321,6 @@ void *lzh_object_get_extension(LZH_OBJECT *object, const char *name)
         return (void *)ext;
     }
     return NULL;
-}
-
-void lzh_object_set_current_scene(LZH_OBJECT *object, LZH_SCENE *scene)
-{
-    if (object) {
-        object->current_scene = scene;
-    }
 }
 
 LZH_SCENE *lzh_object_get_current_scene(LZH_OBJECT *object)

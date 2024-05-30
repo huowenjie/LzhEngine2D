@@ -16,16 +16,13 @@
 Bullet::Bullet(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 {
     objType = OT_Bullet;
-    bulletSp = lzh_sprite_create(eg, get_tank_bullet_path());
-    collider = lzh_collider_create(eg);
+    bulletSp = lzh_sprite_create(eg, object, get_tank_bullet_path());
+    collider = lzh_collider_create(eg, object);
     moveSpeed = 5.0f;
     fireDistance = 100.0f;
     isExplode = false;
     fromObject = NULL;
     flyingDistance = 0.0f;
-
-    lzh_object_add_component(object, bulletSp);
-    lzh_object_add_component(object, collider);
 
     char name[32];
     static int code = 1;

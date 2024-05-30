@@ -35,13 +35,15 @@ LZH_B2_WORLD *lzh_b2_world_create(const LZH_VEC2F *gravity)
     LzhB2ContactListener *contact = new LzhB2ContactListener();
     bw->SetContactListener(contact);
 
-    LZH_B2_WORLD *world = (LZH_B2_WORLD *)LZH_MALLOC(sizeof(LZH_B2_OBJECT));
+    LZH_B2_WORLD *world = (LZH_B2_WORLD *)LZH_MALLOC(sizeof(LZH_B2_WORLD));
     if (!world) {
         delete bw;
         return NULL;
     }
+    memset(world, 0, sizeof(LZH_B2_WORLD));
 
     world->object = bw;
+    world->listener = contact;
     return world;
 }
 
@@ -135,6 +137,7 @@ LZH_B2_BODY *lzh_b2_body_create(
         bw->DestroyBody(bd);
         return NULL;
     }
+    memset(body, 0, sizeof(LZH_B2_BODY));
 
     body->object = bd;
     return body;
@@ -218,6 +221,7 @@ LZH_B2_FIXUTRE *lzh_b2_fixture_create(LZH_B2_BODY *body, LZH_B2_SHAPE *shape)
         bd->DestroyFixture(bf);
         return NULL;
     }
+    memset(fixture, 0, sizeof(LZH_B2_FIXUTRE));
 
     fixture->object = bf;
     return fixture;
@@ -275,6 +279,7 @@ LZH_B2_SHAPE_CIRCLE *lzh_b2_shape_circle_create(const LZH_VEC2F *center, float r
         delete bc;
         return NULL;
     }
+    memset(circle, 0, sizeof(LZH_B2_SHAPE_CIRCLE));
 
     circle->object = bc;
     return circle;
@@ -312,6 +317,7 @@ LZH_B2_SHAPE_BOX *lzh_b2_shape_box_create(const LZH_VEC2F *center, float ew, flo
         delete bp;
         return NULL;
     }
+    memset(box, 0, sizeof(LZH_B2_SHAPE_BOX));
 
     box->object = bp;
     return box;

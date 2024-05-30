@@ -47,7 +47,7 @@ struct LZH_COMPONENT {
  */
 RBTREE_DECLARE(LZH_CPNT, lzh_cpnt, LZH_UINT32, LZH_COMPONENT *)
 
-void lzh_cpnt_init(LZH_COMPONENT *cpnt);
+void lzh_cpnt_init(LZH_COMPONENT *cpnt, LZH_UINT32 type, LZH_OBJECT *object);
 void lzh_cpnt_quit(LZH_COMPONENT *cpnt);
 void lzh_cpnt_destroy(LZH_COMPONENT *cpnt);
 

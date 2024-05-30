@@ -28,12 +28,6 @@ public:
     // 添加对象至管理列表
     void AddObject(GameObject *obj);
 
-    // 添加对象至场景
-    void AddObjectToScene(GameObject *obj);
-
-    // 从场景移除对象
-    void DelObjectFromScene(GameObject *obj);
-
     // 释放对象
     void ToFreeGameObject(GameObject *obj);
 
@@ -42,6 +36,9 @@ public:
 
     // 设置主相机
     void SetMainCamera(Camera *camera);
+
+    // 获取场景指针
+    LZH_SCENE *GetSceneHandle() const;
 
 protected:
     // 插入场景对象

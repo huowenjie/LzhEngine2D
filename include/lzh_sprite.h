@@ -12,11 +12,11 @@ extern "C" {
 #endif
 
 /* 创建精灵 */
-LZH_API LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res);
+LZH_API LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, LZH_OBJECT *object, const char *res);
 
 /* 创建多图精灵 */
 LZH_API LZH_SPRITE *lzh_sprite_create_from_images(
-    LZH_ENGINE *engine, const char *res_list[], int count);
+    LZH_ENGINE *engine, LZH_OBJECT *object, const char *res_list[], int count);
 
 /* 销毁精灵 */
 LZH_API void lzh_sprite_destroy(LZH_SPRITE *sprite);

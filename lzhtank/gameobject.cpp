@@ -14,7 +14,7 @@ GameObject::GameObject(LZH_ENGINE *eg, Scene *scene)
 {
     objType = OT_Object;
     engine = eg;
-    object = lzh_object_create(eg);
+    object = lzh_object_create(eg, scene->GetSceneHandle());
     transform = lzh_object_get_transform(object);
     currentScene = scene;
 
@@ -173,10 +173,6 @@ GameObject::ObjectType GameObject::GetObjectType() const
 
 void GameObject::InitGameObject()
 {
-    if (currentScene) {
-        currentScene->AddObjectToScene(this);        
-    }
-
     if (object) {
         lzh_object_set_update(object, GameObject::UpdateObject, this);
         lzh_object_set_fixedupdate(object, GameObject::FixedUpdateObject, this);
@@ -195,8 +191,8 @@ void GameObject::QuitGameObject()
     // 有父对象，则移除子对象的过程由父对象完成
     LZH_OBJECT *parent = lzh_object_get_parent(object);
 
-    if (currentScene && !parent) {
-        currentScene->DelObjectFromScene(this);
+    if (!parent) {
+        lzh_object_destroy(object);
     }
 }
 

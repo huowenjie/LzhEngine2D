@@ -79,6 +79,12 @@ struct LZH_OBJECT {
     LZH_SCENE *current_scene;
 };
 
+/* 添加组件 */
+void lzh_object_add_component(LZH_OBJECT *object, void *cpnt);
+
+/* 移除组件并返回组件指针 */
+void lzh_object_del_component(LZH_OBJECT *object, void *cpnt);
+
 /* 移除子对象，不更改父对象的信息 */
 void lzh_object_remove(LZH_OBJECT *object);
 

@@ -34,12 +34,12 @@ static int calc_images_frame(LZH_SPRITE *sprite);
 
 /*===========================================================================*/
 
-LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
+LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, LZH_OBJECT *object, const char *res)
 {
     LZH_SPRITE *sprite = NULL;
     LZH_COMPONENT *base = NULL;
 
-    if (!engine) {
+    if (!engine || !object) {
         return NULL;
     }
 
@@ -54,11 +54,10 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
     memset(sprite, 0, sizeof(LZH_SPRITE));
 
     base = &sprite->base;
-    lzh_cpnt_init(base);
+    lzh_cpnt_init(base, LZH_CPNT_SPRITE, object);
 
     base->base.engine = engine;
     base->base.draw = lzh_sprite_draw;
-    base->type = LZH_CPNT_SPRITE;
     base->remove_component = lzh_sprite_remove;
 
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW;
@@ -76,12 +75,12 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, const char *res)
 }
 
 LZH_SPRITE *lzh_sprite_create_from_images(
-    LZH_ENGINE *engine, const char *res_list[], int count)
+    LZH_ENGINE *engine, LZH_OBJECT *object, const char *res_list[], int count)
 {
     LZH_SPRITE *sprite = NULL;
     LZH_COMPONENT *base = NULL;
 
-    if (!engine) {
+    if (!engine || !object) {
         return NULL;
     }
 
@@ -96,11 +95,10 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     memset(sprite, 0, sizeof(LZH_SPRITE));
 
     base = &sprite->base;
-    lzh_cpnt_init(base);
+    lzh_cpnt_init(base, LZH_CPNT_SPRITE, object);
 
     base->base.engine = engine;
     base->base.draw = lzh_sprite_draw;
-    base->type = LZH_CPNT_SPRITE;
     base->remove_component = lzh_sprite_remove;
 
     sprite->state = SSC_IMAGES_MODE | SSC_SHOW | SSC_PLAY;

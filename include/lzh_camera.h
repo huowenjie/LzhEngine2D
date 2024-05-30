@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 /* 创建相机组件 */
-LZH_API LZH_CAMERA *lzh_camera_create(LZH_ENGINE *engine);
+LZH_API LZH_CAMERA *lzh_camera_create(LZH_ENGINE *engine, LZH_OBJECT *object);
 
 /* 销毁相机组件 */
 LZH_API void lzh_camera_destroy(LZH_CAMERA *camera);

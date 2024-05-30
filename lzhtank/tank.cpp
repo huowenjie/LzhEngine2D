@@ -17,19 +17,15 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     chassis = new GameObject(eg, scene);
     turret = new GameObject(eg, scene);
 
-    chassisSp = lzh_sprite_create(eg, get_tank_res_path());
-    turretSp = lzh_sprite_create(eg, get_tank_turret_path());
+    chassisSp = lzh_sprite_create(eg, chassis->GetObjectHandle(), get_tank_res_path());
+    turretSp = lzh_sprite_create(eg, turret->GetObjectHandle(), get_tank_turret_path());
 
-    collider = lzh_collider_create(eg);
-    
+    collider = lzh_collider_create(eg, object);
+
     moveSpeed = 5.0f;
     rotateSpeed = 60.0f;
     turretRotateSpeed = 60.0f;
     tankhp = 1;
-
-    lzh_object_add_component(chassis->GetObjectHandle(), chassisSp);
-    lzh_object_add_component(turret->GetObjectHandle(), turretSp);
-    lzh_object_add_component(object, collider);
 
     // 只单独命名两个子对象
     chassis->SetName("chassis");

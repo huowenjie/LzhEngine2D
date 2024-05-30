@@ -87,6 +87,12 @@ struct LZH_SCENE
     LZH_B2_WORLD *world2d;
 };
 
+/* 添加对象，名称不能相同 */
+void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object);
+
+/* 删除对象 */
+void lzh_scene_del_object(LZH_SCENE *scene, const char *name);
+
 /* 移除场景 */
 void lzh_scene_remove(LZH_SCENE *scene);
 

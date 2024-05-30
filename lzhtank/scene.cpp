@@ -39,20 +39,6 @@ void Scene::AddObject(GameObject *obj)
     }
 }
 
-void Scene::AddObjectToScene(GameObject *obj)
-{
-    if (obj && sceneObj) {
-        lzh_scene_add_object(sceneObj, obj->GetObjectHandle());
-    }
-}
-
-void Scene::DelObjectFromScene(GameObject *obj)
-{
-    if (obj && sceneObj) {
-        lzh_scene_del_object(sceneObj, obj->GetName().c_str());
-    }
-}
-
 void Scene::ToFreeGameObject(GameObject *obj)
 {
     if (obj) {
@@ -90,6 +76,11 @@ void Scene::SetMainCamera(Camera *camera)
     if (camera) {
         lzh_scene_set_main_camera(sceneObj, camera->GetObjectHandle());
     }
+}
+
+LZH_SCENE *Scene::GetSceneHandle() const
+{
+    return sceneObj;
 }
 
 void Scene::InsertObject(GameObject *sceneObj)

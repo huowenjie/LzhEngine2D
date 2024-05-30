@@ -47,7 +47,7 @@ typedef struct LZH_COLLIDER_PARAM {
 typedef void (*LZH_COLLIDER_CB)(LZH_OBJECT *self, LZH_OBJECT *target, void *args);
 
 /* 创建碰撞组件 */
-LZH_API LZH_COLLIDER *lzh_collider_create(LZH_ENGINE *engine);
+LZH_API LZH_COLLIDER *lzh_collider_create(LZH_ENGINE *engine, LZH_OBJECT *object);
 
 /* 销毁碰撞组件 */
 LZH_API void lzh_collider_destroy(LZH_COLLIDER *collider);

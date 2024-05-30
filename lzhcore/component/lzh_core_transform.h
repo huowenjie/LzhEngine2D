@@ -28,7 +28,7 @@ struct LZH_TRANSFORM {
 };
 
 /* 创建组件 */
-LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine);
+LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine, LZH_OBJECT *object);
 
 /* 销毁组件 */
 void lzh_transform_destroy(LZH_TRANSFORM *transform);

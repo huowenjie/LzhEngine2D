@@ -25,12 +25,12 @@ static void lzh_transform_update_axis(LZH_TRANSFORM *transform, LZH_MAT4X4F *mat
 
 /*===========================================================================*/
 
-LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine)
+LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine, LZH_OBJECT *object)
 {
     LZH_TRANSFORM *transform = NULL;
     LZH_COMPONENT *base = NULL;
 
-    if (!engine) {
+    if (!engine || !object) {
         return NULL;
     }
 
@@ -41,12 +41,11 @@ LZH_TRANSFORM *lzh_transform_create(LZH_ENGINE *engine)
     memset(transform, 0, sizeof(LZH_TRANSFORM));
 
     base = &transform->base;
-    lzh_cpnt_init(base);
+    lzh_cpnt_init(base, LZH_CPNT_TRANSFORM, object);
 
     base->base.engine = engine;
     base->base.update = lzh_transform_update;
     base->base.fixed_update = lzh_transform_update;
-    base->type = LZH_CPNT_TRANSFORM;
     base->remove_component = lzh_transform_remove;
 
     transform->screen_width = 1600.0f;

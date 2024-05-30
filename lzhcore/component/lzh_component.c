@@ -3,36 +3,35 @@
 
 /*===========================================================================*/
 
-void lzh_cpnt_init(LZH_COMPONENT *cpnt)
+void lzh_cpnt_init(LZH_COMPONENT *cpnt, LZH_UINT32 type, LZH_OBJECT *object)
 {
     lzh_base_init((LZH_BASE *)cpnt);
     lzh_base_set_type((LZH_BASE *)cpnt, LZH_BT_COMPONENT);
 
     cpnt->object = NULL;
     cpnt->remove_component = NULL;
-    cpnt->type = 0;
+    cpnt->type = type;
+
+    //lzh_object_add_component(object, cpnt);
 }
 
 void lzh_cpnt_quit(LZH_COMPONENT *cpnt)
 {
-    cpnt->object = NULL;
-    cpnt->remove_component = NULL;
-    cpnt->type = 0;
-    lzh_base_quit((LZH_BASE *)cpnt);
+    if (cpnt) {
+        LZH_OBJECT *object = cpnt->object;
+        //lzh_object_del_component(object, cpnt);
+
+        cpnt->object = NULL;
+        cpnt->remove_component = NULL;
+        cpnt->type = 0;
+        lzh_base_quit((LZH_BASE *)cpnt);
+    }
 }
 
 void lzh_cpnt_destroy(LZH_COMPONENT *cpnt)
 {
-    if (cpnt) {
-        if (cpnt->object) {
-            LZH_OBJECT *obj = cpnt->object;
-            lzh_cpnt_rb_delete(obj->components, cpnt->type, NULL, NULL);
-            cpnt->object = NULL;
-        }
-
-        if (cpnt->remove_component) {
-            cpnt->remove_component(cpnt);
-        }
+    if (cpnt && cpnt->remove_component) {
+        cpnt->remove_component(cpnt);
     }
 }
 

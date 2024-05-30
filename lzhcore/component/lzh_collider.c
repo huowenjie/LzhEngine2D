@@ -24,6 +24,12 @@
  * 参照 level.cpp 的实现
  */
 
+/* 组件加载到对象中 */
+static void lzh_collider_load(LZH_COMPONENT *cpnt, LZH_OBJECT *object);
+
+/* 组件从对象中移除 */
+static void lzh_collider_unload(LZH_COMPONENT *cpnt, LZH_OBJECT *object);
+
 /* 移除碰撞组件 */
 static void lzh_collider_remove(LZH_COMPONENT *cpnt);
 
@@ -53,12 +59,12 @@ static LZH_OBJECT *get_collider_circle2d_object(LZH_COLLIDER *collider, LZH_OBJE
 
 /*===========================================================================*/
 
-LZH_COLLIDER *lzh_collider_create(LZH_ENGINE *engine)
+LZH_COLLIDER *lzh_collider_create(LZH_ENGINE *engine, LZH_OBJECT *object)
 {
     LZH_COLLIDER *collider = NULL;
     LZH_COMPONENT *base = NULL;
 
-    if (!engine) {
+    if (!engine || !object) {
         return NULL;
     }
 
@@ -69,17 +75,16 @@ LZH_COLLIDER *lzh_collider_create(LZH_ENGINE *engine)
     memset(collider, 0, sizeof(LZH_COLLIDER));
 
     base = &collider->base;
-    lzh_cpnt_init(base);
+    lzh_cpnt_init(base, LZH_CPNT_COLLIDER, object);
 
     base->base.engine = engine;
-    base->type = LZH_CPNT_COLLIDER;
     base->base.update = lzh_collider_update;
     base->remove_component = lzh_collider_remove;
 
     collider->quad = lzh_quad_tree_create();
     collider->b2_body = NULL;
     collider->b2_fixture = NULL;
-    /* 需要在挂载到对象的时候进行初始化 TODO */
+
     return collider;
 }
 
@@ -107,6 +112,59 @@ void lzh_collider_set_callback(
 
 /*===========================================================================*/
 
+void lzh_collider_load(LZH_COMPONENT *cpnt, LZH_OBJECT *object)
+{
+    LZH_COLLIDER *collider = NULL;
+    LZH_B2_BODY *b2_body = NULL;
+    LZH_B2_FIXUTRE *b2_fixture = NULL;
+    LZH_B2_WORLD *b2_world = NULL;
+    LZH_B2_SHAPE_BOX *b2_box = NULL;
+    LZH_SCENE *cur_scene = NULL;
+
+    if (!cpnt || !object) {
+        return;
+    }
+
+    collider = (LZH_COLLIDER *)cpnt;
+    cur_scene = object->current_scene;
+
+    if (!cur_scene) {
+        return;
+    }
+
+    b2_world = cur_scene->world2d;
+    if (!b2_world) {
+        return;
+    }
+
+    b2_body = lzh_b2_body_create(b2_world, NULL, BT_STATIC);
+    if (!b2_body) {
+        return;
+    }
+
+    b2_box = lzh_b2_shape_box_create(NULL, 1.0f, 1.0f);
+    if (!b2_box) {
+        lzh_b2_body_destroy(b2_world, b2_body);
+        return;
+    }
+
+    b2_fixture = lzh_b2_fixture_create(b2_body, b2_box);
+    if (!b2_fixture) {
+        lzh_b2_shape_box_destroy(b2_box);
+        lzh_b2_body_destroy(b2_world, b2_body);
+        return;
+    }
+
+    collider->b2_body = b2_body;
+    collider->b2_fixture = b2_fixture;
+    lzh_b2_shape_box_destroy(b2_box);
+}
+
+void lzh_collider_unload(LZH_COMPONENT *cpnt, LZH_OBJECT *object)
+{
+
+}
+
 void lzh_collider_remove(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
@@ -124,6 +182,7 @@ void lzh_collider_remove(LZH_COMPONENT *cpnt)
 
 void lzh_collider_update(LZH_BASE *base, void *args)
 {
+#if 0
     LZH_COLLIDER *collider = NULL;
     LZH_OBJECT *object = NULL;
     LZH_OBJECT *collide_obj = NULL;
@@ -182,6 +241,7 @@ void lzh_collider_update(LZH_BASE *base, void *args)
 
     /* 清除四叉树节点 */
     lzh_quad_tree_clear(quad);
+#endif
 }
 
 void add_collider(const SCENE_OBJ_RB_NODE *node, void *args)

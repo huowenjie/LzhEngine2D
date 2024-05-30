@@ -1,3 +1,6 @@
+#include <lzh_systool.h>
+#include <lzh_object.h>
+
 #include "lzh_core_scene.h"
 
 #include "../object/lzh_core_object.h"
@@ -5,6 +8,51 @@
 #include "../component/lzh_core_camera.h"
 
 /*===========================================================================*/
+
+void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
+{
+    SCENE_OBJ_RB_TREE *render_tree = NULL;
+
+    if (!scene || !object) {
+        return;
+    }
+
+    render_tree = scene->render_tree;
+    if (!render_tree) {
+        return;
+    }
+
+    scene_obj_rb_insert(render_tree, object->base.hash, object);
+}
+
+void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
+{
+    SCENE_OBJ_RB_TREE *render_tree = NULL;
+    LZH_HASH_CODE hash = 0;
+    LZH_OBJECT *obj = NULL;
+
+    if (!scene) {
+        return;
+    }
+
+    if (!name || !*name) {
+        return;
+    }
+
+    render_tree = scene->render_tree;
+    if (!render_tree) {
+        return;
+    }
+
+    hash = lzh_gen_hash_code(name);
+    scene_obj_rb_find(render_tree, hash, &obj);
+
+    if (obj) {
+        /* 不能直接删除对象，要先放入删除树，在帧末尾再清理对象 */
+        scene_obj_rb_delete(render_tree, hash, NULL, NULL);
+        //scene_del_rb_insert(scene->del_tree, hash, obj);
+    }
+}
 
 void lzh_scene_remove(LZH_SCENE *scene)
 {
@@ -45,8 +93,7 @@ int lzh_scene_sort_comp(const void *a, const void *b)
 
     if ((f1 - f2) > 1e-6f) {
         return -1;
-    }
-    else if ((f1 - f2) < 1e-6f) {
+    } else if ((f1 - f2) < 1e-6f) {
         return 1;
     }
 

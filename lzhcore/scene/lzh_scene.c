@@ -92,52 +92,6 @@ void lzh_scene_destroy(LZH_SCENE *scene)
     }
 }
 
-void lzh_scene_add_object(LZH_SCENE *scene, LZH_OBJECT *object)
-{
-    SCENE_OBJ_RB_TREE *render_tree = NULL;
-
-    if (!scene || !object) {
-        return;
-    }
-
-    render_tree = scene->render_tree;
-    if (!render_tree) {
-        return;
-    }
-
-    scene_obj_rb_insert(render_tree, object->base.hash, object);
-    lzh_object_set_current_scene(object, scene);
-}
-
-void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
-{
-    SCENE_OBJ_RB_TREE *render_tree = NULL;
-    LZH_HASH_CODE hash = 0;
-    LZH_OBJECT *obj = NULL;
-
-    if (!scene) {
-        return;
-    }
-
-    if (!name || !*name) {
-        return;
-    }
-
-    render_tree = scene->render_tree;
-    if (!render_tree) {
-        return;
-    }
-
-    hash = lzh_gen_hash_code(name);
-    scene_obj_rb_find(render_tree, hash, &obj);
-
-    if (obj) {
-        /* 不能直接删除对象，要先放入删除树，在帧末尾再清理对象 */
-        scene_del_rb_insert(scene->del_tree, hash, obj);
-        lzh_object_set_current_scene(obj, NULL);
-    }
-}
-
 void lzh_scene_set_name(LZH_SCENE *scene, const char *name)
 {
     LZH_ENGINE *engine = NULL;
