@@ -6,25 +6,25 @@
 /*===========================================================================*/
 
 /* 程序目录 */
-const char *get_exe_path();
+const char *GetExePath();
 
 /* 资源目录 */
-const char *get_res_path();
+const char *GetResPath();
 
 /* 图片资源目录 */
-const char *get_tank_res_path();
-const char *get_tank_turret_path();
-const char *get_tank_bullet_path();
+const char *GetTankResPath();
+const char *GetTankTurretPath();
+const char *GetTankBulletPath();
 
 /* explode 资源 */
-const char **get_tank_explode_path();
-int get_tank_explode_count();
+const char **GetTankExplodePath();
+int GetTankExplodeCount();
 
 /* 控制对象名称 */
-const char *get_player_name();
+const char *GetPlayerName();
 
 /* 初始化 */
-void init_global_res();
+void InitGlobalRes();
 
 /*===========================================================================*/
 

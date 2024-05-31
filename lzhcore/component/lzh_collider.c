@@ -321,7 +321,7 @@ void lzh_collider_update(LZH_BASE *base, void *args)
     LZH_VEC3F pos = transform->local_pos;
     LZH_VEC2F pos2d = lzh_vec2f_xy(pos.x, pos.y);
 
-    lzh_b2_body_set_position(body, &pos2d);
+    lzh_b2_body_set_transform(body, &pos2d, 0.0f);
 }
 
 /*===========================================================================*/

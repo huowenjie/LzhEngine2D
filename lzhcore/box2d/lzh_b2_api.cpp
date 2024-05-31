@@ -169,7 +169,7 @@ void lzh_b2_body_destroy(LZH_B2_WORLD *world, LZH_B2_BODY *body)
     }
 }
 
-void lzh_b2_body_set_position(LZH_B2_BODY *body, const LZH_VEC2F *pos)
+void lzh_b2_body_set_transform(LZH_B2_BODY *body, const LZH_VEC2F *pos, float angle)
 {
     if (!body || !body->object) {
         return;
@@ -180,7 +180,7 @@ void lzh_b2_body_set_position(LZH_B2_BODY *body, const LZH_VEC2F *pos)
     }
 
     b2Body *bd = (b2Body *)body->object;
-    bd->SetTransform(b2Vec2(pos->x, pos->y), bd->GetAngle());
+    bd->SetTransform(b2Vec2(pos->x, pos->y), angle);
 }
 
 void lzh_b2_body_set_type(LZH_B2_BODY *body, LZH_B2_BODY_TYPE type)

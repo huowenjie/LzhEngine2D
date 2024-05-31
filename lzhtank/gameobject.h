@@ -90,11 +90,13 @@ protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
     virtual void ColliderCb(GameObject *self, GameObject *target);
+    virtual void ColliderEndCb(GameObject *self, GameObject *target);
 
 protected:
     static void UpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args);
     static void FixedUpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args);
     static void ColliderObjectCb(LZH_OBJECT *self, LZH_OBJECT *target, void *args);
+    static void ColliderObjectEndCb(LZH_OBJECT *self, LZH_OBJECT *target, void *args);
 
 protected:
     ObjectType objType;

@@ -12,8 +12,8 @@ Explode::Explode(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     objType = OT_Explode;
     explodeSp = NULL;
 
-    int count = get_tank_explode_count();
-    const char **imgs = get_tank_explode_path();
+    int count = GetTankExplodeCount();
+    const char **imgs = GetTankExplodePath();
 
     explodeSp = lzh_sprite_create_from_images(eg, object, imgs, count);
 
@@ -28,7 +28,7 @@ Explode::Explode(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 
 Explode::~Explode()
 {
-    int count = get_tank_explode_count();
+    int count = GetTankExplodeCount();
     lzh_sprite_set_keyframe(explodeSp, count - 1, NULL, NULL);
 }
 

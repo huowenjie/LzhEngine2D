@@ -31,47 +31,47 @@ static char player_name[] = "player";
 #define NEWLINE "\n"
 #endif
 
-const char *get_exe_path()
+const char *GetExePath()
 {
     return cur_exe_path;
 }
 
-const char *get_res_path()
+const char *GetResPath()
 {
     return res_path;
 }
 
-const char *get_tank_res_path()
+const char *GetTankResPath()
 {
     return tank_res;
 }
 
-const char *get_tank_turret_path()
+const char *GetTankTurretPath()
 {
     return turret_res;
 }
 
-const char *get_tank_bullet_path()
+const char *GetTankBulletPath()
 {
     return bullet_res;
 }
 
-const char **get_tank_explode_path()
+const char **GetTankExplodePath()
 {
     return (const char **)explode_res;
 }
 
-int get_tank_explode_count()
+int GetTankExplodeCount()
 {
     return EXPLODE_RES_COUNT;
 }
 
-const char *get_player_name()
+const char *GetPlayerName()
 {
     return player_name;
 }
 
-void init_global_res()
+void InitGlobalRes()
 {
     int size = sizeof(cur_exe_path) - 1;
     lzh_get_exe_path(cur_exe_path, &size);

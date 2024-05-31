@@ -184,8 +184,9 @@ void lzh_scene_fixedupdate(LZH_BASE *base, void *args)
     render_tree = scene->render_tree;
 
     world = scene->world2d;
-    lzh_b2_world_step(world, engine->delta_time, 8, 3);
     scene_obj_rb_iterate(render_tree, lzh_scene_objs_visit_fixedupdate, NULL);
+
+    lzh_b2_world_step(world, engine->delta_time, 8, 3);
 }
 
 void lzh_scene_draw(LZH_BASE *base, void *args)

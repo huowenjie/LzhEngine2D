@@ -16,7 +16,7 @@
 Bullet::Bullet(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 {
     objType = OT_Bullet;
-    bulletSp = lzh_sprite_create(eg, object, get_tank_bullet_path());
+    bulletSp = lzh_sprite_create(eg, object, GetTankBulletPath());
     collider = lzh_collider_create(eg, object);
     moveSpeed = 5.0f;
     fireDistance = 100.0f;

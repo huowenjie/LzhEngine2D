@@ -1,17 +1,17 @@
-#ifndef __PALYER_H__
-#define __PALYER_H__
+#ifndef __ENEMY_H__
+#define __ENEMY_H__
 
 #include "tank.h"
 
 /*===========================================================================*/
-/* player */
+/* enemy */
 /*===========================================================================*/
 
-class Player : public Tank
+class Enemy : public Tank
 {
 public:
-    Player(LZH_ENGINE *eg, Scene *scene);
-    virtual ~Player();
+    Enemy(LZH_ENGINE *eg, Scene *scene);
+    virtual ~Enemy();
 
 protected:
     virtual void Update(LZH_ENGINE *eg);
@@ -24,4 +24,4 @@ protected:
 
 /*===========================================================================*/
 
-#endif /* __PALYER_H__ */
+#endif /* __ENEMY_H__ */

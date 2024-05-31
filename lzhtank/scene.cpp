@@ -83,6 +83,16 @@ LZH_SCENE *Scene::GetSceneHandle() const
     return sceneObj;
 }
 
+float Scene::GetWidth() const
+{
+    return 0.0f;
+}
+
+float Scene::GetHeight() const
+{
+    return 0.0f;
+}
+
 void Scene::InsertObject(GameObject *sceneObj)
 {
     if (sceneObj) {

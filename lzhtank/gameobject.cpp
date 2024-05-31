@@ -209,6 +209,11 @@ void GameObject::ColliderCb(GameObject *self, GameObject *target)
 
 }
 
+void GameObject::ColliderEndCb(GameObject *self, GameObject *target)
+{
+
+}
+
 void GameObject::UpdateObject(LZH_ENGINE *eg, LZH_OBJECT *obj, void *args)
 {
     if (eg && obj && args) {
@@ -233,6 +238,17 @@ void GameObject::ColliderObjectCb(LZH_OBJECT *self, LZH_OBJECT *target, void *ar
         GameObject *targObj = (GameObject *)lzh_object_get_extension(target, OBJECT_INSTANCE);
 
         inst->ColliderCb(selfObj, targObj);
+    }
+}
+
+void GameObject::ColliderObjectEndCb(LZH_OBJECT *self, LZH_OBJECT *target, void *args)
+{
+    if (self && target && args) {
+        GameObject *inst = (GameObject *)args;
+        GameObject *selfObj = (GameObject *)lzh_object_get_extension(self, OBJECT_INSTANCE);
+        GameObject *targObj = (GameObject *)lzh_object_get_extension(target, OBJECT_INSTANCE);
+
+        inst->ColliderEndCb(selfObj, targObj);
     }
 }
 

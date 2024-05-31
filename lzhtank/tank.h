@@ -25,19 +25,14 @@ protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
     virtual void ColliderCb(GameObject *self, GameObject *target);
+    virtual void ColliderEndCb(GameObject *self, GameObject *target);
 
 protected:
     GameObject *chassis;
     GameObject *turret;
 
-    // LZH_OBJECT *chassis;
-    // LZH_OBJECT *turret;
-
     LZH_SPRITE *chassisSp;
     LZH_SPRITE *turretSp;
-
-    // LZH_TRANSFORM *chassisTransform;
-    // LZH_TRANSFORM *turretTransform;
 
     LZH_COLLIDER *collider;
 

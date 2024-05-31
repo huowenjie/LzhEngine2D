@@ -40,6 +40,12 @@ public:
     // 获取场景指针
     LZH_SCENE *GetSceneHandle() const;
 
+    // 获取场景宽度
+    float GetWidth() const;
+
+    // 获取场景高度
+    float GetHeight() const;
+
 protected:
     // 插入场景对象
     void InsertObject(GameObject *sceneObj);

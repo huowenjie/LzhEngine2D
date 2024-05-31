@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     LZH_ENGINE *engine = NULL;
 
     lzh_init();
-    init_global_res();
+    InitGlobalRes();
 
     engine = lzh_engine_create("Tank", 800, 600);
     if (!engine) {

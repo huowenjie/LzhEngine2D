@@ -61,7 +61,7 @@ LZH_B2_BODY *lzh_b2_body_create(
 void lzh_b2_body_destroy(LZH_B2_WORLD *world, LZH_B2_BODY *body);
 
 /* 设置物理体位置 */
-void lzh_b2_body_set_position(LZH_B2_BODY *body, const LZH_VEC2F *pos);
+void lzh_b2_body_set_transform(LZH_B2_BODY *body, const LZH_VEC2F *pos, float angle);
 
 /* 设置物理体类型 */
 void lzh_b2_body_set_type(LZH_B2_BODY *body, LZH_B2_BODY_TYPE type);

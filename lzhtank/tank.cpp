@@ -17,8 +17,8 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     chassis = new GameObject(eg, scene);
     turret = new GameObject(eg, scene);
 
-    chassisSp = lzh_sprite_create(eg, chassis->GetObjectHandle(), get_tank_res_path());
-    turretSp = lzh_sprite_create(eg, turret->GetObjectHandle(), get_tank_turret_path());
+    chassisSp = lzh_sprite_create(eg, chassis->GetObjectHandle(), GetTankResPath());
+    turretSp = lzh_sprite_create(eg, turret->GetObjectHandle(), GetTankTurretPath());
 
     collider = lzh_collider_create(eg, object);
 
@@ -26,6 +26,7 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     rotateSpeed = 60.0f;
     turretRotateSpeed = 60.0f;
     tankhp = 1;
+    isCollideOther = false;
 
     // 只单独命名两个子对象
     chassis->SetName("chassis");
@@ -45,6 +46,7 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     param.box2d.h = 1.0f;
     lzh_collider_set_param(collider, &param);
     lzh_collider_set_start_contact(collider, GameObject::ColliderObjectCb, this);
+    lzh_collider_set_end_contact(collider, GameObject::ColliderObjectEndCb, this);
 }
 
 Tank::~Tank()
@@ -103,7 +105,9 @@ void Tank::Fire()
 
 void Tank::Update(LZH_ENGINE *eg)
 {
-
+    if (isCollideOther) {
+        
+    }
 }
 
 void Tank::FixedUpdate(LZH_ENGINE *eg)
@@ -116,6 +120,14 @@ void Tank::ColliderCb(GameObject *self, GameObject *target)
     if (type != OT_Explode || type != OT_Bullet) {
         isCollideOther = true;
     }
+
+    printf("ColliderCb tank!\n");
+}
+
+void Tank::ColliderEndCb(GameObject *self, GameObject *target)
+{
+    printf("ColliderEndCb tank!\n");
+    isCollideOther = false;
 }
 
 /*===========================================================================*/
