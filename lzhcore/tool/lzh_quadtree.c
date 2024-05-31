@@ -4,7 +4,6 @@
 
 #include "lzh_quadtree.h"
 #include "../component/lzh_component.h"
-#include "../component/lzh_core_collider.h"
 #include "../object/lzh_core_object.h"
 
 /*===========================================================================*/
@@ -558,6 +557,7 @@ void find_object(
 
 LZH_BOOL get_object_rect(const LZH_OBJECT *object, LZH_RECTF *rect)
 {
+#if 0
     LZH_COLLIDER *collider = NULL;
 
     if (!object || !rect) {
@@ -570,6 +570,7 @@ LZH_BOOL get_object_rect(const LZH_OBJECT *object, LZH_RECTF *rect)
     }
 
     *rect = lzh_collider_rectf(collider);
+#endif
     return LZH_TRUE;
 }
 

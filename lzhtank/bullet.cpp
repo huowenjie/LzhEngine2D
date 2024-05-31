@@ -34,17 +34,17 @@ Bullet::Bullet(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 
     LZH_COLLIDER_PARAM param;
     param.type = BOX_2D;
-    param.box2d.x = -0.25f;
-    param.box2d.y = 0.25f;
+    param.box2d.cx = 0.0f;
+    param.box2d.cy = 0.0f;
     param.box2d.w = 0.5f;
     param.box2d.h = 0.5f;
     lzh_collider_set_param(collider, &param);
-    lzh_collider_set_callback(collider, GameObject::ColliderObjectCb, this);
+    lzh_collider_set_start_contact(collider, GameObject::ColliderObjectCb, this);
 }
 
 Bullet::~Bullet()
 {
-    lzh_collider_set_callback(collider, NULL, NULL);
+    lzh_collider_set_start_contact(collider, NULL, NULL);
 }
 
 /*===========================================================================*/
@@ -116,6 +116,8 @@ void Bullet::ColliderCb(GameObject *self, GameObject *target)
     if (!fromObject) {
         return;
     }
+
+    printf("Bullet::ColliderCb self = %s, target = %s\n", self->GetName().c_str(), target->GetName().c_str());
 
     if (fromObject == target) {
         return;

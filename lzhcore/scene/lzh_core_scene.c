@@ -49,8 +49,7 @@ void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
 
     if (obj) {
         /* 不能直接删除对象，要先放入删除树，在帧末尾再清理对象 */
-        scene_obj_rb_delete(render_tree, hash, NULL, NULL);
-        //scene_del_rb_insert(scene->del_tree, hash, obj);
+        scene_del_rb_insert(scene->del_tree, hash, obj);
     }
 }
 
@@ -128,7 +127,8 @@ void lzh_scene_objs_visit_free(const SCENE_OBJ_RB_NODE *node, void *args)
 {
     if (node) {
         LZH_OBJECT *object = node->value;
-        lzh_object_remove(object);
+        object->base.state |= LZH_BST_SCENE_CLEAR;
+        lzh_object_destroy(object);
     }
 }
 

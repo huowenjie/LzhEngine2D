@@ -20,7 +20,8 @@ void lzh_cpnt_quit(LZH_COMPONENT *cpnt)
     if (cpnt) {
         LZH_OBJECT *object = cpnt->object;
 
-        if (object) {
+        /* 对象循环清理时禁止释放组件，否则会导致多次释放造成内存问题 */
+        if ((cpnt->base.state & LZH_BST_OBJECT_CLEAR) != LZH_BST_OBJECT_CLEAR) {
             lzh_object_del_component(object, cpnt);
             cpnt->object = NULL;
         }
@@ -68,8 +69,7 @@ void lzh_cpnt_rb_visit(const LZH_CPNT_RB_NODE *node, void *args)
     }
 
     if (cpnt->remove_component) {
-        /* 在循环过程中禁止 lzh_cpnt_quit 移除组件 */
-        cpnt->object = NULL;
+        cpnt->base.state |= LZH_BST_OBJECT_CLEAR;
         cpnt->remove_component(cpnt);
     }
 }

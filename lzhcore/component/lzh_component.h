@@ -10,11 +10,11 @@
 /* 组件 */
 /*===========================================================================*/
 
-#define LZH_CPNT_UNDEF      0x00000000U /* 未定义的组件 */
-#define LZH_CPNT_TRANSFORM  0x00000001U /* 变换组件 */
-#define LZH_CPNT_CAMERA     0x00000002U /* 相机组件 */
-#define LZH_CPNT_SPRITE     0x00000003U /* 精灵组件 */
-#define LZH_CPNT_COLLIDER   0x00000004U /* 碰撞组件 */
+#define LZH_CPNT_UNDEF          0x00000000U /* 未定义的组件 */
+#define LZH_CPNT_TRANSFORM      0x00000001U /* 变换组件 */
+#define LZH_CPNT_CAMERA         0x00000002U /* 相机组件 */
+#define LZH_CPNT_SPRITE         0x00000003U /* 精灵组件 */
+#define LZH_CPNT_COLLIDER       0x00000004U /* 碰撞组件 */
 
 typedef struct LZH_COMPONENT LZH_COMPONENT;
 

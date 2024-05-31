@@ -196,20 +196,45 @@ void lzh_object_del_child(LZH_OBJECT *object, const char *name)
 
 void lzh_object_destroy(LZH_OBJECT *object)
 {
-    if (object) {        
-        if (object->current_scene) {
-            /* 移除场景中的本对象 */
-            lzh_scene_del_object(object->current_scene, object->base.name);
-            object->current_scene = NULL;
+    if (object) {
+        if (object->extension) {
+            lzh_ext_rb_destroy(object->extension, NULL, NULL);
+            object->extension = NULL;
         }
 
-        if (object->parent) {
-            /* 移除父节点中缓存的子对象 */
-            LZH_OBJECT *parent = object->parent;
-            lzh_obj_rb_delete(parent->children, object->base.hash, lzh_object_rb_visit, NULL);
+        if (object->transform) {
+            lzh_transform_destroy(object->transform);
         }
 
-        lzh_object_remove(object);
+        if (object->components) {
+            lzh_cpnt_rb_destroy(object->components, lzh_cpnt_rb_visit, NULL);
+            object->components = NULL;
+        }
+
+        if (object->children) {
+            lzh_obj_rb_destroy(object->children, lzh_object_rb_visit, NULL);
+            object->children = NULL;
+        }
+
+        /* 当前对象正在被父对象销毁 */
+        if ((object->base.state & LZH_BST_OBJECT_CLEAR) != LZH_BST_OBJECT_CLEAR) {
+            if (object->parent) {
+                LZH_OBJECT *parent = object->parent;
+                lzh_obj_rb_delete(parent->children, object->base.hash, NULL, NULL);
+                object->parent = NULL;
+            }
+        }
+
+        /* 当前对象正在被场景销毁 */
+        if ((object->base.state & LZH_BST_SCENE_CLEAR) != LZH_BST_SCENE_CLEAR) {
+            if (object->current_scene) {
+                lzh_scene_del_object(object->current_scene, object->base.name);
+                object->current_scene = NULL;
+            }
+        }
+
+        lzh_base_quit((LZH_BASE *)object);
+        LZH_FREE(object);
     }
 }
 

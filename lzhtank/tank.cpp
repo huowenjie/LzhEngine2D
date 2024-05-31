@@ -39,12 +39,12 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 
     LZH_COLLIDER_PARAM param;
     param.type = BOX_2D;
-    param.box2d.x = -0.5f;
-    param.box2d.y = 0.5f;
+    param.box2d.cx = 0.0f;
+    param.box2d.cy = 0.0f;
     param.box2d.w = 1.0f;
     param.box2d.h = 1.0f;
     lzh_collider_set_param(collider, &param);
-    lzh_collider_set_callback(collider, GameObject::ColliderObjectCb, this);
+    lzh_collider_set_start_contact(collider, GameObject::ColliderObjectCb, this);
 }
 
 Tank::~Tank()

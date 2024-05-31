@@ -50,6 +50,9 @@ void lzh_b2_world_set_begin_contact(
 void lzh_b2_world_set_end_contact(
     LZH_B2_WORLD *world, LZH_B2_END_CONTACT cb, void *args);
 
+/* 处理逻辑帧 */
+void lzh_b2_world_step(LZH_B2_WORLD *world, float step, int vit, int pit);
+
 /* 从世界对象中创建物理主体对象，pos 为位置 */
 LZH_B2_BODY *lzh_b2_body_create(
     LZH_B2_WORLD *world, const LZH_VEC2F *pos, LZH_B2_BODY_TYPE type);
@@ -74,6 +77,9 @@ void lzh_b2_fixture_set_density(LZH_B2_FIXUTRE *fixture, float density);
 
 /* 设置用户数据 */
 void lzh_b2_fixture_set_data(LZH_B2_FIXUTRE *fixture, void *data);
+
+/* 获取用户数据 */
+void *lzh_b2_fixture_get_data(LZH_B2_FIXUTRE *fixture);
 
 /* 创建圆形形状 */
 LZH_B2_SHAPE_CIRCLE *lzh_b2_shape_circle_create(const LZH_VEC2F *center, float radius);

@@ -1,6 +1,7 @@
 #ifndef __LZH_B2_CONTACT_LISTENER_H__
 #define __LZH_B2_CONTACT_LISTENER_H__
 
+#include <map>
 #include "lzh_b2_api.h"
 #include "b2_world_callbacks.h"
 

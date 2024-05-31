@@ -34,6 +34,7 @@ LZH_B2_WORLD *lzh_b2_world_create(const LZH_VEC2F *gravity)
 
     LzhB2ContactListener *contact = new LzhB2ContactListener();
     bw->SetContactListener(contact);
+    bw->SetAllowSleeping(false);
 
     LZH_B2_WORLD *world = (LZH_B2_WORLD *)LZH_MALLOC(sizeof(LZH_B2_WORLD));
     if (!world) {
@@ -92,6 +93,14 @@ void lzh_b2_world_set_end_contact(
         LzhB2ContactListener *listener = world->listener;
         listener->endContact = cb;
         listener->endContactParam = args;
+    }
+}
+
+void lzh_b2_world_step(LZH_B2_WORLD *world, float step, int vit, int pit)
+{
+    if (world && world->object) {
+        b2World *bw = (b2World *)world->object;
+        bw->Step(step, vit, pit);
     }
 }
 
@@ -259,6 +268,17 @@ void lzh_b2_fixture_set_data(LZH_B2_FIXUTRE *fixture, void *data)
         b2FixtureUserData &userData = bf->GetUserData();
         userData.pointer = (uintptr_t)data;
     }
+}
+
+void *lzh_b2_fixture_get_data(LZH_B2_FIXUTRE *fixture)
+{
+    if (fixture && fixture->object) { 
+        b2Fixture *bf = (b2Fixture *)fixture->object;
+        const b2FixtureUserData &userData = bf->GetUserData();
+        uintptr_t data = userData.pointer;
+        return (void *)data;
+    }
+    return NULL;
 }
 
 LZH_B2_SHAPE_CIRCLE *lzh_b2_shape_circle_create(const LZH_VEC2F *center, float radius)

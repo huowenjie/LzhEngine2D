@@ -1,3 +1,4 @@
+#include <lzh_object.h>
 #include "lzh_core_object.h"
 #include "../component/lzh_core_transform.h"
 #include "../scene/lzh_core_scene.h"
@@ -26,33 +27,6 @@ void lzh_object_del_component(LZH_OBJECT *object, void *cpnt)
         lzh_cpnt_rb_delete(object->components, elem->type, NULL, NULL);
 
         elem->object = NULL;
-    }
-}
-
-void lzh_object_remove(LZH_OBJECT *object)
-{
-    if (object) {
-        if (object->extension) {
-            lzh_ext_rb_destroy(object->extension, NULL, NULL);
-            object->extension = NULL;
-        }
-
-        if (object->transform) {
-            lzh_transform_destroy(object->transform);
-        }
-
-        if (object->components) {
-            lzh_cpnt_rb_destroy(object->components, lzh_cpnt_rb_visit, NULL);
-            object->components = NULL;
-        }
-
-        if (object->children) {
-            lzh_obj_rb_destroy(object->children, lzh_object_rb_visit, NULL);
-            object->children = NULL;
-        }
-
-        lzh_base_quit((LZH_BASE *)object);
-        LZH_FREE(object);
     }
 }
 
@@ -86,7 +60,8 @@ void lzh_object_rb_visit(const LZH_OBJ_RB_NODE *node, void *args)
     }
 
     /* ÒÀ´ÎµÝ¹éÉ¾³ý */
-    lzh_object_remove(object);
+    object->base.state |= LZH_BST_OBJECT_CLEAR;
+    lzh_object_destroy(object);
 }
 
 void lzh_object_rb_visit_update(const LZH_OBJ_RB_NODE *node, void *args)

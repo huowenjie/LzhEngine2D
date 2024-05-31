@@ -7,6 +7,7 @@
 
 #include "../engine/lzh_core_engine.h"
 #include "../component/lzh_core_camera.h"
+#include "../component/lzh_core_collider.h"
 
 #include "lzh_scene_manager.h"
 
@@ -19,6 +20,10 @@ static void lzh_scene_draw(LZH_BASE *base, void *args);
 
 /* 生成新名称 */
 static const char *lzh_gen_new_name();
+
+/* 场景碰撞回调 */
+static void lzh_scene_begine_contact(void *obja, void *objb, void *args);
+static void lzh_scene_end_contact(void *obja, void *objb, void *args);
 
 /*===========================================================================*/
 
@@ -74,6 +79,10 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
 
     /* 添加场景至全局场景树 */
     lzh_sm_add_scene(engine->scene_manager, scene);
+
+    /* 设置场景碰撞回调 */
+    lzh_b2_world_set_begin_contact(scene->world2d, lzh_scene_begine_contact, NULL);
+    lzh_b2_world_set_end_contact(scene->world2d, lzh_scene_end_contact, NULL);
     return scene;
 }
 
@@ -162,15 +171,20 @@ void lzh_scene_update(LZH_BASE *base, void *args)
 void lzh_scene_fixedupdate(LZH_BASE *base, void *args)
 {
     LZH_SCENE *scene = NULL;
+    LZH_ENGINE *engine = NULL;
     SCENE_OBJ_RB_TREE *render_tree = NULL;
+    LZH_B2_WORLD *world = NULL;
 
     if (!base) {
         return;
     }
 
     scene = (LZH_SCENE *)base;
+    engine = scene->base.engine;
     render_tree = scene->render_tree;
 
+    world = scene->world2d;
+    lzh_b2_world_step(world, engine->delta_time, 8, 3);
     scene_obj_rb_iterate(render_tree, lzh_scene_objs_visit_fixedupdate, NULL);
 }
 
@@ -204,6 +218,45 @@ const char *lzh_gen_new_name()
 
     sprintf(default_name, "New Scene%d", global_order++);
     return default_name;
+}
+
+void lzh_scene_begine_contact(void *obja, void *objb, void *args)
+{
+    if (obja && objb) {
+        /* 将碰撞结果回调到各个对象的 collider 组件 */
+        LZH_OBJECT *oa = (LZH_OBJECT *)obja;
+        LZH_OBJECT *ob = (LZH_OBJECT *)objb;
+
+        LZH_COLLIDER *collider = 
+            (LZH_COLLIDER *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER);
+        if (collider && collider->start_contact) {
+            collider->start_contact(oa, ob, collider->start_contact_args);
+        }
+
+        collider = (LZH_COLLIDER *)lzh_cpnt_get_type(ob->components, LZH_CPNT_COLLIDER);
+        if (collider && collider->start_contact) {
+            collider->start_contact(ob, oa, collider->start_contact_args);
+        }
+    }
+}
+
+void lzh_scene_end_contact(void *obja, void *objb, void *args)
+{
+    if (obja && objb) {
+        LZH_OBJECT *oa = (LZH_OBJECT *)obja;
+        LZH_OBJECT *ob = (LZH_OBJECT *)objb;
+
+        LZH_COLLIDER *collider = 
+            (LZH_COLLIDER *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER);
+        if (collider && collider->end_contact) {
+            collider->end_contact(oa, ob, collider->end_contact_args);
+        }
+
+        collider = (LZH_COLLIDER *)lzh_cpnt_get_type(ob->components, LZH_CPNT_COLLIDER);
+        if (collider && collider->end_contact) {
+            collider->end_contact(ob, oa, collider->end_contact_args);
+        }
+    }
 }
 
 /*===========================================================================*/

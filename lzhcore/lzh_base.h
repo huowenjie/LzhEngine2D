@@ -7,10 +7,14 @@
 /* 基础对象 */
 /*===========================================================================*/
 
-#define LZH_BT_NONE         0x00000000U /* 未定义 */
-#define LZH_BT_OBJECT       0x00000001U /* 对象 */
-#define LZH_BT_COMPONENT    0x00000002U /* 组件 */
-#define LZH_BT_SCENE        0x00000003U /* 场景 */
+#define LZH_BT_NONE             0x00000000U /* 未定义 */
+#define LZH_BT_OBJECT           0x00000001U /* 对象 */
+#define LZH_BT_COMPONENT        0x00000002U /* 组件 */
+#define LZH_BT_SCENE            0x00000003U /* 场景 */
+
+#define LZH_BST_NORMAL          0x00000000U /* 正常状态 */
+#define LZH_BST_SCENE_CLEAR     0x00000001U /* 场景循环清理状态 */
+#define LZH_BST_OBJECT_CLEAR    0x00000002U /* 对象循环清理状态 */
 
 typedef struct LZH_BASE LZH_BASE;
 
@@ -23,6 +27,9 @@ typedef void (*LZH_BASE_DRAW)(LZH_BASE *base, void *args);
 struct LZH_BASE {
     /* 对象类型 */
     LZH_UINT32 type;
+
+    /* 对象状态 */
+    LZH_UINT32 state;
 
     /* 对象名称 */
     char *name;

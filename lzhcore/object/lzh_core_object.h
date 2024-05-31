@@ -85,9 +85,6 @@ void lzh_object_add_component(LZH_OBJECT *object, void *cpnt);
 /* 移除组件并返回组件指针 */
 void lzh_object_del_component(LZH_OBJECT *object, void *cpnt);
 
-/* 移除子对象，不更改父对象的信息 */
-void lzh_object_remove(LZH_OBJECT *object);
-
 /* 子对象的回调函数 */
 int lzh_object_rb_comp(const void *obj1, const void *obj2);
 void lzh_object_rb_visit(const LZH_OBJ_RB_NODE *node, void *args);
