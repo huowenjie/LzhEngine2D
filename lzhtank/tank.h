@@ -21,6 +21,12 @@ protected:
     // 开火发射炮弹
     void Fire();
 
+    // 保存当前帧位移状态
+    void SaveTransform();
+
+    // 恢复当前帧位移状态
+    void RestoreTransform();
+
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
@@ -50,6 +56,10 @@ protected:
 
     // 是否碰撞到别的对象
     bool isCollideOther;
+
+    // 上一帧位置
+    float prevX;
+    float prevY;
 };
 
 /*===========================================================================*/

@@ -260,6 +260,14 @@ float lzh_engine_interval(LZH_ENGINE *engine)
     return 0.0f;
 }
 
+float lzh_engine_fixed_interval(LZH_ENGINE *engine)
+{
+    if (engine) {
+        return 1.0f / engine->logic_fps;
+    }
+    return 0.0f;
+}
+
 float lzh_engine_interval_msec(LZH_ENGINE *engine)
 {
     if (engine) {

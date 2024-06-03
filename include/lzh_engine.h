@@ -30,6 +30,9 @@ LZH_API void lzh_engine_update(LZH_ENGINE *engine);
 /* 获取当前帧间隔时间 ms */
 LZH_API float lzh_engine_interval(LZH_ENGINE *engine);
 
+/* 获取固定帧间隔 ms */
+LZH_API float lzh_engine_fixed_interval(LZH_ENGINE *engine);
+
 /* 获取当前帧间隔时间 ms */
 LZH_API float lzh_engine_interval_msec(LZH_ENGINE *engine);
 

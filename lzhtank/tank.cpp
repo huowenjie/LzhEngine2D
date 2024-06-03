@@ -28,6 +28,9 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     tankhp = 1;
     isCollideOther = false;
 
+    prevX = 0.0f;
+    prevY = 0.0f;
+
     // 只单独命名两个子对象
     chassis->SetName("chassis");
     turret->SetName("turret");
@@ -101,17 +104,28 @@ void Tank::Fire()
     }
 }
 
+void Tank::SaveTransform()
+{
+    lzh_transform_get_pos(transform, &prevX, &prevY, NULL);
+}
+
+void Tank::RestoreTransform()
+{
+    lzh_transform_set_pos(transform, prevX, prevY, 0.0f);
+}
+
 /*===========================================================================*/
 
 void Tank::Update(LZH_ENGINE *eg)
 {
-    if (isCollideOther) {
-        
-    }
+
 }
 
 void Tank::FixedUpdate(LZH_ENGINE *eg)
 {
+    if (isCollideOther) {
+        RestoreTransform();
+    }
 }
 
 void Tank::ColliderCb(GameObject *self, GameObject *target)
@@ -122,6 +136,7 @@ void Tank::ColliderCb(GameObject *self, GameObject *target)
     }
 
     printf("ColliderCb tank!\n");
+    SaveTransform();
 }
 
 void Tank::ColliderEndCb(GameObject *self, GameObject *target)

@@ -20,6 +20,8 @@ Player::~Player()
 
 void Player::Update(LZH_ENGINE *eg)
 {
+    Tank::Update(eg);
+
     float delta = 0.0f;
     float ms = 0.0f;
     float rs = 0.0f;
@@ -70,12 +72,11 @@ void Player::Update(LZH_ENGINE *eg)
     if (lzh_get_key_down(eg, KEY_CODE_SPACE)) {
         Fire();
     }
-
-    Tank::Update(eg);
 }
 
 void Player::FixedUpdate(LZH_ENGINE *eg)
 {
+    Tank::FixedUpdate(eg);
 }
 
 /*===========================================================================*/
