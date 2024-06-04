@@ -33,6 +33,9 @@ typedef enum LZH_B2_BODY_TYPE {
 typedef void (*LZH_B2_BEGIN_CONTACT)(void *dataA, void *dataB, void *args);
 typedef void (*LZH_B2_END_CONTACT)(void *dataA, void *dataB, void *args);
 
+/* 射线接触回调 */
+typedef void (*LZH_B2_RAYCAST)(void *data, void *args);
+
 /* 创建世界对象 */
 LZH_B2_WORLD *lzh_b2_world_create(const LZH_VEC2F *gravity);
 
@@ -52,6 +55,9 @@ void lzh_b2_world_set_end_contact(
 
 /* 处理逻辑帧 */
 void lzh_b2_world_step(LZH_B2_WORLD *world, float step, int vit, int pit);
+
+/* 发射射线 */
+void lzh_b2_world_raycast(LZH_B2_WORLD *world, LZH_B2_RAYCAST raycast_cb);
 
 /* 从世界对象中创建物理主体对象，pos 为位置 */
 LZH_B2_BODY *lzh_b2_body_create(

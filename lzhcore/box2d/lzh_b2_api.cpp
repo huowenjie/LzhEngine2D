@@ -104,6 +104,13 @@ void lzh_b2_world_step(LZH_B2_WORLD *world, float step, int vit, int pit)
     }
 }
 
+void lzh_b2_world_raycast(LZH_B2_WORLD *world, LZH_B2_RAYCAST cb)
+{
+    if (world && world->object) {
+        b2World *bw = (b2World *)world->object;
+    }
+}
+
 LZH_B2_BODY *lzh_b2_body_create(
     LZH_B2_WORLD *world, const LZH_VEC2F *pos, LZH_B2_BODY_TYPE type)
 {
