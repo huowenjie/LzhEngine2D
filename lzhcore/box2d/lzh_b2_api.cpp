@@ -2,6 +2,7 @@
 
 #include "box2d.h"
 #include "lzh_b2_contact_listener.h"
+#include "lzh_b2_raycast_listener.h"
 
 /*===========================================================================*/
 
@@ -14,6 +15,12 @@ struct LZH_B2_WORLD
 {
     void *object;
     LzhB2ContactListener *listener;
+};
+
+struct LZH_B2_FIXUTRE
+{
+    void *object;
+    void *data;
 };
 
 /*===========================================================================*/
@@ -104,10 +111,83 @@ void lzh_b2_world_step(LZH_B2_WORLD *world, float step, int vit, int pit)
     }
 }
 
-void lzh_b2_world_raycast(LZH_B2_WORLD *world, LZH_B2_RAYCAST cb)
+LZH_BOOL lzh_b2_world_raycast(
+    LZH_B2_WORLD *world,
+    const LZH_VEC2F *start,
+    const LZH_VEC2F *end,
+    LZH_B2_RAYHIT *hit,
+    LZH_B2_RAYHIT_OPT opt)
 {
-    if (world && world->object) {
-        b2World *bw = (b2World *)world->object;
+    b2World *bw = NULL;
+    LzhB2RayCastListener *listener = NULL;
+    LZH_VEC2F ptvec = lzh_vec2f_xy(0.0f, 0.0f);
+
+    if (!world || !world->object) {
+        return LZH_FALSE;
+    }
+
+    if (!start || !end) {
+        return LZH_FALSE;
+    }
+
+    ptvec = lzh_vec2f_sub(end, start);
+    if (lzh_vec2f_length(&ptvec) <= 1e-6) {
+        return LZH_FALSE;
+    }
+
+    bw = (b2World *)world->object;
+    listener = new LzhB2RayCastListener();
+    listener->hitOption = opt;
+
+    if (!listener) {
+        return LZH_FALSE;
+    }
+
+    LZH_BOOL isHit = LZH_FALSE;
+
+    do {
+        bw->RayCast(listener, b2Vec2(start->x, start->y), b2Vec2(end->x, end->y));
+
+        std::vector<LZH_B2_HITINFO> &infoList = listener->hitInfoList;
+        if (infoList.empty()) {
+            break;
+        }
+
+        if (opt == RO_CHECK) {    
+            isHit = LZH_TRUE;
+            break;
+        }
+
+        if (!hit) {
+            break;
+        }
+
+        int count = infoList.size();
+        LZH_B2_HITINFO *infos = 
+            (LZH_B2_HITINFO *)LZH_MALLOC(count * sizeof(LZH_B2_HITINFO));
+        if (!infos) {
+            break;
+        }
+        memset(infos, 0, count * sizeof(LZH_B2_HITINFO));
+
+        for (int i = 0; i < count; i++) {
+            infos[i] = infoList[i];
+        }
+
+        hit->count = count;
+        hit->infoList = infos;
+        isHit = LZH_TRUE;
+    } while (false);
+
+    delete listener;
+    return isHit;
+}
+
+void lzh_b2_rayhit_clear(LZH_B2_RAYHIT *hit)
+{
+    if (hit && hit->infoList) {
+        LZH_FREE(hit->infoList);
+        hit->count = 0;
     }
 }
 
@@ -240,6 +320,10 @@ LZH_B2_FIXUTRE *lzh_b2_fixture_create(LZH_B2_BODY *body, LZH_B2_SHAPE *shape)
     memset(fixture, 0, sizeof(LZH_B2_FIXUTRE));
 
     fixture->object = bf;
+
+    // 将包装对象 LZH_B2_FIXUTRE 缓存
+    b2FixtureUserData &userData = bf->GetUserData();
+    userData.pointer = (uintptr_t)fixture;
     return fixture;
 }
 
@@ -270,20 +354,15 @@ void lzh_b2_fixture_set_density(LZH_B2_FIXUTRE *fixture, float density)
 
 void lzh_b2_fixture_set_data(LZH_B2_FIXUTRE *fixture, void *data)
 {
-    if (fixture && fixture->object) {
-        b2Fixture *bf = (b2Fixture *)fixture->object;
-        b2FixtureUserData &userData = bf->GetUserData();
-        userData.pointer = (uintptr_t)data;
+    if (fixture) {
+        fixture->data = data;
     }
 }
 
 void *lzh_b2_fixture_get_data(LZH_B2_FIXUTRE *fixture)
 {
-    if (fixture && fixture->object) { 
-        b2Fixture *bf = (b2Fixture *)fixture->object;
-        const b2FixtureUserData &userData = bf->GetUserData();
-        uintptr_t data = userData.pointer;
-        return (void *)data;
+    if (fixture) { 
+        return fixture->data;
     }
     return NULL;
 }

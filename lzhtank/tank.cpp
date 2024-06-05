@@ -17,6 +17,9 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     chassis = new GameObject(eg, scene);
     turret = new GameObject(eg, scene);
 
+    chassisTransform = chassis->GetTransform();
+    turretTransform = turret->GetTransform();
+
     chassisSp = lzh_sprite_create(eg, chassis->GetObjectHandle(), GetTankResPath());
     turretSp = lzh_sprite_create(eg, turret->GetObjectHandle(), GetTankTurretPath());
 
@@ -30,6 +33,7 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 
     prevX = 0.0f;
     prevY = 0.0f;
+    statusCode = TK_IDLE;
 
     // 只单独命名两个子对象
     chassis->SetName("chassis");
@@ -104,6 +108,72 @@ void Tank::Fire()
     }
 }
 
+void Tank::ChassisForward(float delta)
+{
+    float ms = moveSpeed * delta;
+    float x = 0.0f;
+    float y = 0.0f;
+
+    lzh_transform_get_forward(transform, &x, &y, NULL);
+    x *= ms;
+    y *= ms;
+    lzh_transform_translate(transform, x, y, 0.0f);
+
+    statusCode |= TK_RUN_FORWARD;
+    statusCode &= (~TK_RUN_BACKWARD);
+}
+
+void Tank::ChassisBackward(float delta)
+{
+    float ms = moveSpeed * delta;
+    float x = 0.0f;
+    float y = 0.0f;
+
+    lzh_transform_get_backward(transform, &x, &y, NULL);
+    x *= ms;
+    y *= ms;
+    lzh_transform_translate(transform, x, y, 0.0f);
+
+    statusCode |= TK_RUN_BACKWARD;
+    statusCode &= (~TK_RUN_FORWARD);
+}
+
+void Tank::ChassisRotateL(float delta)
+{
+    float rs = rotateSpeed * delta;
+    lzh_transform_rotate_z(transform, rs);
+
+    statusCode |= TK_ROTATE_L;
+    statusCode &= (~TK_ROTATE_R);
+}
+
+void Tank::ChassisRotateR(float delta)
+{
+    float rs = -rotateSpeed * delta;
+    lzh_transform_rotate_z(transform, rs);
+
+    statusCode |= TK_ROTATE_R;
+    statusCode &= (~TK_ROTATE_L);
+}
+
+void Tank::TurretRotateL(float delta)
+{
+    float ts = turretRotateSpeed * delta;
+    lzh_transform_rotate_z(turretTransform, ts);
+
+    statusCode |= TK_TURRET_ROTATE_L;
+    statusCode &= (~TK_TURRET_ROTATE_R);
+}
+
+void Tank::TurretRotateR(float delta)
+{
+    float ts = -turretRotateSpeed * delta;
+    lzh_transform_rotate_z(turretTransform, ts);
+
+    statusCode |= TK_TURRET_ROTATE_R;
+    statusCode &= (~TK_TURRET_ROTATE_L);
+}
+
 void Tank::SaveTransform()
 {
     lzh_transform_get_pos(transform, &prevX, &prevY, NULL);
@@ -118,13 +188,31 @@ void Tank::RestoreTransform()
 
 void Tank::Update(LZH_ENGINE *eg)
 {
+    float deltaX = 0.0f;
+    float deltaY = 0.0f;
 
+    if (statusCode & TK_RUN_FORWARD) {
+        lzh_transform_get_forward(transform, &deltaX, &deltaY, NULL);
+    } else if (statusCode & TK_RUN_BACKWARD) {
+        lzh_transform_get_backward(transform, &deltaX, &deltaY, NULL);
+    } else {
+        return;
+    }
+
+    GameObject *obj = currentScene->RayCastObject(
+        prevX, prevY, prevX + deltaX, prevY + deltaY);
+    if (obj) {
+        printf("RayCast Object! Name = %s\n", obj->GetName().c_str());
+        RestoreTransform();
+    }
+
+    statusCode = TK_IDLE;
 }
 
 void Tank::FixedUpdate(LZH_ENGINE *eg)
 {
     if (isCollideOther) {
-        RestoreTransform();
+        //RestoreTransform();
     }
 }
 
@@ -132,11 +220,11 @@ void Tank::ColliderCb(GameObject *self, GameObject *target)
 {
     GameObject::ObjectType type = target->GetObjectType();
     if (type != OT_Explode || type != OT_Bullet) {
-        isCollideOther = true;
+        //isCollideOther = true;
     }
 
     printf("ColliderCb tank!\n");
-    SaveTransform();
+    //SaveTransform();
 }
 
 void Tank::ColliderEndCb(GameObject *self, GameObject *target)

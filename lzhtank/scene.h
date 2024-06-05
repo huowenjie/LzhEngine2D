@@ -46,6 +46,10 @@ public:
     // 获取场景高度
     float GetHeight() const;
 
+    // 射线检测
+    GameObject *RayCastObject(
+        float sx, float sy, float ex, float ey) const;
+
 protected:
     // 插入场景对象
     void InsertObject(GameObject *sceneObj);

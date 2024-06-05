@@ -30,6 +30,10 @@ LZH_API void lzh_scene_set_main_camera(LZH_SCENE *scene, LZH_OBJECT *camera);
 LZH_API void lzh_scene_set_last_callback(
     LZH_SCENE *scene, LZH_SCENE_LAST cb, void *args);
 
+/* 发射射线检测是否有对象碰撞，如果有，则返回碰撞对象 */
+LZH_API LZH_OBJECT *lzh_scene_raycast2d(
+    LZH_SCENE *scene, float sx, float sy, float ex, float ey);
+
 /*===========================================================================*/
 
 /* 获取场景管理器 */

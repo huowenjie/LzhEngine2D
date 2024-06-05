@@ -171,6 +171,12 @@ GameObject::ObjectType GameObject::GetObjectType() const
     return objType;
 }
 
+const char *GameObject::ObjectExtName()
+{
+    static char extName[] = OBJECT_INSTANCE;
+    return extName;
+}
+
 void GameObject::InitGameObject()
 {
     if (object) {

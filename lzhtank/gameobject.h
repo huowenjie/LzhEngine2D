@@ -82,6 +82,9 @@ public:
     // 获取对象类型
     ObjectType GetObjectType() const;
 
+public:
+    static const char *ObjectExtName();
+
 protected:
     void InitGameObject();
     void QuitGameObject();

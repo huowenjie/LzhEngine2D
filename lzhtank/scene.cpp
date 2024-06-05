@@ -1,4 +1,5 @@
 #include <lzh_scene.h>
+#include <lzh_object.h>
 
 #include "camera.h"
 #include "gameobject.h"
@@ -91,6 +92,22 @@ float Scene::GetWidth() const
 float Scene::GetHeight() const
 {
     return 0.0f;
+}
+
+GameObject *Scene::RayCastObject(
+    float sx, float sy, float ex, float ey) const
+{
+    if (sceneObj) {
+        LZH_OBJECT *object = lzh_scene_raycast2d(sceneObj, sx, sy, ex, ey);
+        if (!object) {
+            return NULL;
+        }
+
+        const char *extName = GameObject::ObjectExtName();
+        GameObject *gameObj = (GameObject *)lzh_object_get_extension(object, extName);
+        return gameObj;
+    }
+    return NULL;
 }
 
 void Scene::InsertObject(GameObject *sceneObj)

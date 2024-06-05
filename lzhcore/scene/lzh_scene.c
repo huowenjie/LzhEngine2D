@@ -22,8 +22,8 @@ static void lzh_scene_draw(LZH_BASE *base, void *args);
 static const char *lzh_gen_new_name();
 
 /* 场景碰撞回调 */
-static void lzh_scene_begine_contact(void *obja, void *objb, void *args);
-static void lzh_scene_end_contact(void *obja, void *objb, void *args);
+static void lzh_scene_begine_contact(LZH_B2_FIXUTRE *fixa, LZH_B2_FIXUTRE *fixb, void *args);
+static void lzh_scene_end_contact(LZH_B2_FIXUTRE *fixa, LZH_B2_FIXUTRE *fixb, void *args);
 
 /*===========================================================================*/
 
@@ -151,6 +151,42 @@ void lzh_scene_set_last_callback(LZH_SCENE *scene, LZH_SCENE_LAST cb, void *args
     }
 }
 
+LZH_OBJECT *lzh_scene_raycast2d(
+    LZH_SCENE *scene, float sx, float sy, float ex, float ey)
+{
+    LZH_B2_WORLD *bw = NULL;
+    LZH_B2_RAYHIT rayhit = { 0 };
+    LZH_B2_HITINFO info = { 0 };
+
+    LZH_OBJECT *hit_obj = NULL;
+    LZH_VEC2F start = lzh_vec2f_xy(sx, sy);
+    LZH_VEC2F end = lzh_vec2f_xy(ex, ey);
+
+    if (!scene || !scene->world2d) {
+        return NULL;
+    }
+
+    bw = scene->world2d;
+    if (!lzh_b2_world_raycast(bw, &start, &end, &rayhit, RO_CLOSEST_HIT)) {
+        return NULL;
+    }
+
+    if (!rayhit.infoList || rayhit.count <= 0) {
+        goto end;
+    }
+    
+    info = rayhit.infoList[0];
+    if (!info.fixture) {
+        goto end;
+    }
+
+    hit_obj = (LZH_OBJECT *)lzh_b2_fixture_get_data(info.fixture);
+
+end:
+    lzh_b2_rayhit_clear(&rayhit);
+    return hit_obj;
+}
+
 /*===========================================================================*/
 
 void lzh_scene_update(LZH_BASE *base, void *args)
@@ -221,12 +257,16 @@ const char *lzh_gen_new_name()
     return default_name;
 }
 
-void lzh_scene_begine_contact(void *obja, void *objb, void *args)
+void lzh_scene_begine_contact(LZH_B2_FIXUTRE *fixa, LZH_B2_FIXUTRE *fixb, void *args)
 {
-    if (obja && objb) {
+    if (fixa && fixb) {
         /* 将碰撞结果回调到各个对象的 collider 组件 */
-        LZH_OBJECT *oa = (LZH_OBJECT *)obja;
-        LZH_OBJECT *ob = (LZH_OBJECT *)objb;
+        LZH_OBJECT *oa = (LZH_OBJECT *)lzh_b2_fixture_get_data(fixa);
+        LZH_OBJECT *ob = (LZH_OBJECT *)lzh_b2_fixture_get_data(fixb);
+
+        if (!oa || !ob) {
+            return;
+        }
 
         LZH_COLLIDER *collider = 
             (LZH_COLLIDER *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER);
@@ -241,11 +281,15 @@ void lzh_scene_begine_contact(void *obja, void *objb, void *args)
     }
 }
 
-void lzh_scene_end_contact(void *obja, void *objb, void *args)
+void lzh_scene_end_contact(LZH_B2_FIXUTRE *fixa, LZH_B2_FIXUTRE *fixb, void *args)
 {
-    if (obja && objb) {
-        LZH_OBJECT *oa = (LZH_OBJECT *)obja;
-        LZH_OBJECT *ob = (LZH_OBJECT *)objb;
+    if (fixa && fixb) {
+        LZH_OBJECT *oa = (LZH_OBJECT *)lzh_b2_fixture_get_data(fixa);
+        LZH_OBJECT *ob = (LZH_OBJECT *)lzh_b2_fixture_get_data(fixb);
+
+        if (!oa || !ob) {
+            return;
+        }
 
         LZH_COLLIDER *collider = 
             (LZH_COLLIDER *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER);

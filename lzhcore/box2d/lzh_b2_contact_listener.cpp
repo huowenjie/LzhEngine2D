@@ -25,7 +25,10 @@ void LzhB2ContactListener::BeginContact(b2Contact *contact)
             const b2FixtureUserData &da = fa->GetUserData();
             const b2FixtureUserData &db = fb->GetUserData();
 
-            beginContact((void *)da.pointer, (void *)db.pointer, beginContactParam);
+            beginContact(
+                (LZH_B2_FIXUTRE *)da.pointer,
+                (LZH_B2_FIXUTRE *)db.pointer,
+                beginContactParam);
         }
     }
 }
@@ -40,7 +43,10 @@ void LzhB2ContactListener::EndContact(b2Contact *contact)
             const b2FixtureUserData &da = fa->GetUserData();
             const b2FixtureUserData &db = fb->GetUserData();
 
-            endContact((void *)da.pointer, (void *)db.pointer, endContactParam);
+            endContact(
+                (LZH_B2_FIXUTRE *)da.pointer,
+                (LZH_B2_FIXUTRE *)db.pointer,
+                endContactParam);
         }
     }
 }

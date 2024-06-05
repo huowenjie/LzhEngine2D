@@ -21,6 +21,24 @@ protected:
     // 开火发射炮弹
     void Fire();
 
+    // 前进
+    void ChassisForward(float delta);
+
+    // 后退
+    void ChassisBackward(float delta);
+
+    // 向右旋转
+    void ChassisRotateL(float delta);
+
+    // 向右旋转
+    void ChassisRotateR(float delta);
+
+    // 炮管向左旋转
+    void TurretRotateL(float delta);
+
+    // 炮管向右旋转
+    void TurretRotateR(float delta);
+
     // 保存当前帧位移状态
     void SaveTransform();
 
@@ -34,8 +52,22 @@ protected:
     virtual void ColliderEndCb(GameObject *self, GameObject *target);
 
 protected:
+    enum TankStatus {
+        TK_IDLE = 0x00000000U,
+        TK_RUN_FORWARD = 0x00000001U,
+        TK_RUN_BACKWARD = 0x00000002U,
+        TK_ROTATE_L = 0x00000004U,
+        TK_ROTATE_R = 0x00000008U,
+        TK_TURRET_ROTATE_L = 0x00000010U,
+        TK_TURRET_ROTATE_R = 0x00000020U
+    };
+
+protected:
     GameObject *chassis;
     GameObject *turret;
+
+    LZH_TRANSFORM *chassisTransform;
+    LZH_TRANSFORM *turretTransform;
 
     LZH_SPRITE *chassisSp;
     LZH_SPRITE *turretSp;
@@ -60,6 +92,9 @@ protected:
     // 上一帧位置
     float prevX;
     float prevY;
+
+    // 状态码
+    LZH_UINT32 statusCode;
 };
 
 /*===========================================================================*/
