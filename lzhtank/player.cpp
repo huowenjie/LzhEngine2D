@@ -19,7 +19,6 @@ Player::~Player()
 void Player::Update(LZH_ENGINE *eg)
 {    
     float delta = lzh_engine_interval(eg);
-    SaveTransform();
 
     if (lzh_get_key_status(KEY_CODE_W)) {
         ChassisForward(delta);
@@ -54,6 +53,7 @@ void Player::Update(LZH_ENGINE *eg)
 
 void Player::FixedUpdate(LZH_ENGINE *eg)
 {
+
     Tank::FixedUpdate(eg);
 }
 

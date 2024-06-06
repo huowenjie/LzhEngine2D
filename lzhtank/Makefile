@@ -1,68 +1,68 @@
 #------------------------------------------------------------------------------
-# c/c++ ç¼–è¯‘è„šæœ¬ï¼šç”Ÿæˆæ‰§è¡Œæ–‡ä»¶ã€åˆ›å»ºé™æ€åº“ã€åˆ›å»ºå…±äº«åº“
+# c/c++ ±àÒë½Å±¾£ºÉú³ÉÖ´ÐÐÎÄ¼þ¡¢´´½¨¾²Ì¬¿â¡¢´´½¨¹²Ïí¿â
 
 SHELL = /bin/sh
 
 #------------------------------------------------------------------------------
 
-# å‘å¸ƒç‰ˆæœ¬ (make build=debug or build=release)
+# ·¢²¼°æ±¾ (make build=debug or build=release)
 build ?= debug
 
-# ç¼–è¯‘æ—¶æ˜¯å¦å°†æ‰€æœ‰å­—ç¬¦ä¸²å¸¸é‡çš„ç¼–ç æ–¹å¼ç”± gbk è½¬æ¢ä¸º UTF-8
+# ±àÒëÊ±ÊÇ·ñ½«ËùÓÐ×Ö·û´®³£Á¿µÄ±àÂë·½Ê½ÓÉ gbk ×ª»»Îª UTF-8
 toutf ?= yes
 
 #------------------------------------------------------------------------------
 
-# é¡¹ç›®è®¾ç½®
+# ÏîÄ¿ÉèÖÃ
 PROJ := lzhtank
 
-# ä¸»ç‰ˆæœ¬
+# Ö÷°æ±¾
 VMAJ := 1
 
-# æ¬¡ç‰ˆæœ¬
+# ´Î°æ±¾
 VMIN := 0.0
 
-# é¡¹ç›®ç±»åž‹
+# ÏîÄ¿ÀàÐÍ
 EXEC :=
 TYPE := exe
 TYPES := exe ar so
 
-#ç¼–è¯‘å™¨é…ç½®
+#±àÒëÆ÷ÅäÖÃ
 CC	 := gcc
 CCPP := g++
 LK	 := g++
 
-# ç›®å½•è®¾ç½®
+# Ä¿Â¼ÉèÖÃ
 REL_DIR = ../..
 BIN_DIR = $(REL_DIR)/bin
 LIB_DIR = $(REL_DIR)/lib
-INC_DIR = . ../include
+INC_DIR = . ../include ../glm
 SRC_DIR = .
 OBJ_DIR = $(REL_DIR)/obj/$(PROJ)
 
 #------------------------------------------------------------------------------
-# è¾“å‡ºæ–‡ä»¶åç§°è®¾ç½®
+# Êä³öÎÄ¼þÃû³ÆÉèÖÃ
 
 REAL_NAME :=
 
-# æ£€æŸ¥é¡¹ç›®ç±»åž‹
+# ¼ì²éÏîÄ¿ÀàÐÍ
 ifeq ($(findstring $(TYPE),$(TYPES)),)
-$(error --- è¯·æŒ‡å®šç›®æ ‡ç±»åž‹ï¼š$(TYPES) ---)
+$(error --- ÇëÖ¸¶¨Ä¿±êÀàÐÍ£º$(TYPES) ---)
 endif
 
-# åº”ç”¨ç¨‹åº
+# Ó¦ÓÃ³ÌÐò
 ifeq ($(TYPE),exe)
 REAL_NAME := $(PROJ)
 endif
 
-# é™æ€åº“
+# ¾²Ì¬¿â
 ifeq ($(TYPE),ar)
 REAL_NAME := lib$(PROJ).a
 endif
 
-# å…±äº«åº“
+# ¹²Ïí¿â
 ifeq ($(TYPE),so)
-# è¾“å‡ºæ–‡ä»¶ã€soname è®¾ç½®
+# Êä³öÎÄ¼þ¡¢soname ÉèÖÃ
 LINK_NAME := lib$(PROJ).so
 SO_NAME   := $(LINK_NAME).$(VMAJ)
 REAL_NAME := $(SO_NAME).$(VMIN)
@@ -70,30 +70,30 @@ endif
 
 #------------------------------------------------------------------------------
 
-# é¢„å®šä¹‰å®
+# Ô¤¶¨Òåºê
 DEF := LZH_MEMORY_DEBUG
 
-# c++ æ–‡ä»¶åˆ—è¡¨
+# c++ ÎÄ¼þÁÐ±í
 CPP_FILES := $(foreach dir,$(SRC_DIR),$(wildcard $(dir)/*.cpp))
 
-# c æ–‡ä»¶åˆ—è¡¨
+# c ÎÄ¼þÁÐ±í
 C_FILES := $(foreach dir,$(SRC_DIR),$(wildcard $(dir)/*.c))
 
 #------------------------------------------------------------------------------
 
-# è°ƒè¯•é€‰é¡¹ debug:-g -O0 / release: -g -O2
+# µ÷ÊÔÑ¡Ïî debug:-g -O0 / release: -g -O2
 DBG := -g -O0
 
-# ç¼–è¯‘é€‰é¡¹
-# fPIC æŒ‡å®šç¼–è¯‘å™¨ç”Ÿæˆä½ç½®ç‹¬ç«‹çš„ä»£ç 
-# Wformat=0 ä¸æ£€æŸ¥é’ˆå¯¹ printf æ ¼å¼å­—ç¬¦åŒ¹é…çš„é—®é¢˜
-# Wall æ‰“å¼€å…¨éƒ¨è­¦å‘Š
-# c è¯­è¨€æ”¯æŒ c99 æ ‡å‡†å’Œç‰¹æ€§ï¼Œ c++ åˆ™ä¿æŒé»˜è®¤
-# -fvisibility=hidden éšè—æ— å…³ç¬¦å·
+# ±àÒëÑ¡Ïî
+# fPIC Ö¸¶¨±àÒëÆ÷Éú³ÉÎ»ÖÃ¶ÀÁ¢µÄ´úÂë
+# Wformat=0 ²»¼ì²éÕë¶Ô printf ¸ñÊ½×Ö·ûÆ¥ÅäµÄÎÊÌâ
+# Wall ´ò¿ªÈ«²¿¾¯¸æ
+# c ÓïÑÔÖ§³Ö c99 ±ê×¼ºÍÌØÐÔ£¬ c++ Ôò±£³ÖÄ¬ÈÏ
+# -fvisibility=hidden Òþ²ØÎÞ¹Ø·ûºÅ
 FLG := -fPIC -Wall -Wformat=0 -fvisibility=hidden
 CFLG := -fPIC -Wall -Wformat=0 -std=c99 -fvisibility=hidden
 
-# ç¼–è¯‘é€‰é¡¹
+# ±àÒëÑ¡Ïî
 ifeq ($(build),debug)
 	FLG += $(DBG)
 	CFLG += $(DBG)
@@ -102,8 +102,8 @@ else ifeq ($(build),release)
 	CFLG += -O2
 endif
 
-# -finput-charset æŒ‡ä»¤æŒ‡å®šå½“å‰æºæ–‡ä»¶çš„ç¼–ç æ–¹å¼
-# -fexec-charset æŒ‡ä»¤æŒ‡å®šæœ€ç»ˆå¯æ‰§è¡Œæ–‡ä»¶çš„è¾“å‡ºç¼–ç æ–¹å¼
+# -finput-charset Ö¸ÁîÖ¸¶¨µ±Ç°Ô´ÎÄ¼þµÄ±àÂë·½Ê½
+# -fexec-charset Ö¸ÁîÖ¸¶¨×îÖÕ¿ÉÖ´ÐÐÎÄ¼þµÄÊä³ö±àÂë·½Ê½
 ifeq ($(toutf),yes)
 	FLG += -finput-charset=gbk
 	FLG += -fexec-charset=utf-8
@@ -113,51 +113,51 @@ endif
 
 #------------------------------------------------------------------------------
 
-# é“¾æŽ¥é€‰é¡¹
-# -Wl,-Bsymbolic å¼ºåˆ¶é‡‡ç”¨æœ¬åœ°çš„å…¨å±€å˜é‡å®šä¹‰
-# -rpath='$$ORIGIN/' å¯æ‰§è¡Œç¨‹åºæœç´¢åº“åˆ—è¡¨ï¼Œä»Žå¯æ‰§è¡Œç¨‹åºå½“å‰ç›®å½•å¼€å§‹æœç´¢
-# -rpath-link=$(BIN_DIR) é“¾æŽ¥æ—¶ä¾èµ–åº“è·¯å¾„
+# Á´½ÓÑ¡Ïî
+# -Wl,-Bsymbolic Ç¿ÖÆ²ÉÓÃ±¾µØµÄÈ«¾Ö±äÁ¿¶¨Òå
+# -rpath='$$ORIGIN/' ¿ÉÖ´ÐÐ³ÌÐòËÑË÷¿âÁÐ±í£¬´Ó¿ÉÖ´ÐÐ³ÌÐòµ±Ç°Ä¿Â¼¿ªÊ¼ËÑË÷
+# -rpath-link=$(BIN_DIR) Á´½ÓÊ±ÒÀÀµ¿âÂ·¾¶
 LNK := -Wl,-Bsymbolic,-rpath='$$ORIGIN/',-rpath-link=$(BIN_DIR)
 
-# å…±äº«åº“
+# ¹²Ïí¿â
 ifeq ($(TYPE),so)
-# -shared ç”Ÿæˆå…±äº«åº“
-# -Wl,-soname,$(SO_NAME) æŒ‡å®šå½“å‰åŠ¨æ€åº“çš„ soname ä¸º $(SO_NAME)
+# -shared Éú³É¹²Ïí¿â
+# -Wl,-soname,$(SO_NAME) Ö¸¶¨µ±Ç°¶¯Ì¬¿âµÄ soname Îª $(SO_NAME)
 LNK += -shared -Wl,-soname,$(SO_NAME)
 endif
 
-# é“¾æŽ¥åº“åˆ—è¡¨
+# Á´½Ó¿âÁÐ±í
 LIB := lzhcore
 
 #------------------------------------------------------------------------------
 
-# é¢„å®šä¹‰å®
+# Ô¤¶¨Òåºê
 DEF := $(foreach def,$(DEF),-D$(def))
 
-# gcc å¤´æ–‡ä»¶æœç´¢è·¯å¾„
+# gcc Í·ÎÄ¼þËÑË÷Â·¾¶
 INC := $(foreach dir,$(INC_DIR),-I$(dir))
 
-# gcc åº“æ–‡ä»¶é“¾æŽ¥åŠæœç´¢è·¯å¾„
+# gcc ¿âÎÄ¼þÁ´½Ó¼°ËÑË÷Â·¾¶
 LIB := $(foreach lib,$(LIB),-l$(lib))
 LIB += -L$(BIN_DIR) -L$(LIB_DIR)
 
-# è¿‡æ»¤æºæ–‡ä»¶è·¯å¾„
+# ¹ýÂËÔ´ÎÄ¼þÂ·¾¶
 CPP_FILES := $(notdir $(CPP_FILES))
 C_FILES := $(notdir $(C_FILES))
 
-# æºæ–‡ä»¶åˆ—è¡¨
+# Ô´ÎÄ¼þÁÐ±í
 SRC_FILES := $(CPP_FILES)
 SRC_FILES += $(C_FILES)
 
-# ä¸­é—´æ–‡ä»¶åˆ—è¡¨
+# ÖÐ¼äÎÄ¼þÁÐ±í
 OBJ_FILES := $(patsubst %.cpp,%.obj,$(CPP_FILES))
 OBJ_FILES += $(patsubst %.c,%.o,$(C_FILES))
 
-# ä¾èµ–æ–‡ä»¶åˆ—è¡¨
+# ÒÀÀµÎÄ¼þÁÐ±í
 DEP_FILES := $(patsubst %.cpp,%.dep,$(CPP_FILES))
 DEP_FILES += $(patsubst %.c,%.d,$(C_FILES))
 
-# make æœç´¢è·¯å¾„
+# make ËÑË÷Â·¾¶
 vpath %.h		$(INC_DIR)
 vpath %.cpp		$(SRC_DIR)
 vpath %.c		$(SRC_DIR)
@@ -170,7 +170,7 @@ vpath %.d		$(OBJ_DIR)
 
 TARGET := $(BIN_DIR)/$(REAL_NAME)
 
-# ç”Ÿæˆæ‰§è¡Œæ–‡ä»¶
+# Éú³ÉÖ´ÐÐÎÄ¼þ
 ifeq ($(TYPE),exe)
 $(TARGET): $(OBJ_FILES)
 	@echo
@@ -178,7 +178,7 @@ $(TARGET): $(OBJ_FILES)
 	@$(LK) -o $@ $(LNK) $(addprefix $(OBJ_DIR)/,$(notdir $^)) $(LIB)
 endif
 
-# åˆ›å»ºé™æ€åº“
+# ´´½¨¾²Ì¬¿â
 ifeq ($(TYPE),ar)
 $(TARGET): $(OBJ_FILES)
 	@echo
@@ -186,7 +186,7 @@ $(TARGET): $(OBJ_FILES)
 	@ar -r $@ $(addprefix $(OBJ_DIR)/,$(notdir $^))
 endif
 
-# åˆ›å»ºå…±äº«åº“
+# ´´½¨¹²Ïí¿â
 ifeq ($(TYPE),so)
 $(TARGET): $(OBJ_FILES)
 	@echo
@@ -198,32 +198,32 @@ endif
 
 #------------------------------------------------------------------------------
 
-# ç¼–è¯‘ C++ æºæ–‡ä»¶
+# ±àÒë C++ Ô´ÎÄ¼þ
 %.obj: %.cpp %.dep
 	@echo "> $<"
 	@$(CCPP) -c $< -o $(OBJ_DIR)/$@ $(DEF) $(FLG) $(INC)
 
-# ç”Ÿæˆ C++ ä¾èµ–æ–‡ä»¶
+# Éú³É C++ ÒÀÀµÎÄ¼þ
 $(OBJ_DIR)/%.dep: %.cpp
 	@$(CCPP) -MM -MD $< -MF $@ $(DEF) $(FLG) $(INC) -MT $(patsubst %.cpp,%.obj,$(notdir $<))
 
-# ç¼–è¯‘ C æºæ–‡ä»¶
+# ±àÒë C Ô´ÎÄ¼þ
 %.o: %.c %.d
 	@echo "> $<"
 	@$(CC) -c $< -o $(OBJ_DIR)/$@ $(DEF) $(CFLG) $(INC)
 
-# ç”Ÿæˆ C ä¾èµ–æ–‡ä»¶
+# Éú³É C ÒÀÀµÎÄ¼þ
 $(OBJ_DIR)/%.d: %.c
 	@$(CC) -MM -MD $< -MF $@ $(DEF) $(CFLG) $(INC)
 
-# åŒ…å«ä¾èµ–æ–‡ä»¶
+# °üº¬ÒÀÀµÎÄ¼þ
 ifeq ($(MAKECMDGOALS),)
 -include $(addprefix $(OBJ_DIR)/,$(DEP_FILES))
 endif
 
 #------------------------------------------------------------------------------
 
-# å¾…åˆ é™¤æ–‡ä»¶
+# ´ýÉ¾³ýÎÄ¼þ
 DEL_NAMES := $(TARGET)
 
 ifeq ($(TYPE),so)
@@ -236,21 +236,21 @@ endif
 
 #------------------------------------------------------------------------------
 
-# ä¼ªç›®æ ‡
+# Î±Ä¿±ê
 .PHONY: clean mkdir rmdir
 
-# åˆ é™¤ç›®æ ‡
+# É¾³ýÄ¿±ê
 clean:
 	@rm -f $(DEL_NAMES)
 	@rm -f $(OBJ_DIR)/*
 
-# åˆ›å»ºç›®å½•
+# ´´½¨Ä¿Â¼
 mkdir:
 	@mkdir -p $(LIB_DIR)
 	@mkdir -p $(OBJ_DIR)
 	@mkdir -p $(BIN_DIR)
 	
-# åˆ é™¤ç›®å½•
+# É¾³ýÄ¿Â¼
 rmdir:
 	@rm -rf $(LIB_DIR)
 	@rm -rf $(OBJ_DIR)

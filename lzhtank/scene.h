@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 #include <vector>
-
+#include <vec2.hpp>
 #include "object.h"
 
 /*===========================================================================*/
@@ -48,7 +48,10 @@ public:
 
     // 射线检测
     GameObject *RayCastObject(
-        float sx, float sy, float ex, float ey) const;
+        const glm::vec2 &start,
+        const glm::vec2 &end,
+        glm::vec2 *point,
+        glm::vec2 *normal) const;
 
 protected:
     // 插入场景对象

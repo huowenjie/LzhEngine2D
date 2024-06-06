@@ -177,7 +177,7 @@ void lzh_collider_b2_unload(LZH_COLLIDER *collider, LZH_OBJECT *object)
     if (!b2_world) {
         return;
     }
-    
+
     if (collider->b2_body) {
         if (collider->b2_fixture) {
             lzh_b2_fixture_destroy(collider->b2_body, collider->b2_fixture);
@@ -287,6 +287,7 @@ void lzh_collider_b2_create_circle2d(LZH_COLLIDER *collider, const LZH_COLLIDER_
     collider->b2_fixture = fixture;
     lzh_b2_shape_circle_destroy(b2_circle);
 }
+
 void lzh_collider_remove(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {

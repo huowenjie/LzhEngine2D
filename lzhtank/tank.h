@@ -1,6 +1,7 @@
 #ifndef __TANK_H__
 #define __TANK_H__
 
+#include <vec2.hpp>
 #include "gameobject.h"
 
 /*===========================================================================*/
@@ -40,10 +41,17 @@ protected:
     void TurretRotateR(float delta);
 
     // 保存当前帧位移状态
-    void SaveTransform();
+    void SaveHitTransform();
 
     // 恢复当前帧位移状态
-    void RestoreTransform();
+    void RestoreHitTransform();
+
+    // 保存上一帧对象位置
+    void SavePrevPosition();
+
+protected:
+    // 探测前方是否有物体
+    bool CheckHitObject();
 
 protected:
     virtual void Update(LZH_ENGINE *eg);
@@ -89,9 +97,11 @@ protected:
     // 是否碰撞到别的对象
     bool isCollideOther;
 
+    // 上一帧碰撞位置
+    glm::vec2 hitSavePos;
+
     // 上一帧位置
-    float prevX;
-    float prevY;
+    glm::vec2 prevPos;
 
     // 状态码
     LZH_UINT32 statusCode;

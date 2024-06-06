@@ -11,6 +11,16 @@
 extern "C" {
 #endif
 
+/* 射线碰撞信息 */
+typedef struct LZH_SCENE_RAYHIT_2D
+{
+    LZH_OBJECT *hitobj; /* 碰撞对象 */
+    float nx;           /* 法线 x 坐标 */
+    float ny;           /* 法线 y 坐标 */
+    float hx;           /* 碰撞点 x 坐标 */
+    float hy;           /* 碰撞点 y 坐标 */
+} LZH_SCENE_RAYHIT_2D;
+
 /* 创建场景 */
 LZH_API LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine);
 
@@ -31,8 +41,8 @@ LZH_API void lzh_scene_set_last_callback(
     LZH_SCENE *scene, LZH_SCENE_LAST cb, void *args);
 
 /* 发射射线检测是否有对象碰撞，如果有，则返回碰撞对象 */
-LZH_API LZH_OBJECT *lzh_scene_raycast2d(
-    LZH_SCENE *scene, float sx, float sy, float ex, float ey);
+LZH_API LZH_BOOL lzh_scene_raycast2d(
+    LZH_SCENE *scene, float sx, float sy, float ex, float ey, LZH_SCENE_RAYHIT_2D *info);
 
 /*===========================================================================*/
 

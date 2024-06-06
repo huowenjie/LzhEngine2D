@@ -79,6 +79,9 @@ struct LZH_OBJECT {
     LZH_SCENE *current_scene;
 };
 
+/* 销毁对象 */
+void lzh_object_remove(LZH_OBJECT *object);
+
 /* 添加组件 */
 void lzh_object_add_component(LZH_OBJECT *object, void *cpnt);
 

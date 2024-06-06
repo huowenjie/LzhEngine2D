@@ -56,12 +56,6 @@ void lzh_scene_del_object(LZH_SCENE *scene, const char *name)
 void lzh_scene_remove(LZH_SCENE *scene)
 {
     if (scene) {
-        /* 移除物理引擎 */
-        if (scene->world2d) {
-            lzh_b2_world_destroy(scene->world2d);
-            scene->world2d = NULL;
-        }
-
         /* 移除释放树 */
         if (scene->del_tree) {
             scene_del_rb_destroy(scene->del_tree, NULL, NULL);
@@ -78,6 +72,12 @@ void lzh_scene_remove(LZH_SCENE *scene)
         if (scene->render_tree) {
             scene_obj_rb_destroy(scene->render_tree, lzh_scene_objs_visit_free, NULL);
             scene->render_tree = NULL;
+        }
+
+        /* 移除物理引擎 */
+        if (scene->world2d) {
+            lzh_b2_world_destroy(scene->world2d);
+            scene->world2d = NULL;
         }
 
         lzh_base_quit((LZH_BASE *)scene);
@@ -128,7 +128,7 @@ void lzh_scene_objs_visit_free(const SCENE_OBJ_RB_NODE *node, void *args)
     if (node) {
         LZH_OBJECT *object = node->value;
         object->base.state |= LZH_BST_SCENE_CLEAR;
-        lzh_object_destroy(object);
+        lzh_object_remove(object);
     }
 }
 

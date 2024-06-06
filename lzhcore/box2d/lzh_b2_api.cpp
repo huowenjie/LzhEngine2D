@@ -338,6 +338,11 @@ void lzh_b2_fixture_destroy(LZH_B2_BODY *body, LZH_B2_FIXUTRE *fixture)
     if (fixture) {
         if (fixture->object) {
             b2Fixture *bf = (b2Fixture *)fixture->object;
+            fixture->data = NULL;
+
+            b2FixtureUserData &data = bf->GetUserData();
+            data.pointer = 0;
+
             bd->DestroyFixture(bf);
         }
         LZH_FREE(fixture);

@@ -95,16 +95,34 @@ float Scene::GetHeight() const
 }
 
 GameObject *Scene::RayCastObject(
-    float sx, float sy, float ex, float ey) const
+    const glm::vec2 &start,
+    const glm::vec2 &end,
+    glm::vec2 *point,
+    glm::vec2 *normal) const
 {
     if (sceneObj) {
-        LZH_OBJECT *object = lzh_scene_raycast2d(sceneObj, sx, sy, ex, ey);
-        if (!object) {
+        LZH_SCENE_RAYHIT_2D hitInfo = { 0 };
+
+        if (!lzh_scene_raycast2d(sceneObj, start.x, start.y, end.x, end.y, &hitInfo)) {
+            return NULL;
+        }
+
+        if (!hitInfo.hitobj) {
             return NULL;
         }
 
         const char *extName = GameObject::ObjectExtName();
-        GameObject *gameObj = (GameObject *)lzh_object_get_extension(object, extName);
+        GameObject *gameObj = (GameObject *)lzh_object_get_extension(hitInfo.hitobj, extName);
+
+        if (point) {
+            point->x = hitInfo.hx;
+            point->y = hitInfo.hy;
+        }
+
+        if (normal) {
+            normal->x = hitInfo.nx;
+            normal->y = hitInfo.ny;
+        }
         return gameObj;
     }
     return NULL;

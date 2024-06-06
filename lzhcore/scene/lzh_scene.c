@@ -55,6 +55,9 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     base->fixed_update_param = NULL;
     base->draw_param = NULL;
 
+    /* 创建 2d 物理引擎世界对象 */
+    scene->world2d = lzh_b2_world_create(NULL);
+
     /* 创建对象渲染树 */
     scene->render_tree = scene_obj_rb_create(lzh_scene_objs_comp);
 
@@ -70,9 +73,6 @@ LZH_SCENE *lzh_scene_create(LZH_ENGINE *engine)
     /* 收尾过程 */
     scene->last_handle = NULL;
     scene->last_handle_args = NULL;
-
-    /* 创建 2d 物理引擎世界对象 */
-    scene->world2d = lzh_b2_world_create(NULL);
 
     /* 设置默认名称 */
     lzh_base_set_name(base, lzh_gen_new_name());
@@ -151,40 +151,51 @@ void lzh_scene_set_last_callback(LZH_SCENE *scene, LZH_SCENE_LAST cb, void *args
     }
 }
 
-LZH_OBJECT *lzh_scene_raycast2d(
-    LZH_SCENE *scene, float sx, float sy, float ex, float ey)
+LZH_BOOL lzh_scene_raycast2d(
+    LZH_SCENE *scene, float sx, float sy, float ex, float ey, LZH_SCENE_RAYHIT_2D *info)
 {
     LZH_B2_WORLD *bw = NULL;
     LZH_B2_RAYHIT rayhit = { 0 };
-    LZH_B2_HITINFO info = { 0 };
+    LZH_B2_HITINFO hitinfo = { 0 };
 
-    LZH_OBJECT *hit_obj = NULL;
+    LZH_BOOL is_hit = LZH_FALSE;
     LZH_VEC2F start = lzh_vec2f_xy(sx, sy);
     LZH_VEC2F end = lzh_vec2f_xy(ex, ey);
 
     if (!scene || !scene->world2d) {
-        return NULL;
+        return LZH_FALSE;
     }
 
     bw = scene->world2d;
+
+    if (!info) {
+        return lzh_b2_world_raycast(bw, &start, &end, NULL, RO_CHECK);
+    }
+
     if (!lzh_b2_world_raycast(bw, &start, &end, &rayhit, RO_CLOSEST_HIT)) {
-        return NULL;
+        return LZH_FALSE;
     }
 
     if (!rayhit.infoList || rayhit.count <= 0) {
         goto end;
     }
-    
-    info = rayhit.infoList[0];
-    if (!info.fixture) {
+
+    is_hit = LZH_TRUE;
+
+    hitinfo = rayhit.infoList[0];
+    if (!hitinfo.fixture) {
         goto end;
     }
 
-    hit_obj = (LZH_OBJECT *)lzh_b2_fixture_get_data(info.fixture);
+    info->hitobj = (LZH_OBJECT *)lzh_b2_fixture_get_data(hitinfo.fixture);
+    info->hx = hitinfo.point.x;
+    info->hy = hitinfo.point.y;
+    info->nx = hitinfo.normal.x;
+    info->ny = hitinfo.normal.y;
 
 end:
     lzh_b2_rayhit_clear(&rayhit);
-    return hit_obj;
+    return is_hit;
 }
 
 /*===========================================================================*/
@@ -221,7 +232,6 @@ void lzh_scene_fixedupdate(LZH_BASE *base, void *args)
 
     world = scene->world2d;
     scene_obj_rb_iterate(render_tree, lzh_scene_objs_visit_fixedupdate, NULL);
-
     lzh_b2_world_step(world, engine->delta_time, 8, 3);
 }
 

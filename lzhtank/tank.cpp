@@ -31,8 +31,6 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     tankhp = 1;
     isCollideOther = false;
 
-    prevX = 0.0f;
-    prevY = 0.0f;
     statusCode = TK_IDLE;
 
     // 只单独命名两个子对象
@@ -174,57 +172,70 @@ void Tank::TurretRotateR(float delta)
     statusCode &= (~TK_TURRET_ROTATE_L);
 }
 
-void Tank::SaveTransform()
+void Tank::SaveHitTransform()
 {
-    lzh_transform_get_pos(transform, &prevX, &prevY, NULL);
+    lzh_transform_get_pos(transform, &hitSavePos.x, &hitSavePos.y, NULL);
 }
 
-void Tank::RestoreTransform()
+void Tank::RestoreHitTransform()
 {
-    lzh_transform_set_pos(transform, prevX, prevY, 0.0f);
+    lzh_transform_set_pos(transform, hitSavePos.x, hitSavePos.y, 0.0f);
+}
+
+void Tank::SavePrevPosition()
+{
+    lzh_transform_get_pos(transform, &prevPos.x, &prevPos.y, NULL);
+}
+
+bool Tank::CheckHitObject()
+{
+    glm::vec2 delta;
+
+    if (statusCode & TK_RUN_FORWARD) {
+        lzh_transform_get_forward(transform, &delta.x, &delta.y, NULL);
+    } else if (statusCode & TK_RUN_BACKWARD) {
+        lzh_transform_get_backward(transform, &delta.x, &delta.y, NULL);
+    } else {
+        return false;
+    }
+
+    glm::vec2 start(prevPos);
+    glm::vec2 end = start + delta;
+
+    // 探测正前方是否有物体
+    GameObject *objforward = currentScene->RayCastObject(start, end, NULL, NULL);
+    return objforward != NULL;
 }
 
 /*===========================================================================*/
 
 void Tank::Update(LZH_ENGINE *eg)
 {
-    float deltaX = 0.0f;
-    float deltaY = 0.0f;
-
-    if (statusCode & TK_RUN_FORWARD) {
-        lzh_transform_get_forward(transform, &deltaX, &deltaY, NULL);
-    } else if (statusCode & TK_RUN_BACKWARD) {
-        lzh_transform_get_backward(transform, &deltaX, &deltaY, NULL);
-    } else {
-        return;
+    if (!CheckHitObject()) {
+        isCollideOther = false;
     }
 
-    GameObject *obj = currentScene->RayCastObject(
-        prevX, prevY, prevX + deltaX, prevY + deltaY);
-    if (obj) {
-        printf("RayCast Object! Name = %s\n", obj->GetName().c_str());
-        RestoreTransform();
+    if (isCollideOther) {
+        RestoreHitTransform();
     }
 
+    SavePrevPosition();
     statusCode = TK_IDLE;
 }
 
 void Tank::FixedUpdate(LZH_ENGINE *eg)
 {
-    if (isCollideOther) {
-        //RestoreTransform();
-    }
 }
 
 void Tank::ColliderCb(GameObject *self, GameObject *target)
 {
     GameObject::ObjectType type = target->GetObjectType();
     if (type != OT_Explode || type != OT_Bullet) {
-        //isCollideOther = true;
+        isCollideOther = true;
     }
 
     printf("ColliderCb tank!\n");
-    //SaveTransform();
+    SaveHitTransform();
 }
 
 void Tank::ColliderEndCb(GameObject *self, GameObject *target)
