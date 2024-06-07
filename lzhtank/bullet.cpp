@@ -118,8 +118,6 @@ void Bullet::ColliderCb(GameObject *self, GameObject *target)
         return;
     }
 
-    printf("Bullet::ColliderCb self = %s, target = %s\n", self->GetName().c_str(), target->GetName().c_str());
-
     if (fromObject == target) {
         return;
     }

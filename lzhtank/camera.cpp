@@ -6,6 +6,9 @@
 
 /*===========================================================================*/
 
+#define VIEW_WIDTH 32.0f
+#define VIEW_HIEGHT 24.0f;
+
 Camera::Camera(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
 {
     objType = OT_Camera;
@@ -23,16 +26,14 @@ Camera::~Camera()
 {
 }
 
-/*===========================================================================*/
-
-void Camera::Update(LZH_ENGINE *eg)
+float Camera::GetViewWidth() const
 {
-
+    return VIEW_WIDTH;
 }
 
-void Camera::FixedUpdate(LZH_ENGINE *eg)
+float Camera::GetViewHeight() const
 {
-
+    return VIEW_HIEGHT;
 }
 
 /*===========================================================================*/

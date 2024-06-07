@@ -13,6 +13,8 @@ Scene::Scene(LZH_ENGINE *eg, const std::string &name)
     engine = eg;
     sceneName = name;
 
+    mainCamera = NULL;
+
     lzh_scene_set_name(sceneObj, name.c_str());
     lzh_scene_set_last_callback(sceneObj, Scene::SceneLastHandle, this);
 }
@@ -74,24 +76,22 @@ void Scene::SceneLastHandle(LZH_SCENE *scene, void *args)
 
 void Scene::SetMainCamera(Camera *camera)
 {
+    mainCamera = camera;
+
     if (camera) {
         lzh_scene_set_main_camera(sceneObj, camera->GetObjectHandle());
     }
 }
 
+
+Camera *Scene::GetMainCamera() const
+{
+    return mainCamera;
+}
+
 LZH_SCENE *Scene::GetSceneHandle() const
 {
     return sceneObj;
-}
-
-float Scene::GetWidth() const
-{
-    return 0.0f;
-}
-
-float Scene::GetHeight() const
-{
-    return 0.0f;
 }
 
 GameObject *Scene::RayCastObject(

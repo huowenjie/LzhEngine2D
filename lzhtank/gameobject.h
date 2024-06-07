@@ -3,6 +3,7 @@
 
 #include <lzh_engine.h>
 #include <string>
+#include <glm.hpp>
 
 #include "object.h"
 
@@ -54,6 +55,10 @@ public:
 
     // 获取位置
     void GetPosition(float *x, float *y);
+    void GetPosition(glm::vec2 &pos);
+
+    // 获取当前前进向量
+    void GetForward(glm::vec2 &forward);
 
     // 设置旋转角度
     void SetRotate(float angle);

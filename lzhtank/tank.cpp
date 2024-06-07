@@ -234,13 +234,11 @@ void Tank::ColliderCb(GameObject *self, GameObject *target)
         isCollideOther = true;
     }
 
-    printf("ColliderCb tank!\n");
     SaveHitTransform();
 }
 
 void Tank::ColliderEndCb(GameObject *self, GameObject *target)
 {
-    printf("ColliderEndCb tank!\n");
     isCollideOther = false;
 }
 

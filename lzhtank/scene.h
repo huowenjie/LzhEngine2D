@@ -37,14 +37,11 @@ public:
     // 设置主相机
     void SetMainCamera(Camera *camera);
 
+    // 获取主相机对象
+    Camera *GetMainCamera() const;
+
     // 获取场景指针
     LZH_SCENE *GetSceneHandle() const;
-
-    // 获取场景宽度
-    float GetWidth() const;
-
-    // 获取场景高度
-    float GetHeight() const;
 
     // 射线检测
     GameObject *RayCastObject(
@@ -78,6 +75,9 @@ protected:
 
     // 场景准备删除列表
     std::vector<GameObject *> toFreeObjects;
+
+    // 主相机对象
+    Camera *mainCamera;
 };
 
 /*===========================================================================*/

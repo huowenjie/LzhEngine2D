@@ -90,6 +90,28 @@ void GameObject::GetPosition(float *x, float *y)
     }
 }
 
+void GameObject::GetPosition(glm::vec2 &pos)
+{
+    if (transform) {
+        float x = 0.0f;
+        float y = 0.0f;
+        lzh_transform_get_pos(transform, &x, &y, NULL);
+        pos.x = x;
+        pos.y = y;
+    }
+}
+
+void GameObject::GetForward(glm::vec2 &forward)
+{
+    if (transform) {
+        float x = 0.0f;
+        float y = 0.0f;
+        lzh_transform_get_forward(transform, &x, &y, NULL);
+        forward.x = x;
+        forward.y = y;
+    }
+}
+
 void GameObject::SetRotate(float angle)
 {
     if (transform) {

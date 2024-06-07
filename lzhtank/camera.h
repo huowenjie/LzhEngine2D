@@ -13,9 +13,9 @@ public:
     Camera(LZH_ENGINE *engine, Scene *scene);
     virtual ~Camera();
 
-protected:
-    virtual void Update(LZH_ENGINE *eg);
-    virtual void FixedUpdate(LZH_ENGINE *eg);
+public:
+    float GetViewWidth() const;
+    float GetViewHeight() const;
 
 protected:
     LZH_CAMERA *camera;
