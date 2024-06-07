@@ -18,9 +18,16 @@ public:
         OT_Object = 0,
         OT_Player,
         OT_Tank,
+        OT_Enemy,
         OT_Camera,
         OT_Bullet,
         OT_Explode
+    };
+
+    enum RoleType {
+        RT_None = 0x00000000U,
+        RT_Player = 0x00000001U,
+        RT_Enemy = 0x00000002U,
     };
 
 public:
@@ -83,6 +90,13 @@ public:
     // 获取对象类型
     ObjectType GetObjectType() const;
 
+    // 获取对象角色
+    RoleType GetObjectRole() const;
+
+    // 设置获取目标角色
+    void SetTargetRole(LZH_UINT32 roles);
+    LZH_UINT32 GetTargetRole() const;
+
 public:
     static const char *ObjectExtName();
 
@@ -104,12 +118,17 @@ protected:
 
 protected:
     ObjectType objType;
+    RoleType roleType;
+    
     LZH_ENGINE *engine;
     LZH_OBJECT *object;
     LZH_TRANSFORM *transform;
 
     // 当前所属场景对象
     Scene *currentScene;
+
+    // 目标角色合集
+    LZH_UINT32 targetRole;
 };
 
 /*===========================================================================*/

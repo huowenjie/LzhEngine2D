@@ -81,7 +81,7 @@ void Tank::BeAttacked(GameObject *from)
 void Tank::Fire()
 {
     if (currentScene) {
-        Bullet *bullet = new Bullet(engine, currentScene);
+        Bullet *bullet = new Bullet(engine, currentScene, targetRole);
 
         if (!bullet) {
             return;

@@ -10,7 +10,7 @@
 class Bullet : public GameObject
 {
 public:
-    Bullet(LZH_ENGINE *eg, Scene *scene);
+    Bullet(LZH_ENGINE *eg, Scene *scene, LZH_UINT32 roles = RT_None);
     virtual ~Bullet();
 
 public:
@@ -42,6 +42,9 @@ protected:
 
     // 飞行距离
     float flyingDistance;
+
+    // 目标角色
+    LZH_UINT32 targetRoles;
 };
 
 /*===========================================================================*/

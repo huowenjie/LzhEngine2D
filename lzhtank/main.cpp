@@ -7,7 +7,7 @@
 #include "camera.h"
 #include "scene.h"
 #include "bullet.h"
-#include "explode.h"
+#include "enemy.h"
 
 /*===========================================================================*/
 
@@ -42,18 +42,18 @@ void Run(LZH_ENGINE *engine)
     Scene scene(engine, "tutorial level");
     Camera *camera = new Camera(engine, &scene);
     Tank *tank = new Tank(engine, &scene);
-    Tank *tank2 = new Tank(engine, &scene);
+    Enemy *enemy = new Enemy(engine, &scene);
     Player *player = new Player(engine, &scene);
 
     player->SetName("player");
     tank->SetName("target");
-    tank2->SetName("target2");
+    enemy->SetName("enemey");
     tank->SetPosition(0.0f, 4.0f);
-    tank2->SetPosition(0.0f, 8.0f);
+    enemy->SetPosition(8.0f, 0.0f);
 
     scene.AddObject(camera);
     scene.AddObject(tank);
-    scene.AddObject(tank2);
+    scene.AddObject(enemy);
     scene.AddObject(player);
 
     scene.SetMainCamera(camera);

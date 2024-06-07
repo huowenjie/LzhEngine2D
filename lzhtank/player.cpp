@@ -10,6 +10,9 @@
 Player::Player(LZH_ENGINE *eg, Scene *scene) : Tank(eg, scene)
 {
     objType = OT_Player;
+    roleType = RT_Player;
+
+    targetRole |= RT_Enemy;
 }
 
 Player::~Player()

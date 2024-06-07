@@ -13,7 +13,7 @@
 
 /*===========================================================================*/
 
-Bullet::Bullet(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
+Bullet::Bullet(LZH_ENGINE *eg, Scene *scene, LZH_UINT32 roles) : GameObject(eg, scene)
 {
     objType = OT_Bullet;
     bulletSp = lzh_sprite_create(eg, object, GetTankBulletPath());
@@ -23,6 +23,7 @@ Bullet::Bullet(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     isExplode = false;
     fromObject = NULL;
     flyingDistance = 0.0f;
+    targetRoles = roles;
 
     char name[32];
     static int code = 1;
@@ -130,7 +131,8 @@ void Bullet::ColliderCb(GameObject *self, GameObject *target)
     // ²¥·Å¶¯»­
     BulletExplode();
 
-    if (target->GetObjectType() == OT_Tank) {
+    LZH_UINT32 targetRole = (LZH_UINT32)target->GetObjectRole();
+    if (targetRoles & targetRole) {
         Tank *tank = (Tank *)target;
         tank->BeAttacked(fromObject);
     }

@@ -13,10 +13,13 @@
 GameObject::GameObject(LZH_ENGINE *eg, Scene *scene)
 {
     objType = OT_Object;
+    roleType = RT_None;
+
     engine = eg;
     object = lzh_object_create(eg, scene->GetSceneHandle());
     transform = lzh_object_get_transform(object);
     currentScene = scene;
+    targetRole = 0;
 
     InitGameObject();
 }
@@ -24,10 +27,13 @@ GameObject::GameObject(LZH_ENGINE *eg, Scene *scene)
 GameObject::GameObject(LZH_ENGINE *eg, LZH_OBJECT *obj, Scene *scene)
 {
     objType = OT_Object;
+    roleType = RT_None;
+
     engine = eg;
     object = obj;
     transform = lzh_object_get_transform(object);
     currentScene = scene;
+    targetRole = 0;
 
     InitGameObject();
 }
@@ -169,6 +175,21 @@ LZH_TRANSFORM *GameObject::GetTransform() const
 GameObject::ObjectType GameObject::GetObjectType() const
 {
     return objType;
+}
+
+GameObject::RoleType GameObject::GetObjectRole() const
+{
+    return roleType;
+}
+
+void GameObject::SetTargetRole(LZH_UINT32 roles)
+{
+    targetRole = roles;
+}
+
+LZH_UINT32 GameObject::GetTargetRole() const
+{
+    return targetRole;
 }
 
 const char *GameObject::ObjectExtName()
