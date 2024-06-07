@@ -4,8 +4,7 @@
 #include <time.h>
 
 #include <lzh_systool.h>
-
-#include "../sdl2/SDL.h"
+#include <SDL.h>
 
 #ifdef _WINDOWS
 	#define _WIN32_WINNT 0x0502

@@ -34,7 +34,7 @@ LK	 := g++
 REL_DIR := ../..
 BIN_DIR := $(REL_DIR)/bin
 LIB_DIR := $(REL_DIR)/lib
-INC_DIR := . ../include
+INC_DIR := . ../include ../sdl2
 SRC_DIR := . component container log math mem scene tool object engine graphic graphic/glad \
 			box2d box2d/collision box2d/common box2d/dynamics box2d/rope
 
@@ -120,7 +120,7 @@ endif
 LNK := -Wl,-Bsymbolic
 
 # 链接库列表
-LIB := dl m SDL2
+LIB := dl m SDL2 freetype
 
 # 共享库
 ifeq ($(TYPE),so)

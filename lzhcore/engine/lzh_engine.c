@@ -6,9 +6,9 @@
 #include <lzh_object.h>
 #include <lzh_mem.h>
 
-#include "lzh_core_engine.h"
+#include <SDL_image.h>
 
-#include "../sdl2/SDL_image.h"
+#include "lzh_core_engine.h"
 #include "../graphic/lzh_opengl.h"
 #include "../object/lzh_core_object.h"
 #include "../log/lzh_tracer.h"

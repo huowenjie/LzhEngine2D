@@ -6,7 +6,7 @@
 #include <lzh_log.h>
 #include <lzh_systool.h>
 
-#include "../sdl2/SDL.h"
+#include <SDL.h>
 
 /*===========================================================================*/
 

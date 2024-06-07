@@ -1,7 +1,7 @@
 #ifndef __LZH_CORE_SPRITE_H__
 #define __LZH_CORE_SPRITE_H__
 
-#include "../sdl2/SDL.h"
+#include <SDL.h>
 #include "../graphic/lzh_texture.h"
 
 #include "lzh_component.h"
