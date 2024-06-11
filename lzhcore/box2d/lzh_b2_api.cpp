@@ -162,7 +162,7 @@ LZH_BOOL lzh_b2_world_raycast(
             break;
         }
 
-        int count = infoList.size();
+        size_t count = infoList.size();
         LZH_B2_HITINFO *infos = 
             (LZH_B2_HITINFO *)LZH_MALLOC(count * sizeof(LZH_B2_HITINFO));
         if (!infos) {
@@ -174,7 +174,7 @@ LZH_BOOL lzh_b2_world_raycast(
             infos[i] = infoList[i];
         }
 
-        hit->count = count;
+        hit->count = (int)count;
         hit->infoList = infos;
         isHit = LZH_TRUE;
     } while (false);
