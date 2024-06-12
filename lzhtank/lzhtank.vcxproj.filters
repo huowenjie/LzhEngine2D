@@ -14,6 +14,7 @@
     <ClCompile Include="explode.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h" />
@@ -25,5 +26,6 @@
     <ClInclude Include="explode.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="enemy.h" />
   </ItemGroup>
 </Project>
