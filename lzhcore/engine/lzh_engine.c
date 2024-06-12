@@ -9,6 +9,8 @@
 #include <SDL_image.h>
 
 #include "lzh_core_engine.h"
+#include "lzh_engine_time.h"
+
 #include "../graphic/lzh_opengl.h"
 #include "../object/lzh_core_object.h"
 #include "../log/lzh_tracer.h"
@@ -96,6 +98,8 @@ LZH_ENGINE *lzh_engine_create(
     engine->delta_time = 0.0f;
     engine->scene_manager = manager;
     engine->sprite_shader = shader;
+
+    lzh_engine_time_init(&engine->engine_time);
     return engine;
 
 err:
@@ -124,6 +128,8 @@ err:
 void lzh_engine_destroy(LZH_ENGINE *engine)
 {
     if (engine) {
+        lzh_engine_time_quit(&engine->engine_time);
+
         if (engine->sprite_shader) {
             lzh_shader_destroy(engine->sprite_shader);
         }
@@ -144,6 +150,7 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
     }
 }
 
+#if 0
 void lzh_engine_update(LZH_ENGINE *engine)
 {
     int run = 1;
@@ -251,6 +258,116 @@ void lzh_engine_update(LZH_ENGINE *engine)
         }
     }
 }
+#else
+void lzh_engine_update(LZH_ENGINE *engine)
+{
+    int run = 1;
+    GLbitfield mask = GL_COLOR_BUFFER_BIT;
+    SDL_Event evt;
+    SDL_Window *window = NULL;
+
+    float fix_time = 0.0f;
+    float render_time = 0.0f;
+    float time_count = 0.0f;
+
+    LZH_UINT64 curtime = 0;
+    LZH_UINT64 lasttime = 0;
+    LZH_UINT64 elapsed = 0;
+
+    if (!engine || !engine->logic_fps) {
+        return;
+    }
+
+    window = engine->window;
+    fix_time = 1000.0f / engine->logic_fps;
+    render_time = 1000.0f / engine->render_fps;
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    if (glIsEnabled(GL_DEPTH_TEST))
+    {
+        mask |= GL_DEPTH_BUFFER_BIT;
+    }
+
+    while (run) {        
+        curtime = lzh_engine_time_tick_usec(&engine->engine_time);
+        elapsed = curtime - lasttime;
+        lasttime = curtime;
+        engine->delta_time = lzh_engine_time_u2s(elapsed);
+
+        while (SDL_PollEvent(&evt)) {
+            if (evt.type == SDL_QUIT) {
+                run = 0;
+                break;
+            }
+
+            switch (evt.type) {
+                case SDL_KEYDOWN:
+                    engine->engine_event |= LZH_EVT_KEY_DOWN;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        glClear(mask);
+
+        /*
+         * 假设某一帧渲染时间过长，导致时间累计大于当前的
+         * 逻辑帧时间，则直接放弃这一帧的渲染，按照逻辑帧速率来追赶
+         * 进度
+         */
+        while (time_count > fix_time) {
+            time_count -= fix_time;
+
+            /*
+             * 1.scences fixed update 更新
+             *   |
+             *   |
+             * 2.objects fixed update 更新
+             *   |
+             *   |
+             * 3.components fixed update 更新
+             */
+             lzh_sm_fixedupdate(engine->scene_manager);
+        }
+
+        /*
+         * 1.scences update 更新
+         *   |
+         *   |
+         * 2.objects update 更新
+         *   |
+         *   |
+         * 3.components update 更新
+         */
+        lzh_sm_update(engine->scene_manager);
+
+        /* 场景绘制，调用所有对象的 draw 方法绘制 */
+        lzh_sm_draw(engine->scene_manager);
+        SDL_GL_SwapWindow(window);
+
+        /* 剩余工作 */
+        lzh_sm_last_handle(engine->scene_manager);
+
+        /* 清理场景需要删除的对象 */
+        lzh_sm_clear_objects(engine->scene_manager);
+
+        time_count += engine->delta_time;
+
+        /* 清空事件 */
+        engine->engine_event = LZH_EVT_NONE;
+
+        // if (engine->delta_time < render_time) {
+        //     SDL_Delay((Uint32)(render_time - engine->delta_time));
+        // } else if (engine->delta_time > 250.0f) {
+        //     engine->delta_time = 250.0f;
+        // }
+        lzh_engine_time_frame_delay(&engine->engine_time);
+    }
+}
+#endif
 
 float lzh_engine_interval(LZH_ENGINE *engine)
 {
