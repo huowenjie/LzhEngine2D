@@ -19,9 +19,8 @@ struct LZH_ENGINE {
     SDL_Window *window;
     SDL_GLContext *glctx;
 
-    float logic_fps;                    /* 逻辑帧帧数 */
-    float render_fps;                   /* 渲染帧帧数 */
-    float pause_delay;                  /* 暂停延时 ms */
+    int logic_fps;                      /* 逻辑帧数 */
+    int render_fps;                     /* 渲染帧帧数 */
     float delta_time;                   /* 帧间隔时间 ms */
 
     LZH_UINT32 engine_event;            /* 引擎状态事件 */

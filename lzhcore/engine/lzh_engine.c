@@ -92,9 +92,8 @@ LZH_ENGINE *lzh_engine_create(
 
     engine->window = window;
     engine->glctx = glctx;
-    engine->logic_fps = 30.0f;
-    engine->render_fps = 60.0f;
-    engine->pause_delay = 250.0f;
+    engine->logic_fps = 30;
+    engine->render_fps = 60;
     engine->delta_time = 0.0f;
     engine->scene_manager = manager;
     engine->sprite_shader = shader;
@@ -267,8 +266,6 @@ void lzh_engine_update(LZH_ENGINE *engine)
     SDL_Window *window = NULL;
 
     float fix_time = 0.0f;
-    float render_time = 0.0f;
-    float time_count = 0.0f;
 
     LZH_UINT64 curtime = 0;
     LZH_UINT64 lasttime = 0;
@@ -279,8 +276,7 @@ void lzh_engine_update(LZH_ENGINE *engine)
     }
 
     window = engine->window;
-    fix_time = 1000.0f / engine->logic_fps;
-    render_time = 1000.0f / engine->render_fps;
+    fix_time = 1.0f / engine->logic_fps;
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -289,11 +285,19 @@ void lzh_engine_update(LZH_ENGINE *engine)
         mask |= GL_DEPTH_BUFFER_BIT;
     }
 
-    while (run) {        
+    while (run) {
+        int i = 0;
+        int steps = 0;
+
         curtime = lzh_engine_time_tick_usec(&engine->engine_time);
         elapsed = curtime - lasttime;
         lasttime = curtime;
         engine->delta_time = lzh_engine_time_u2s(elapsed);
+
+        /* 固定时间累计 */
+        lzh_engine_time_fixed_accumulate(
+            &engine->engine_time, engine->delta_time, fix_time, engine->logic_fps);
+        steps = engine->engine_time.fixed_steps;
 
         while (SDL_PollEvent(&evt)) {
             if (evt.type == SDL_QUIT) {
@@ -318,9 +322,7 @@ void lzh_engine_update(LZH_ENGINE *engine)
          * 逻辑帧时间，则直接放弃这一帧的渲染，按照逻辑帧速率来追赶
          * 进度
          */
-        while (time_count > fix_time) {
-            time_count -= fix_time;
-
+        for (i = 0; i < steps; i++) {
             /*
              * 1.scences fixed update 更新
              *   |
@@ -354,16 +356,10 @@ void lzh_engine_update(LZH_ENGINE *engine)
         /* 清理场景需要删除的对象 */
         lzh_sm_clear_objects(engine->scene_manager);
 
-        time_count += engine->delta_time;
-
         /* 清空事件 */
         engine->engine_event = LZH_EVT_NONE;
 
-        // if (engine->delta_time < render_time) {
-        //     SDL_Delay((Uint32)(render_time - engine->delta_time));
-        // } else if (engine->delta_time > 250.0f) {
-        //     engine->delta_time = 250.0f;
-        // }
+        /* 帧延迟，节省资源 */
         lzh_engine_time_frame_delay(&engine->engine_time);
     }
 }
@@ -372,7 +368,7 @@ void lzh_engine_update(LZH_ENGINE *engine)
 float lzh_engine_interval(LZH_ENGINE *engine)
 {
     if (engine) {
-        return engine->delta_time / 1000.0f;
+        return engine->delta_time;
     }
     return 0.0f;
 }
