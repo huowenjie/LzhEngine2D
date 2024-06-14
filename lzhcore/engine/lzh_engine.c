@@ -57,6 +57,7 @@ LZH_ENGINE *lzh_engine_create(
     SDL_GLContext *glctx = NULL;
     LZH_SCENE_MANAGER *manager = NULL;
     LZH_SHADER *shader = NULL;
+    FT_Library ft = NULL;
 
     LZH_ENGINE *engine = LZH_MALLOC(sizeof(LZH_ENGINE));
     if (!engine) {
@@ -90,6 +91,10 @@ LZH_ENGINE *lzh_engine_create(
         goto err;
     }
 
+    if (FT_Init_FreeType(&ft)) {
+        goto err;
+    }
+
     engine->window = window;
     engine->glctx = glctx;
     engine->logic_fps = 60;
@@ -99,9 +104,14 @@ LZH_ENGINE *lzh_engine_create(
     engine->sprite_shader = shader;
 
     lzh_engine_time_init(&engine->engine_time);
+
     return engine;
 
 err:
+    if (ft) {
+        FT_Done_FreeType(ft);
+    }
+
     if (shader) {
         lzh_shader_destroy(shader);
     }
@@ -128,6 +138,10 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
 {
     if (engine) {
         lzh_engine_time_quit(&engine->engine_time);
+
+        if (engine->ft_lib) {
+            FT_Done_FreeType(engine->ft_lib);
+        }
 
         if (engine->sprite_shader) {
             lzh_shader_destroy(engine->sprite_shader);

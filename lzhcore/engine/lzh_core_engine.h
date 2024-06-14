@@ -3,7 +3,12 @@
 
 #include <SDL.h>
 #include <lzh_type.h>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H  
+
 #include "lzh_engine_time.h"
+
 #include "../scene/lzh_scene_manager.h"
 #include "../graphic/lzh_shader.h"
 
@@ -29,6 +34,8 @@ struct LZH_ENGINE {
     LZH_SHADER *sprite_shader;          /* 通用的精灵着色器 */
 
     LZH_ENGINE_TIME engine_time;        /* 引擎时间 */
+
+    FT_Library ft_lib;                  /* freeType 库对象 */
 };
 
 /*===========================================================================*/

@@ -30,6 +30,9 @@ LZH_API void lzh_text_set_font_color(
 /* 设置文本内容 */
 LZH_API void lzh_text_set_content(LZH_TEXT *text, const char *content);
 
+/* 设置文本偏移值 */
+LZH_API void lzh_text_set_offset(LZH_TEXT *text, float x, float y, float z);
+
 #ifdef __cplusplus
 }
 #endif
