@@ -8,6 +8,7 @@
 #include "scene.h"
 #include "bullet.h"
 #include "enemy.h"
+#include "fontobj.h"
 
 /*===========================================================================*/
 
@@ -43,6 +44,7 @@ void Run(LZH_ENGINE *engine)
     Camera *camera = new Camera(engine, &scene);
     Enemy *enemy = new Enemy(engine, &scene);
     Player *player = new Player(engine, &scene);
+    FontObj *font = new FontObj(engine, &scene);
 
     player->SetName("player");
     enemy->SetName("enemey");
@@ -51,6 +53,7 @@ void Run(LZH_ENGINE *engine)
     scene.AddObject(camera);
     scene.AddObject(enemy);
     scene.AddObject(player);
+    scene.AddObject(font);
 
     scene.SetMainCamera(camera);
     scene.LoadScene();

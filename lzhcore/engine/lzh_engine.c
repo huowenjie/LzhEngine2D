@@ -102,9 +102,9 @@ LZH_ENGINE *lzh_engine_create(
     engine->delta_time = 0.0f;
     engine->scene_manager = manager;
     engine->sprite_shader = shader;
+    engine->ft_lib = ft;
 
     lzh_engine_time_init(&engine->engine_time);
-
     return engine;
 
 err:
@@ -139,10 +139,6 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
     if (engine) {
         lzh_engine_time_quit(&engine->engine_time);
 
-        if (engine->ft_lib) {
-            FT_Done_FreeType(engine->ft_lib);
-        }
-
         if (engine->sprite_shader) {
             lzh_shader_destroy(engine->sprite_shader);
         }
@@ -157,6 +153,10 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
 
         if (engine->window) {
             SDL_DestroyWindow(engine->window);
+        }
+
+        if (engine->ft_lib) {
+            FT_Done_FreeType(engine->ft_lib);
         }
 
         LZH_FREE(engine);

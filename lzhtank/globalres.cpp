@@ -15,6 +15,7 @@ static char turret_res[BUFFER_LEN] = { 0 };
 static char bullet_res[BUFFER_LEN] = { 0 };
 static char explode_path[EXPLODE_RES_COUNT][BUFFER_LEN] = { 0 };
 static char *explode_res[EXPLODE_RES_COUNT] = { 0 };
+static char font_path[BUFFER_LEN] = { 0 };
 
 static char player_name[] = "player";
 
@@ -54,6 +55,11 @@ const char *GetTankTurretPath()
 const char *GetTankBulletPath()
 {
     return bullet_res;
+}
+
+const char *GetFontPath()
+{
+    return font_path;
 }
 
 const char **GetTankExplodePath()
@@ -120,6 +126,9 @@ void InitGlobalRes()
     for (int i = 0; i < EXPLODE_RES_COUNT; i++) {
         explode_res[i] = explode_path[i];
     }
+
+    strcpy(font_path, res_path);
+    strcat(font_path, "I.Ming-8.10.ttf");
 }
 
 /*===========================================================================*/

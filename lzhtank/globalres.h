@@ -16,6 +16,9 @@ const char *GetTankResPath();
 const char *GetTankTurretPath();
 const char *GetTankBulletPath();
 
+/* 字体资源目录 */
+const char *GetFontPath();
+
 /* explode 资源 */
 const char **GetTankExplodePath();
 int GetTankExplodeCount();

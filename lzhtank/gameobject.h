@@ -22,7 +22,8 @@ public:
         OT_Enemy,
         OT_Camera,
         OT_Bullet,
-        OT_Explode
+        OT_Explode,
+        OT_UI
     };
 
     enum RoleType {
