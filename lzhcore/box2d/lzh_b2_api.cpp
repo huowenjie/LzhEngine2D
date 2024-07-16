@@ -170,7 +170,7 @@ LZH_BOOL lzh_b2_world_raycast(
         }
         memset(infos, 0, count * sizeof(LZH_B2_HITINFO));
 
-        for (int i = 0; i < count; i++) {
+        for (size_t i = 0; i < count; i++) {
             infos[i] = infoList[i];
         }
 

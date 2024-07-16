@@ -15,7 +15,6 @@ Camera::Camera(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     camera = lzh_camera_create(eg, object);
 
     lzh_object_set_name(object, "camera");
-    lzh_camera_set_viewport(camera, 32.0f, 24.0f);
 
     lzh_camera_set_perspective(camera, LZH_FALSE);
     lzh_camera_lookat(camera, 0.0f, 0.0f, 0.0f);

@@ -1,5 +1,6 @@
 #include <lzh_camera.h>
 #include <lzh_mem.h>
+#include <lzh_engine.h>
 #include <stddef.h>
 
 #include "lzh_core_camera.h"
@@ -40,10 +41,9 @@ LZH_CAMERA *lzh_camera_create(LZH_ENGINE *engine, LZH_OBJECT *object)
 
     base->base.engine = engine;
     base->remove_component = lzh_camera_remove;
-    
+
     camera->type = LZH_CAMERA_PERSP;
-    camera->view_port_w = 2.0f;
-    camera->view_port_h = 2.0f;
+    lzh_engine_win_sizef(engine, &camera->view_port_w, &camera->view_port_h);
     camera->up = lzh_vec3f_xyz(0.0f, 1.0f, 0.0f);
     camera->target = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     camera->view = lzh_mat4x4f_unit();
@@ -93,40 +93,6 @@ void lzh_camera_set_updir(LZH_CAMERA *camera, float x, float y, float z)
 
 /*===========================================================================*/
 
-#if 0
-void lzh_camera_update(LZH_BASE *base, void *args)
-{
-    LZH_CAMERA *camera = NULL;
-    LZH_ENGINE *engine = NULL;
-    LZH_SHADER *shader = NULL;
-    LZH_MAT4X4F unit = lzh_mat4x4f_unit();
-
-    if (!base) {
-        return;
-    }
-
-    camera = (LZH_CAMERA *)base;
-    engine = base->engine;
-    if (!engine) {
-        return;
-    }
-
-    shader = engine->sprite_shader;
-    if (!shader) {
-        return;
-    }
-
-    lzh_shader_bind(shader);
-#if 0
-    lzh_shader_set_mat4x4f(shader, "view", &camera->view);
-    lzh_shader_set_mat4x4f(shader, "projection", &camera->prog);
-#else
-    lzh_shader_set_mat4x4f(shader, "view", &camera->view);
-    lzh_shader_set_mat4x4f(shader, "projection", &unit);
-#endif
-}
-#endif
-
 void lzh_camera_remove(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
@@ -145,9 +111,6 @@ void lzh_camera_flush(LZH_CAMERA *camera)
     LZH_VEC3F camera_pos = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     LZH_VEC3F camera_up = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     LZH_VEC4F origin_up = lzh_vec4f_xyzw(0.0f, 0.0f, 0.0f, 1.0f);
-
-    LZH_MAT4X4F v = lzh_mat4x4f_scale(
-        1.0f / camera->view_port_w, 1.0f / camera->view_port_h, 1.0f);
 
     if (!camera) {
         return;
@@ -171,7 +134,6 @@ void lzh_camera_flush(LZH_CAMERA *camera)
     camera_pos = transform->local_pos;
     lookat = lzh_mat4x4f_camera(&camera_pos, &camera_up, &camera->target);
 
-    lookat = lzh_mat4x4f_mul(&lookat, &v);
     camera->view = lookat;
 
     if (camera->type == LZH_CAMERA_PERSP) {
@@ -184,14 +146,20 @@ void lzh_camera_flush(LZH_CAMERA *camera)
 void lzh_camera_orth_flush(LZH_CAMERA *camera) 
 {
     if (camera) {
-        camera->prog = lzh_mat4x4f_ortho(-1.0f, 1.0f, 1.0f, -1.0f, 0.1f, 100.0f);
+        float scale = 0.1f;
+        float vpw = scale * camera->view_port_w / 2.0f;
+        float vph = scale * camera->view_port_h / 2.0f;
+
+        camera->prog = lzh_mat4x4f_ortho(-vpw, vph, vpw, -vph, 0.1f, 100.0f);
     }
 }
 
 void lzh_camera_pers_flush(LZH_CAMERA *camera)
 {
     if (camera) {
-        camera->prog = lzh_mat4x4f_perspective(LZH_PI / 4.0f, 8.0f / 6.0f, 0.1f, 100.0f);
+        LZH_MAT4X4F proj = lzh_mat4x4f_ortho2d(-30.0f, 30.0f, 30.0f, -30.0f);
+        LZH_MAT4X4F perp = lzh_mat4x4f_perspective(LZH_PI / 4.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+        camera->prog = lzh_mat4x4f_mul(&proj, &perp);
     }
 }
 

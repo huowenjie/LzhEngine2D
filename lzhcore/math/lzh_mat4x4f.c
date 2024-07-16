@@ -384,7 +384,24 @@ LZH_MAT4X4F lzh_mat4x4f_ortho(
     ortho.m00 = 2.0f / (right - left);
     ortho.m11 = 2.0f / (top - bottom);
     ortho.m22 = -2.0f / (far - near);
-    ortho.m23 = -(far + near) / (far - near);
+
+    ortho.m03 = - (right + left) / (right - left);
+    ortho.m13 = - (top + bottom) / (top - bottom);
+    ortho.m23 = - (far + near) / (far - near);
+    return ortho;
+}
+
+LZH_MAT4X4F lzh_mat4x4f_ortho2d(
+    float left, float top, float right, float bottom)
+{
+    LZH_MAT4X4F ortho = lzh_mat4x4f_unit();
+
+    ortho.m00 = 2.0f / (right - left);
+    ortho.m11 = 2.0f / (top - bottom);
+    ortho.m22 = 1.0f;
+
+    ortho.m03 = - (right + left) / (right - left);
+    ortho.m13 = - (top + bottom) / (top - bottom);
     return ortho;
 }
 

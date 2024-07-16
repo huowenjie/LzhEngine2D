@@ -23,6 +23,9 @@ LZH_SHADER *lzh_shader_new(const char *vert_shader, const char *frag_shader);
 /* 通用精灵着色器 */
 LZH_SHADER *lzh_shader_sprite();
 
+/* 通用文本着色器 */
+LZH_SHADER *lzh_shader_text();
+
 /* 销毁着色器 */
 void lzh_shader_destroy(LZH_SHADER *shader);
 

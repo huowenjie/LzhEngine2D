@@ -149,7 +149,7 @@ LZH_SHADER *lzh_shader_sprite()
         "   gl_Position = projection * view * model * vec4(inPos, 1.0);\n"
         "   outColor = inColor;\n"
         "   outTexture = inTexCoord;\n"
-        "}\0";
+        "}\n\0";
 
     const char *fragmentShaderSource = 
         "#version 330 core\n"
@@ -160,6 +160,35 @@ LZH_SHADER *lzh_shader_sprite()
         "void main()\n"
         "{\n"
         "   FragColor = texture(texture1, outTexture);\n"
+        "}\n\0";
+
+    return lzh_shader_new(vertexShaderSource, fragmentShaderSource);
+}
+
+LZH_SHADER *lzh_shader_text()
+{
+    const char *vertexShaderSource =
+        "#version 330 core\n"
+        "layout (location = 0) in vec2 inPos;\n"
+        "layout (location = 1) in vec2 inTexCoord;\n"
+        "uniform mat4 projection;\n"
+        "out vec2 outTexture;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = projection * vec4(inPos.xy, 0.0, 1.0);\n"
+        "   outTexture = inTexCoord;\n"
+        "}\n\0";
+
+    const char *fragmentShaderSource = 
+        "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "in vec2 outTexture;\n"
+        "uniform sampler2D texture1;\n"
+        "uniform vec3 textColor;\n"
+        "void main()\n"
+        "{\n"
+        "   vec4 sampled = vec4(1.0, 1.0, 1.0, texture(texture1, outTexture).r);\n"
+        "   FragColor = vec4(textColor, 1.0) * sampled;\n"
         "}\n\0";
 
     return lzh_shader_new(vertexShaderSource, fragmentShaderSource);

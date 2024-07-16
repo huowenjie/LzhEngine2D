@@ -56,7 +56,8 @@ LZH_ENGINE *lzh_engine_create(
     SDL_Window *window = NULL;
     SDL_GLContext *glctx = NULL;
     LZH_SCENE_MANAGER *manager = NULL;
-    LZH_SHADER *shader = NULL;
+    LZH_SHADER *sprite = NULL;
+    LZH_SHADER *text = NULL;
     FT_Library ft = NULL;
 
     LZH_ENGINE *engine = LZH_MALLOC(sizeof(LZH_ENGINE));
@@ -86,8 +87,13 @@ LZH_ENGINE *lzh_engine_create(
         goto err;
     }
 
-    shader = lzh_shader_sprite();
-    if (!shader) {
+    sprite = lzh_shader_sprite();
+    if (!sprite) {
+        goto err;
+    }
+
+    text = lzh_shader_text();
+    if (!text) {
         goto err;
     }
 
@@ -101,7 +107,8 @@ LZH_ENGINE *lzh_engine_create(
     engine->render_fps = 60;
     engine->delta_time = 0.0f;
     engine->scene_manager = manager;
-    engine->sprite_shader = shader;
+    engine->sprite_shader = sprite;
+    engine->text_shader = text;
     engine->ft_lib = ft;
 
     lzh_engine_time_init(&engine->engine_time);
@@ -112,8 +119,12 @@ err:
         FT_Done_FreeType(ft);
     }
 
-    if (shader) {
-        lzh_shader_destroy(shader);
+    if (text) {
+        lzh_shader_destroy(text);
+    }
+
+    if (sprite) {
+        lzh_shader_destroy(sprite);
     }
 
     if (manager) {
@@ -138,6 +149,10 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
 {
     if (engine) {
         lzh_engine_time_quit(&engine->engine_time);
+
+        if (engine->text_shader) {
+            lzh_shader_destroy(engine->text_shader);
+        }
 
         if (engine->sprite_shader) {
             lzh_shader_destroy(engine->sprite_shader);
@@ -292,6 +307,22 @@ void lzh_engine_win_size(LZH_ENGINE *engine, int *w, int *h)
 {
     if (engine) {
         SDL_GetWindowSize(engine->window, w, h);
+    }
+}
+
+void lzh_engine_win_sizef(LZH_ENGINE *engine, float *w, float *h)
+{
+    int nw = 0;
+    int nh = 0;
+
+    lzh_engine_win_size(engine, &nw, &nh);
+
+    if (w) {
+        *w = (float)nw;
+    }
+
+    if (h) {
+        *h = (float)nh;
     }
 }
 

@@ -82,6 +82,52 @@ void lzh_texture_destroy(LZH_TEXTURE *texture)
 
 /*===========================================================================*/
 
+LZH_CHARACTER *lzh_character_create(
+    const LZH_DATA *bitmap, int w, int h, int bx, int by, int advance)
+{
+    LZH_CHARACTER *character = NULL;
+    GLuint texid = 0;
+
+    if (!bitmap || !bitmap->value) {
+        return NULL;
+    }
+
+    character = LZH_MALLOC(sizeof(LZH_CHARACTER));
+    if (!character) {
+        return NULL;
+    }
+    memset(character, 0, sizeof(LZH_CHARACTER));
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glGenTextures(1, &texid);
+    glBindTexture(GL_TEXTURE_2D, texid); 
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap->value);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    character->advance = advance;
+    character->bearing_x = bx;
+    character->bearing_y = by;
+    character->width = w;
+    character->height = h;
+    character->texid = texid;
+
+    return character;
+}
+
+void lzh_character_destroy(LZH_CHARACTER *character)
+{
+    if (character) {
+        glDeleteTextures(1, &character->texid);
+        LZH_FREE(character);
+    }
+}
+
+/*===========================================================================*/
+
 GLint get_png_format(int channels)
 {
     GLint format = GL_NONE;
