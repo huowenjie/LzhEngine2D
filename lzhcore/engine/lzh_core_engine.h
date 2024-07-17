@@ -11,6 +11,7 @@
 
 #include "../scene/lzh_scene_manager.h"
 #include "../graphic/lzh_shader.h"
+#include "../graphic/lzh_vertex.h"
 
 /*===========================================================================*/
 /* 引擎对象 */
@@ -31,8 +32,11 @@ struct LZH_ENGINE {
     LZH_UINT32 engine_event;            /* 引擎状态事件 */
 
     LZH_SCENE_MANAGER *scene_manager;   /* 场景管理 */
+
     LZH_SHADER *sprite_shader;          /* 通用的精灵着色器 */
     LZH_SHADER *text_shader;            /* 通用的文本渲染着色器 */
+    LZH_SPRITE_VERTEX *sprite_vertex;   /* 通用 sprite 顶点 */
+    LZH_TEXT_VERTEX *text_vertex;       /* 通用 text 顶点 */
 
     LZH_ENGINE_TIME engine_time;        /* 引擎时间 */
 

@@ -5,11 +5,15 @@
 
 /*===========================================================================*/
 
+RBTREE_IMPLEMENT(LZH_TEXT, lzh_text, int, LZH_CHARACTER *)
+
+/*===========================================================================*/
+
+static int lzh_text_tree_comp(const void *a, const void *b);
+static void lzh_text_rb_visit(const LZH_TEXT_RB_NODE *node, void *args);
+
 static void lzh_text_draw(LZH_BASE *base, void *args);
 static void lzh_text_remove(LZH_COMPONENT *cpnt);
-
-static void init_vertex(LZH_TEXT *text);
-static void quit_vertex(LZH_TEXT *text);
 
 /*===========================================================================*/
 
@@ -37,8 +41,7 @@ LZH_TEXT *lzh_text_create(LZH_ENGINE *engine, LZH_OBJECT *object)
 
     text->text_face = NULL;
     text->text_char = NULL;
-
-    init_vertex(text);
+    text->characters = lzh_text_rb_create(lzh_text_tree_comp);
     return text;
 }
 
@@ -106,7 +109,7 @@ void lzh_text_set_content(LZH_TEXT *text, const char *content)
         FT_GlyphSlot slot = face->glyph;
         FT_Bitmap *bitmap = NULL;
 
-        FT_ULong charcode = 0x5B89;
+        FT_ULong charcode = 0x65;
         FT_UInt index = FT_Get_Char_Index(face, charcode);
 
         LZH_DATA buffer = { 0 };
@@ -132,7 +135,7 @@ void lzh_text_set_content(LZH_TEXT *text, const char *content)
         // render
         character = lzh_character_create(
             &buffer, bitmap->width, bitmap->rows,
-            slot->bitmap_left, slot->bitmap_top, slot->advance.x);
+            slot->bitmap_left, slot->bitmap_top, slot->advance.x, charcode);
         if (character) {
             text->text_char = character;
         }
@@ -146,73 +149,72 @@ void lzh_text_set_offset(LZH_TEXT *text, float x, float y, float z)
 
 /*===========================================================================*/
 
+int lzh_text_tree_comp(const void *a, const void *b)
+{
+    int i1 = *((int *)a);
+    int i2 = *((int *)b);
+
+    if (i1 < i2) {
+        return -1;
+    } else if (i1 > i2) {
+        return 1;
+    }
+
+    return 0;
+}
+
+void lzh_text_rb_visit(const LZH_TEXT_RB_NODE *node, void *args)
+{
+    LZH_CHARACTER *ch = NULL;
+
+    if (!node) {
+        return;
+    }
+
+    ch = node->value;
+    if (!ch) {
+        return;
+    }
+
+    lzh_character_destroy(ch);
+}
+
 static void update_text_vertex(
-    LZH_SHADER *shader, LZH_CAMERA *camera, LZH_TRANSFORM *transform, LZH_TEXT *text)
+    LZH_TEXT_VERTEX *vertex,
+    LZH_SHADER *shader,
+    LZH_CAMERA *camera,
+    LZH_TRANSFORM *transform,
+    LZH_TEXT *text)
 {
     LZH_MAT4X4F proj = lzh_mat4x4f_unit();
-    
-    if (!shader || !camera || !transform || !text) {
+    LZH_VEC3F textcolor = lzh_vec3f_xyz(1.0f, 0.0f, 0.0f);
+
+    if (!vertex || !shader || !camera || !transform || !text) {
         return;
     }
 
     proj = lzh_mat4x4f_ortho2d(0.0f, camera->view_port_h, camera->view_port_w, 0.0f);
 
-    if (text->vao) {
-        LZH_CHARACTER *character = text->text_char;
-        if (!character) {
-            return;
-        }
-
-        GLfloat xpos = 0.0f + character->bearing_x;
-        //GLfloat ypos = 0.0f - (character->height - character->bearing_y);
-        GLfloat ypos = 0.0f;
-
-        GLfloat w = character->width;
-        GLfloat h = character->height;
-
-        float vertices[] = {
-            xpos + w, ypos,     1.0f, 1.0f,
-            xpos + w, ypos + h, 1.0f, 0.0f,
-            xpos,     ypos + h, 0.0f, 0.0f,
-            xpos,     ypos,     0.0f, 1.0f
-        };
-
-        glBindBuffer(GL_ARRAY_BUFFER, text->vbo);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
-
-        lzh_shader_bind(shader);
-        lzh_shader_set_mat4x4f(shader, "projection", &proj);
-
-        glBindVertexArray(text->vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    }
-}
-
-static void update_text_texture(LZH_ENGINE *engine, LZH_TEXT *text)
-{
-    LZH_SHADER *shader = NULL;
-    LZH_CHARACTER *character = NULL;
-    LZH_VEC3F textcolor = lzh_vec3f_xyz(1.0f, 0.0f, 0.0f);
-
-    if (!engine || !text) {
-        return;
-    }
-
-    shader = engine->text_shader;
-    if (!shader) {
-        return;
-    }
-
-    character = text->text_char;
+    LZH_CHARACTER *character = text->text_char;
     if (!character) {
         return;
     }
 
+    GLfloat xpos = 0.0f + character->bearing_x;
+    //GLfloat ypos = 0.0f - (character->height - character->bearing_y);
+    GLfloat ypos = 0.0f;
+
+    GLfloat w = character->base.width;
+    GLfloat h = character->base.height;
+
     lzh_shader_bind(shader);
     lzh_shader_set_vec3f(shader, "textColor", &textcolor);
+    lzh_texture_active((LZH_TEXTURE *)character);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, character->texid);
+    lzh_vertex_text_data(vertex, xpos, ypos, w, h);
+    lzh_shader_bind(shader);
+    lzh_shader_set_mat4x4f(shader, "projection", &proj);
+    lzh_vertex_text_draw(vertex);
 }
 
 void lzh_text_draw(LZH_BASE *base, void *args)
@@ -262,8 +264,8 @@ void lzh_text_draw(LZH_BASE *base, void *args)
         return;
     }
 
-    update_text_texture(engine, text);
-    update_text_vertex(engine->text_shader, camera_cpnt, transform, text);
+    update_text_vertex(
+        engine->text_vertex, engine->text_shader, camera_cpnt, transform, text);
 }
 
 void lzh_text_remove(LZH_COMPONENT *cpnt)
@@ -271,7 +273,9 @@ void lzh_text_remove(LZH_COMPONENT *cpnt)
     if (cpnt) {
         LZH_TEXT *text = (LZH_TEXT *)cpnt;
 
-        quit_vertex(text);
+        if (text->characters) {
+            lzh_text_rb_destroy(text->characters, lzh_text_rb_visit, NULL);
+        }
 
         if (text->text_char) {
             lzh_character_destroy(text->text_char);
@@ -286,59 +290,6 @@ void lzh_text_remove(LZH_COMPONENT *cpnt)
 
         lzh_cpnt_quit(cpnt);
         LZH_FREE(text);
-    }
-}
-
-void init_vertex(LZH_TEXT *text)
-{
-    int indices[] = {
-        0, 1, 3,
-        1, 2, 3
-    };
-
-    GLuint vao = 0;
-    GLuint vbo = 0;
-    GLuint ebo = 0;
-
-    if (!text) {
-        return;
-    }
-
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
-
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * 4, NULL, GL_DYNAMIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    text->vao = vao;
-    text->vbo = vbo;
-    text->ebo = ebo;
-}
-
-void quit_vertex(LZH_TEXT *text)
-{
-    if (text) {
-        if (text->ebo) {
-            glDeleteBuffers(1, &text->ebo);
-        }
-
-        if (text->vbo) {
-            glDeleteBuffers(1, &text->vbo);
-        }
-
-        if (text->vao) {
-            glDeleteBuffers(1, &text->vao);
-        }
     }
 }
 

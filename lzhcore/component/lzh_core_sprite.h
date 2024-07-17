@@ -33,9 +33,6 @@ struct LZH_SPRITE {
     LZH_COMPONENT base;                 /* 基本组件信息 */
     LZH_UINT32 state;                   /* 精灵状态 */
 
-    GLuint vao;                         /* 顶点数组对象 */
-    GLuint vbo;                         /* 顶点缓冲对象 */
-    GLuint ebo;                         /* 索引缓冲对象 */
     LZH_TEXTURE **textures;             /* 纹理列表 */
     int tex_count;                      /* 纹理数量 */
 

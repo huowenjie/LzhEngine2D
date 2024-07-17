@@ -15,10 +15,6 @@
 
 /*===========================================================================*/
 
-/* 初始化顶点数据 */
-static void init_sprite_vertex(LZH_SPRITE *sp);
-static void quit_sprite_vertex(LZH_SPRITE *sp);
-
 /* 添加纹理 */
 static void add_sprite_texture(
     LZH_ENGINE *engine, LZH_SPRITE *sp, const char *res[], int count);
@@ -69,7 +65,6 @@ LZH_SPRITE *lzh_sprite_create(LZH_ENGINE *engine, LZH_OBJECT *object, const char
     sprite->end_frame = 0;
     sprite->prev_frame = -1;
 
-    init_sprite_vertex(sprite);
     add_sprite_texture(engine, sprite, &res, 1);
     return sprite;
 }
@@ -110,7 +105,6 @@ LZH_SPRITE *lzh_sprite_create_from_images(
     sprite->end_frame = count - 1;
     sprite->prev_frame = -1;
 
-    init_sprite_vertex(sprite);
     add_sprite_texture(engine, sprite, res_list, count);
     return sprite;
 }
@@ -223,69 +217,6 @@ void lzh_sprite_set_keyframe(
 }
 
 /*===========================================================================*/
-
-void init_sprite_vertex(LZH_SPRITE *sp)
-{
-    float vertices[] = {
-         /* positions          colors                texture coords */
-         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 1.0f,  0.0f, 1.0f
-    };
-
-    int indices[] = {
-        0, 1, 3,
-        1, 2, 3
-    };
-
-    GLuint vao = 0;
-    GLuint vbo = 0;
-    GLuint ebo = 0;
-
-    if (!sp) {
-        return;
-    }
-
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &ebo);
-
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    sp->vao = vao;
-    sp->vbo = vbo;
-    sp->ebo = ebo;
-}
-
-void quit_sprite_vertex(LZH_SPRITE *sp)
-{
-    if (sp) {
-        if (sp->ebo) {
-            glDeleteBuffers(1, &sp->ebo);
-        }
-
-        if (sp->vbo) {
-            glDeleteBuffers(1, &sp->vbo);
-        }
-
-        if (sp->vao) {
-            glDeleteBuffers(1, &sp->vao);
-        }
-    }
-}
 
 void add_sprite_texture(
     LZH_ENGINE *engine, LZH_SPRITE *sp, const char *res[], int count)
@@ -417,26 +348,11 @@ static void update_sprite_vertex(
         return;
     }
 
-    if (sprite->vao) {
-        lzh_shader_bind(shader);
-        lzh_shader_set_mat4x4f(shader, "model", &transform->model_mat);
-        lzh_shader_set_mat4x4f(shader, "view", &camera_cpnt->view);
-        lzh_shader_set_mat4x4f(shader, "projection", &camera_cpnt->prog);
-
-        glBindVertexArray(sprite->vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    }
-}
-
-static void update_sprite_texture(LZH_SHADER *shader, LZH_TEXTURE *texture)
-{
-    if (!shader || !texture || !texture->texid) {
-        return;
-    }
-
     lzh_shader_bind(shader);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture->texid);
+    lzh_shader_set_mat4x4f(shader, "model", &transform->model_mat);
+    lzh_shader_set_mat4x4f(shader, "view", &camera_cpnt->view);
+    lzh_shader_set_mat4x4f(shader, "projection", &camera_cpnt->prog);
+    lzh_vertex_sprite_draw(engine->sprite_vertex);
 }
 
 void lzh_sprite_draw(LZH_BASE *base, void *args)
@@ -478,7 +394,8 @@ void lzh_sprite_draw(LZH_BASE *base, void *args)
     if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
         LZH_TEXTURE **textures = sprite->textures;
         if (textures && textures[cur_frame]) {
-            update_sprite_texture(engine->sprite_shader, textures[cur_frame]);
+            lzh_shader_bind(engine->sprite_shader);
+            lzh_texture_active(textures[cur_frame]);
             update_sprite_vertex(engine, transform, sprite);
         }
     }
@@ -506,7 +423,6 @@ void lzh_sprite_remove(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
         LZH_SPRITE *sprite = (LZH_SPRITE *)cpnt;
-        quit_sprite_vertex(sprite);
 
         if (IS_SP_STATE(sprite->state, SSC_IMAGES_MODE)) {
             LZH_TEXTURE **textures = sprite->textures;

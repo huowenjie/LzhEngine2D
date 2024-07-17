@@ -80,10 +80,18 @@ void lzh_texture_destroy(LZH_TEXTURE *texture)
     }
 }
 
+void lzh_texture_active(LZH_TEXTURE *texture)
+{
+    if (texture) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture->texid);
+    }
+}
+
 /*===========================================================================*/
 
 LZH_CHARACTER *lzh_character_create(
-    const LZH_DATA *bitmap, int w, int h, int bx, int by, int advance)
+    const LZH_DATA *bitmap, int w, int h, int bx, int by, int advance, int unicode)
 {
     LZH_CHARACTER *character = NULL;
     GLuint texid = 0;
@@ -108,20 +116,20 @@ LZH_CHARACTER *lzh_character_create(
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    character->base.texid = texid;
+    character->base.width = w;
+    character->base.height = h;
     character->advance = advance;
     character->bearing_x = bx;
     character->bearing_y = by;
-    character->width = w;
-    character->height = h;
-    character->texid = texid;
-
+    character->unicode = unicode;
     return character;
 }
 
 void lzh_character_destroy(LZH_CHARACTER *character)
 {
     if (character) {
-        glDeleteTextures(1, &character->texid);
+        glDeleteTextures(1, &character->base.texid);
         LZH_FREE(character);
     }
 }

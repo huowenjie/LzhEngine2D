@@ -56,8 +56,12 @@ LZH_ENGINE *lzh_engine_create(
     SDL_Window *window = NULL;
     SDL_GLContext *glctx = NULL;
     LZH_SCENE_MANAGER *manager = NULL;
+    
     LZH_SHADER *sprite = NULL;
     LZH_SHADER *text = NULL;
+    LZH_SPRITE_VERTEX *sp_vert = NULL;
+    LZH_TEXT_VERTEX *text_vert = NULL;
+
     FT_Library ft = NULL;
 
     LZH_ENGINE *engine = LZH_MALLOC(sizeof(LZH_ENGINE));
@@ -97,6 +101,16 @@ LZH_ENGINE *lzh_engine_create(
         goto err;
     }
 
+    sp_vert = lzh_vertex_sprite();
+    if (!sp_vert) {
+        goto err;
+    }
+
+    text_vert = lzh_vertex_text();
+    if (!text_vert) {
+        goto err;
+    }
+
     if (FT_Init_FreeType(&ft)) {
         goto err;
     }
@@ -109,6 +123,8 @@ LZH_ENGINE *lzh_engine_create(
     engine->scene_manager = manager;
     engine->sprite_shader = sprite;
     engine->text_shader = text;
+    engine->sprite_vertex = sp_vert;
+    engine->text_vertex = text_vert;
     engine->ft_lib = ft;
 
     lzh_engine_time_init(&engine->engine_time);
@@ -117,6 +133,14 @@ LZH_ENGINE *lzh_engine_create(
 err:
     if (ft) {
         FT_Done_FreeType(ft);
+    }
+
+    if (text_vert) {
+        lzh_vertex_destroy(text_vert);
+    }
+
+    if (sp_vert) {
+        lzh_vertex_destroy(sp_vert);
     }
 
     if (text) {
@@ -149,6 +173,14 @@ void lzh_engine_destroy(LZH_ENGINE *engine)
 {
     if (engine) {
         lzh_engine_time_quit(&engine->engine_time);
+
+        if (engine->text_vertex) {
+            lzh_vertex_destroy(engine->text_vertex);
+        }
+
+        if (engine->sprite_vertex) {
+            lzh_vertex_destroy(engine->sprite_vertex);
+        }
 
         if (engine->text_shader) {
             lzh_shader_destroy(engine->text_shader);

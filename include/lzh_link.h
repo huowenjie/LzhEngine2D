@@ -61,13 +61,13 @@ LZH_API LZH_LINK_NODE *lzh_link_remove_force(LZH_LINK *link, LZH_LINK_NODE *targ
 /*===========================================================================*/
 
 /**
- * 链表模板，ns是命名空间，fns 是函数命名空间，keytype是索引类型，valuetype是元素类型。
+ * 链表模板，ns是命名空间，fns 是函数命名空间，valuetype是元素类型。
  * 
- * 比较函数 RB_COMP 定义：
+ * 比较函数 LINK_COMP 定义：
  *      若首个参数小于第二个，则返回负整数值，若首个参数大于第二个，
  * 则返回正整数值，若两参数等价，则返回零。
  * 
- * 迭代函数 RB_VISIT 定义：
+ * 迭代函数 LINK_VISIT 定义：
  *      首个参数为当前节点，第二个参数为用户传入的参数。
  */
 #define LINK_DECLARE(ns, fns, valuetype) \
