@@ -18,11 +18,9 @@ RBTREE_DECLARE(LZH_TEXT, lzh_text, int, LZH_CHARACTER *)
 /* 文本组件对象 */
 struct LZH_TEXT
 {
-    LZH_COMPONENT base;         /* 基本组件信息 */
+    LZH_COMPONENT base;             /* 基本组件信息 */
 
-    FT_Face text_face;          /* 字体信息 */
-    LZH_CHARACTER *text_char;
-
+    FT_Face text_face;              /* 字体信息 */
     LZH_TEXT_RB_TREE *characters;   /* 字符串序列 */
 };
 

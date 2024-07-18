@@ -1,0 +1,6 @@
+LIBRARY	"smwiconv"
+
+EXPORTS
+	libiconv_open
+	libiconv
+	libiconv_close

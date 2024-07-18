@@ -36,7 +36,7 @@ BIN_DIR := $(REL_DIR)/bin
 LIB_DIR := $(REL_DIR)/lib
 INC_DIR := . ../include ../sdl2 ../freetype
 SRC_DIR := . component container log math mem scene tool object engine graphic graphic/glad \
-			box2d box2d/collision box2d/common box2d/dynamics box2d/rope
+			box2d box2d/collision box2d/common box2d/dynamics box2d/rope iconv
 
 OBJ_DIR := $(REL_DIR)/obj/$(PROJ)
 
@@ -103,9 +103,9 @@ endif
 # -finput-charset 指令指定当前源文件的编码方式
 # -fexec-charset 指令指定最终可执行文件的输出编码方式
 ifeq ($(toutf),yes)
-	FLG += -finput-charset=gbk
+	FLG += -finput-charset=gb18030
 	FLG += -fexec-charset=utf-8
-	CFLG += -finput-charset=gbk
+	CFLG += -finput-charset=gb18030
 	CFLG += -fexec-charset=utf-8
 endif
 

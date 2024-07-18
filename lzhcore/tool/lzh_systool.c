@@ -14,6 +14,8 @@
 	#include <unistd.h>
 #endif /* _WINDOWS & Linux */
 
+#include "../iconv/iconv.h"
+
 /*===========================================================================*/
 
 LZH_BOOL lzh_get_exe_path(char *buff, int *len)
@@ -235,6 +237,38 @@ LZH_UINT32 lzh_get_file_size(const char *file)
 
 	fclose(fp);
 	return (LZH_UINT32)size;
+}
+
+LZH_BOOL lzh_utf8_to_unicode(const LZH_DATA *utf8, LZH_DATA *unicode)
+{
+    #if 0
+    char *utf = NULL;
+    char *ucs = NULL;
+
+    size_t inl = 0;
+	size_t outl = 0;
+
+    iconv_t it = NULL;
+
+    if (!utf8 || !unicode) {
+        return LZH_FALSE;
+    }
+
+    utf = (char *)utf8->value;
+    ucs = (char *)unicode->value;
+
+    if (!utf || !*utf) {
+        return LZH_FALSE;
+    }
+
+    inl = utf8->size;
+    it = iconv_open("UNICODE//IGNORE", "UTF-8");
+
+    if (!it) {
+        return LZH_FALSE;
+    }
+    #endif
+    return LZH_FALSE;
 }
 
 /*===========================================================================*/

@@ -47,6 +47,12 @@ LZH_API LZH_BOOL lzh_write_file(const char *file, const LZH_DATA *data);
 /* 获取文件大小 */
 LZH_API LZH_UINT32 lzh_get_file_size(const char *file); 
 
+/*-------------------------------------------------------*/
+/* 编码工具 */
+
+/* UTF8 转换为 UCS2 */
+LZH_API LZH_BOOL lzh_utf8_to_unicode(const LZH_DATA *utf8, LZH_DATA *unicode);
+
 #ifdef __cplusplus
 }
 #endif

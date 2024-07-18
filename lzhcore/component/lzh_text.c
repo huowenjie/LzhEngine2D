@@ -40,7 +40,6 @@ LZH_TEXT *lzh_text_create(LZH_ENGINE *engine, LZH_OBJECT *object)
     base->remove_component = lzh_text_remove;
 
     text->text_face = NULL;
-    text->text_char = NULL;
     text->characters = lzh_text_rb_create(lzh_text_tree_comp);
     return text;
 }
@@ -103,18 +102,40 @@ void lzh_text_set_font_color(
 
 void lzh_text_set_content(LZH_TEXT *text, const char *content)
 {
-    if (text && text->text_face) {
-        LZH_CHARACTER *character = NULL;
-        FT_Face face = text->text_face;
-        FT_GlyphSlot slot = face->glyph;
-        FT_Bitmap *bitmap = NULL;
+    LZH_TEXT_RB_TREE *characters = NULL;
+    FT_Face face = NULL;
+    FT_GlyphSlot slot = NULL;
+    FT_Bitmap *bitmap = NULL;
 
-        FT_ULong charcode = 0x65;
-        FT_UInt index = FT_Get_Char_Index(face, charcode);
+    size_t num = 0;
+    size_t i = 0;
 
+    if (!text || !text->characters) {
+        return;
+    }
+
+    face = text->text_face;
+    if (!face) {
+        return;
+    }
+
+    slot = face->glyph;
+    if (!slot) {
+        return;
+    }
+
+    characters = text->characters;
+    if (!content || !*content) {
+        lzh_text_rb_clear(characters, lzh_text_rb_visit, NULL);
+        return;
+    }
+
+    num = strlen(content);
+    for (; i < num; i++) {
         LZH_DATA buffer = { 0 };
-
-        printf("index = %d -- charcode = %ld\n", index, charcode);
+        LZH_CHARACTER *character = NULL;
+        FT_ULong charcode = 0x65 + i; // todo
+        FT_UInt index = FT_Get_Char_Index(face, charcode);
 
         if (FT_Load_Glyph(text->text_face, index, FT_LOAD_DEFAULT)) {
             return;
@@ -128,17 +149,16 @@ void lzh_text_set_content(LZH_TEXT *text, const char *content)
         if (!bitmap) {
             return;
         }
-
+        
         buffer.value = bitmap->buffer;
         buffer.size = bitmap->width * bitmap->rows;
 
-        // render
         character = lzh_character_create(
             &buffer, bitmap->width, bitmap->rows,
             slot->bitmap_left, slot->bitmap_top, slot->advance.x, charcode);
-        if (character) {
-            text->text_char = character;
-        }
+
+        printf("index = %d -- charcode = %ld\n", index, charcode);
+        lzh_text_rb_insert(text->characters, i, character);
     }
 }
 
@@ -188,33 +208,56 @@ static void update_text_vertex(
 {
     LZH_MAT4X4F proj = lzh_mat4x4f_unit();
     LZH_VEC3F textcolor = lzh_vec3f_xyz(1.0f, 0.0f, 0.0f);
+    LZH_TEXT_RB_TREE *characters = NULL;
+    LZH_TEXT_RB_ITERATOR *it = NULL;
+
+    GLfloat xpos = 0.0f;
+    GLfloat ypos = 0.0f;
 
     if (!vertex || !shader || !camera || !transform || !text) {
         return;
     }
 
-    proj = lzh_mat4x4f_ortho2d(0.0f, camera->view_port_h, camera->view_port_w, 0.0f);
-
-    LZH_CHARACTER *character = text->text_char;
-    if (!character) {
+    characters = text->characters;
+    if (!characters) {
         return;
     }
 
-    GLfloat xpos = 0.0f + character->bearing_x;
-    //GLfloat ypos = 0.0f - (character->height - character->bearing_y);
-    GLfloat ypos = 0.0f;
+    it = lzh_text_rb_create_iterator(characters);
+    if (!it) {
+        return;
+    }
 
-    GLfloat w = character->base.width;
-    GLfloat h = character->base.height;
+    proj = lzh_mat4x4f_ortho2d(0.0f, camera->view_port_h, camera->view_port_w, 0.0f);
 
     lzh_shader_bind(shader);
     lzh_shader_set_vec3f(shader, "textColor", &textcolor);
-    lzh_texture_active((LZH_TEXTURE *)character);
-
-    lzh_vertex_text_data(vertex, xpos, ypos, w, h);
-    lzh_shader_bind(shader);
     lzh_shader_set_mat4x4f(shader, "projection", &proj);
-    lzh_vertex_text_draw(vertex);
+
+    /* °´Ë³Ðòµü´úäÖÈ¾×Ö·ûÐòÁÐ */
+    lzh_text_rb_it_init(it);
+    while (lzh_text_rb_it_next(it) != -1) {
+        LZH_CHARACTER *character = NULL;
+        GLfloat x = 0.0f;
+        GLfloat y = 0.0f;
+
+        lzh_text_rb_it_value(it, &character);
+        if (!character) {
+            break;
+        }
+
+        x = xpos + character->bearing_x;
+        y = ypos - (character->base.height - character->bearing_y);
+
+        lzh_texture_active((LZH_TEXTURE *)character);
+
+        lzh_vertex_text_data(vertex, x, y, character->base.width, character->base.height);
+        lzh_vertex_text_draw(vertex);
+
+        xpos += (character->advance >> 6);
+    }
+
+    lzh_text_rb_destroy_iterator(it);
 }
 
 void lzh_text_draw(LZH_BASE *base, void *args)
@@ -275,11 +318,6 @@ void lzh_text_remove(LZH_COMPONENT *cpnt)
 
         if (text->characters) {
             lzh_text_rb_destroy(text->characters, lzh_text_rb_visit, NULL);
-        }
-
-        if (text->text_char) {
-            lzh_character_destroy(text->text_char);
-            text->text_char = NULL;
         }
 
         if (text->text_face) {
