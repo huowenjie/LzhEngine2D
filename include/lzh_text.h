@@ -27,7 +27,7 @@ LZH_API void lzh_text_set_font_size(LZH_TEXT *text, int pw, int ph);
 LZH_API void lzh_text_set_font_color(
     LZH_TEXT *text, float r, float g, float b, float a);
 
-/* 设置文本内容 */
+/* 设置文本内容，文本必须是 UTF-8 编码格式 */
 LZH_API void lzh_text_set_content(LZH_TEXT *text, const char *content);
 
 /* 获取文本宽度 */

@@ -11,7 +11,7 @@ FontObj::FontObj(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     textCpnt = lzh_text_create(eg, object);
 
     lzh_text_load_font(textCpnt, GetFontPath());
-    lzh_text_set_font_size(textCpnt, 60, 60);
+    lzh_text_set_font_size(textCpnt, 20, 20);
     lzh_text_set_content(textCpnt, "abcÖÐ¹ú");
     lzh_text_set_font_color(textCpnt, 1.0f, 1.0f, 1.0f, 1.0f);
 
