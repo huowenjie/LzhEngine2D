@@ -41,7 +41,12 @@ struct LZH_ENGINE {
     LZH_ENGINE_TIME engine_time;        /* 引擎时间 */
 
     FT_Library ft_lib;                  /* freeType 库对象 */
+
+    float window_scale;                 /* 窗口缩放系数 */
 };
+
+/* 获取主相机 */
+LZH_CAMERA *lzh_engine_get_main_camera(LZH_ENGINE *engine);
 
 /*===========================================================================*/
 

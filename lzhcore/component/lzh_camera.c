@@ -26,6 +26,9 @@ LZH_CAMERA *lzh_camera_create(LZH_ENGINE *engine, LZH_OBJECT *object)
     LZH_CAMERA *camera = NULL;
     LZH_COMPONENT *base = NULL;
 
+    float vw = 0.0f;
+    float vh = 0.0f;
+
     if (!engine || !object) {
         return NULL;
     }
@@ -37,13 +40,16 @@ LZH_CAMERA *lzh_camera_create(LZH_ENGINE *engine, LZH_OBJECT *object)
     memset(camera, 0, sizeof(LZH_CAMERA));
 
     base = &camera->base;
-    lzh_cpnt_init(base, LZH_CPNT_CAMERA, object);
+    lzh_cpnt_init(base, LZH_CPNT_CAMERA, object);    
+    lzh_engine_win_sizef(engine, &vw, &vh);
 
     base->base.engine = engine;
     base->remove_component = lzh_camera_remove;
 
     camera->type = LZH_CAMERA_PERSP;
-    lzh_engine_win_sizef(engine, &camera->view_port_w, &camera->view_port_h);
+    camera->view_port_w = vw * engine->window_scale;
+    camera->view_port_h = vh * engine->window_scale;
+
     camera->up = lzh_vec3f_xyz(0.0f, 1.0f, 0.0f);
     camera->target = lzh_vec3f_xyz(0.0f, 0.0f, 0.0f);
     camera->view = lzh_mat4x4f_unit();
@@ -146,9 +152,8 @@ void lzh_camera_flush(LZH_CAMERA *camera)
 void lzh_camera_orth_flush(LZH_CAMERA *camera) 
 {
     if (camera) {
-        float scale = 0.1f;
-        float vpw = scale * camera->view_port_w / 2.0f;
-        float vph = scale * camera->view_port_h / 2.0f;
+        float vpw = camera->view_port_w / 2.0f;
+        float vph = camera->view_port_h / 2.0f;
 
         camera->prog = lzh_mat4x4f_ortho(-vpw, vph, vpw, -vph, 0.1f, 100.0f);
     }

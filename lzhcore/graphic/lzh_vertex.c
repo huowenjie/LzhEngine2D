@@ -78,14 +78,14 @@ LZH_TEXT_VERTEX *lzh_vertex_text()
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * 4, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 5 * 4, NULL, GL_DYNAMIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     vertex->vao = vao;
@@ -100,10 +100,10 @@ void lzh_vertex_text_data(
 {
     if (vertex) {
         float vertices[] = {
-            x + w, y,     1.0f, 1.0f,   /* 纹理右上角 */
-            x + w, y + h, 1.0f, 0.0f,   /* 纹理右下角 */
-            x,     y + h, 0.0f, 0.0f,   /* 纹理左下角 */
-            x,     y,     0.0f, 1.0f    /* 纹理左上角 */
+            x + w, y,     0.0f, 1.0f, 1.0f,   /* 纹理右上角 */
+            x + w, y + h, 0.0f, 1.0f, 0.0f,   /* 纹理右下角 */
+            x,     y + h, 0.0f, 0.0f, 0.0f,   /* 纹理左下角 */
+            x,     y,     0.0f, 0.0f, 1.0f    /* 纹理左上角 */
         };
         glBindBuffer(GL_ARRAY_BUFFER, vertex->vbo);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 

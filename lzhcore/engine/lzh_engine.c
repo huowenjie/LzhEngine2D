@@ -126,6 +126,7 @@ LZH_ENGINE *lzh_engine_create(
     engine->sprite_vertex = sp_vert;
     engine->text_vertex = text_vert;
     engine->ft_lib = ft;
+    engine->window_scale = 0.1f;
 
     lzh_engine_time_init(&engine->engine_time);
     return engine;
@@ -364,6 +365,33 @@ LZH_SCENE *lzh_engine_get_scene(LZH_ENGINE *engine, const char *name)
         return lzh_sm_get_scene(engine->scene_manager, name);
     }
     return NULL;
+}
+
+/*===========================================================================*/
+
+LZH_CAMERA *lzh_engine_get_main_camera(LZH_ENGINE *engine)
+{
+    LZH_OBJECT *camera = NULL;
+    LZH_CAMERA *camera_cpnt = NULL;
+    LZH_SCENE *scene = NULL;
+
+    if (!engine) {
+        return NULL;
+    }
+
+    scene = lzh_sm_get_active_scene(engine->scene_manager);
+    if (!scene) {
+        return NULL;
+    }
+
+    camera = scene->main_camera;
+    if (!camera) {
+        return NULL;
+    }
+
+    camera_cpnt = (LZH_CAMERA *)lzh_cpnt_get_type(
+        camera->components, LZH_CPNT_CAMERA);
+    return camera_cpnt;
 }
 
 /*===========================================================================*/

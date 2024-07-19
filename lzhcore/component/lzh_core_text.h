@@ -22,6 +22,10 @@ struct LZH_TEXT
 
     FT_Face text_face;              /* 字体信息 */
     LZH_TEXT_RB_TREE *characters;   /* 字符串序列 */
+
+    LZH_VEC4F text_color;           /* 文本颜色 */
+    float width;                    /* 文本对象宽度 */
+    float height;                   /* 文本对象高度 */
 };
 
 /*===========================================================================*/

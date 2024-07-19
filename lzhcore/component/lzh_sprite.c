@@ -313,10 +313,7 @@ static void update_sprite_vertex(
     LZH_ENGINE *engine, LZH_TRANSFORM *transform, LZH_SPRITE *sprite)
 {
     LZH_SHADER *shader = NULL;
-    LZH_SCENE *cur_scene = NULL;
-    LZH_OBJECT *camera = NULL;
-    LZH_COMPONENT *cpnt = NULL;
-    LZH_CAMERA *camera_cpnt = NULL;
+    LZH_CAMERA *camera = NULL;
 
     if (!engine || !transform || !sprite) {
         return;
@@ -327,31 +324,15 @@ static void update_sprite_vertex(
         return;
     }
 
-    cur_scene = lzh_sm_get_active_scene(engine->scene_manager);
-    if (!cur_scene) {
-        return;
-    }
-
-    camera = cur_scene->main_camera;
+    camera = lzh_engine_get_main_camera(engine);
     if (!camera) {
-        return;
-    }
-
-    cpnt = lzh_cpnt_get_type(
-        camera->components, LZH_CPNT_CAMERA);
-    if (!cpnt) {
-        return;
-    }
-    
-    camera_cpnt = (LZH_CAMERA *)cpnt;
-    if (!camera_cpnt) {
         return;
     }
 
     lzh_shader_bind(shader);
     lzh_shader_set_mat4x4f(shader, "model", &transform->model_mat);
-    lzh_shader_set_mat4x4f(shader, "view", &camera_cpnt->view);
-    lzh_shader_set_mat4x4f(shader, "projection", &camera_cpnt->prog);
+    lzh_shader_set_mat4x4f(shader, "view", &camera->view);
+    lzh_shader_set_mat4x4f(shader, "projection", &camera->prog);
     lzh_vertex_sprite_draw(engine->sprite_vertex);
 }
 
