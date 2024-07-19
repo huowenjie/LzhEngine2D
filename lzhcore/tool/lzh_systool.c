@@ -2,9 +2,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <errno.h>
 
 #include <lzh_systool.h>
 #include <SDL.h>
+
+#include <iconv.h>
 
 #ifdef _WINDOWS
 	#define _WIN32_WINNT 0x0502
@@ -13,8 +16,6 @@
 #else /* Linux */
 	#include <unistd.h>
 #endif /* _WINDOWS & Linux */
-
-#include "../iconv/iconv.h"
 
 /*===========================================================================*/
 
@@ -239,9 +240,8 @@ LZH_UINT32 lzh_get_file_size(const char *file)
 	return (LZH_UINT32)size;
 }
 
-LZH_BOOL lzh_utf8_to_unicode(const LZH_DATA *utf8, LZH_DATA *unicode)
+LZH_BOOL lzh_utf8_to_ucs2(const LZH_DATA *utf8, LZH_DATA *ucs2)
 {
-    #if 0
     char *utf = NULL;
     char *ucs = NULL;
 
@@ -249,26 +249,67 @@ LZH_BOOL lzh_utf8_to_unicode(const LZH_DATA *utf8, LZH_DATA *unicode)
 	size_t outl = 0;
 
     iconv_t it = NULL;
+    LZH_BOOL ret = LZH_FALSE;
 
-    if (!utf8 || !unicode) {
+    if (!utf8 || !ucs2) {
         return LZH_FALSE;
     }
 
     utf = (char *)utf8->value;
-    ucs = (char *)unicode->value;
+    ucs = (char *)ucs2->value;
+    inl = utf8->size;
+    outl = ucs2->size;
 
     if (!utf || !*utf) {
         return LZH_FALSE;
     }
 
-    inl = utf8->size;
-    it = iconv_open("UNICODE//IGNORE", "UTF-8");
-
+    it = iconv_open("UCS−2//IGNORE", "UTF-8");
     if (!it) {
         return LZH_FALSE;
     }
-    #endif
-    return LZH_FALSE;
+
+    if (!ucs) {
+        size_t len = 0;
+        char buf[64] = { 0 };
+
+        ucs = buf;
+        outl = sizeof(buf) - 1;
+
+        // 仅计算编码长度
+        for (;;) {
+            if (iconv(it, &utf, &inl, &ucs, &outl) == (size_t)-1) {
+                if (errno == E2BIG) {
+                    len += (sizeof(buf) - outl - 1);
+                    ucs = buf;
+                    outl = sizeof(buf) - 1;
+                    continue;
+                }
+
+                goto end;
+            }
+
+            len += (sizeof(buf) - outl);
+            break;
+        }
+
+        ucs2->size = len;
+        ret = LZH_TRUE;
+        goto end;
+    }
+
+    if (iconv(it, &utf, &inl, &ucs, &outl) == (size_t)-1) {
+        goto end;
+    }
+
+    ucs2->size = ucs2->size - outl;
+    ret = LZH_TRUE;
+
+end:
+    if (it) {
+        iconv_close(it);
+    }
+    return ret;
 }
 
 /*===========================================================================*/

@@ -1,5 +1,7 @@
 #include <lzh_mem.h>
+#include <lzh_systool.h>
 
+#include "../log/lzh_tracer.h"
 #include "lzh_core_text.h"
 #include "lzh_core_camera.h"
 
@@ -107,8 +109,16 @@ void lzh_text_set_content(LZH_TEXT *text, const char *content)
     FT_GlyphSlot slot = NULL;
     FT_Bitmap *bitmap = NULL;
 
+    LZH_DATA from;
+    LZH_DATA to;
+
+    uint16_t *codes = NULL;
+
     size_t num = 0;
     size_t i = 0;
+
+    LZH_DATA_INIT(&from);
+    LZH_DATA_INIT(&to);
 
     if (!text || !text->characters) {
         return;
@@ -130,36 +140,49 @@ void lzh_text_set_content(LZH_TEXT *text, const char *content)
         return;
     }
 
-    num = strlen(content);
+    LZH_DATA_SET(&from, content, strlen(content));
+
+    /* ±àÂë×ª»» UTF8->UCS2 */
+    if (!lzh_utf8_to_ucs2(&from, &to)) {
+        return;
+    }
+
+    LZH_DATA_MALLOC(&to, to.size);
+
+    if (lzh_utf8_to_ucs2(&from, &to)) {
+        codes = (uint16_t *)to.value;
+        num = (to.size - (to.size % 2)) / 2;
+    }
+
     for (; i < num; i++) {
         LZH_DATA buffer = { 0 };
         LZH_CHARACTER *character = NULL;
-        FT_ULong charcode = 0x65 + i; // todo
+        FT_ULong charcode = codes[i];
         FT_UInt index = FT_Get_Char_Index(face, charcode);
 
         if (FT_Load_Glyph(text->text_face, index, FT_LOAD_DEFAULT)) {
-            return;
+            break;
         }
 
         if (FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL)) {
-            return;
+            break;
         }
 
         bitmap = &slot->bitmap;
         if (!bitmap) {
-            return;
+            break;
         }
-        
+
         buffer.value = bitmap->buffer;
         buffer.size = bitmap->width * bitmap->rows;
 
         character = lzh_character_create(
             &buffer, bitmap->width, bitmap->rows,
             slot->bitmap_left, slot->bitmap_top, slot->advance.x, charcode);
-
-        printf("index = %d -- charcode = %ld\n", index, charcode);
         lzh_text_rb_insert(text->characters, i, character);
     }
+
+    LZH_DATA_FREE(&to);
 }
 
 void lzh_text_set_offset(LZH_TEXT *text, float x, float y, float z)

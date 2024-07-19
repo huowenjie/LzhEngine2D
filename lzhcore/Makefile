@@ -36,7 +36,7 @@ BIN_DIR := $(REL_DIR)/bin
 LIB_DIR := $(REL_DIR)/lib
 INC_DIR := . ../include ../sdl2 ../freetype
 SRC_DIR := . component container log math mem scene tool object engine graphic graphic/glad \
-			box2d box2d/collision box2d/common box2d/dynamics box2d/rope iconv
+			box2d box2d/collision box2d/common box2d/dynamics box2d/rope
 
 OBJ_DIR := $(REL_DIR)/obj/$(PROJ)
 
