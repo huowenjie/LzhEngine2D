@@ -48,7 +48,11 @@ void Run(LZH_ENGINE *engine)
 
     player->SetName("player");
     enemy->SetName("enemey");
+    font->SetName("FlagText");
     enemy->SetPosition(8.0f, 0.0f);
+
+    float height = font->GetTextHeight();
+    font->SetPosition(-40.0f, 20.0f - height);
 
     scene.AddObject(camera);
     scene.AddObject(enemy);

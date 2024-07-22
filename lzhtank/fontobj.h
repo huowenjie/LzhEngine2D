@@ -14,6 +14,13 @@ public:
     FontObj(LZH_ENGINE *eg, Scene *scene);
     virtual ~FontObj();
 
+public:
+    void SetText(const std::string &text);
+    void SetTextColor(float r, float g, float b);
+    void SetTextSize(float w, float h);
+
+    float GetTextHeight() const;
+
 protected:
     virtual void Update(LZH_ENGINE *eg);
     virtual void FixedUpdate(LZH_ENGINE *eg);
