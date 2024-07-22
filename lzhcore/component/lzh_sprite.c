@@ -255,6 +255,7 @@ void add_sprite_texture(
 
 /*===========================================================================*/
 
+#if 0
 /* 计算坐标系转换矩阵 */
 static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
 {
@@ -308,6 +309,7 @@ static LZH_MAT4X4F get_sdl_mat(LZH_TRANSFORM *transform)
     sdlmat = lzh_mat4x4f_mul(&projmat, &sdlmat);
     return sdlmat;
 }
+#endif
 
 static void update_sprite_vertex(
     LZH_ENGINE *engine, LZH_TRANSFORM *transform, LZH_SPRITE *sprite)

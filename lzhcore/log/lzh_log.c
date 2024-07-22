@@ -915,10 +915,8 @@ LZH_UINT32 log_output_file(LZH_LOG_INFO *log, const char *info)
 
 LZH_UINT32 log_output_sys(LZH_LOG_INFO *log, const char *info)
 {
-	LZH_UINT32 ret = LZH_LOG_SUCCESS;
-
-	printf(info);
-	return ret;
+	printf("%s", info);
+	return LZH_LOG_SUCCESS;
 }
 
 FILE *log_open_file(LZH_LOG_INFO *log, const char *path)

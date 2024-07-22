@@ -17,13 +17,6 @@
 
 /*===========================================================================*/
 
-/* 渲染队列中的对象 */
-static void render_objects(int layer, int order, LZH_OBJECT *object, void *args);
-static void render_objects_fixed(
-    int layer, int order, LZH_OBJECT *object, void *args);
-
-/*===========================================================================*/
-
 int lzh_init()
 {
     SDL_Init(SDL_INIT_VIDEO);
@@ -392,23 +385,6 @@ LZH_CAMERA *lzh_engine_get_main_camera(LZH_ENGINE *engine)
     camera_cpnt = (LZH_CAMERA *)lzh_cpnt_get_type(
         camera->components, LZH_CPNT_CAMERA);
     return camera_cpnt;
-}
-
-/*===========================================================================*/
-
-void render_objects(int layer, int order, LZH_OBJECT *object, void *args)
-{
-    if (object && object->base.update) {
-        object->base.update(&object->base, object->base.update_param);
-    }
-}
-
-void render_objects_fixed(
-    int layer, int order, LZH_OBJECT *object, void *args)
-{
-    if (object && object->base.fixed_update) {
-        object->base.fixed_update(&object->base, object->base.fixed_update_param);
-    }
 }
 
 /*===========================================================================*/
