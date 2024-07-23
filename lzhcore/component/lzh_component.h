@@ -14,8 +14,9 @@
 #define LZH_CPNT_TRANSFORM      0x00000001U /* 变换组件 */
 #define LZH_CPNT_CAMERA         0x00000002U /* 相机组件 */
 #define LZH_CPNT_SPRITE         0x00000003U /* 精灵组件 */
-#define LZH_CPNT_COLLIDER       0x00000004U /* 碰撞组件 */
-#define LZH_CPNT_TEXT           0x00000005U /* 文本组件 */
+#define LZH_CPNT_RIGIDBODY2D    0x00000004U /* 2d 刚体组件 */
+#define LZH_CPNT_COLLIDER2D     0x00000005U /* 2d 碰撞组件 */
+#define LZH_CPNT_TEXT           0x00000006U /* 文本组件 */
 
 typedef struct LZH_COMPONENT LZH_COMPONENT;
 

@@ -80,7 +80,7 @@ protected:
     LZH_SPRITE *chassisSp;
     LZH_SPRITE *turretSp;
 
-    LZH_COLLIDER *collider;
+    //LZH_COLLIDER *collider;
 
     // ÒÆ¶¯ËÙ¶È
     float moveSpeed;

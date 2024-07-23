@@ -7,7 +7,7 @@
 
 #include "../engine/lzh_core_engine.h"
 #include "../component/lzh_core_camera.h"
-#include "../component/lzh_core_collider.h"
+#include "../component/lzh_core_collider2d.h"
 
 #include "lzh_scene_manager.h"
 
@@ -278,13 +278,13 @@ void lzh_scene_begine_contact(LZH_B2_FIXUTRE *fixa, LZH_B2_FIXUTRE *fixb, void *
             return;
         }
 
-        LZH_COLLIDER *collider = 
-            (LZH_COLLIDER *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER);
+        LZH_COLLIDER2D *collider = 
+            (LZH_COLLIDER2D *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER2D);
         if (collider && collider->start_contact) {
             collider->start_contact(oa, ob, collider->start_contact_args);
         }
 
-        collider = (LZH_COLLIDER *)lzh_cpnt_get_type(ob->components, LZH_CPNT_COLLIDER);
+        collider = (LZH_COLLIDER2D *)lzh_cpnt_get_type(ob->components, LZH_CPNT_COLLIDER2D);
         if (collider && collider->start_contact) {
             collider->start_contact(ob, oa, collider->start_contact_args);
         }
@@ -301,13 +301,13 @@ void lzh_scene_end_contact(LZH_B2_FIXUTRE *fixa, LZH_B2_FIXUTRE *fixb, void *arg
             return;
         }
 
-        LZH_COLLIDER *collider = 
-            (LZH_COLLIDER *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER);
+        LZH_COLLIDER2D *collider = 
+            (LZH_COLLIDER2D *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER2D);
         if (collider && collider->end_contact) {
             collider->end_contact(oa, ob, collider->end_contact_args);
         }
 
-        collider = (LZH_COLLIDER *)lzh_cpnt_get_type(ob->components, LZH_CPNT_COLLIDER);
+        collider = (LZH_COLLIDER2D *)lzh_cpnt_get_type(ob->components, LZH_CPNT_COLLIDER2D);
         if (collider && collider->end_contact) {
             collider->end_contact(ob, oa, collider->end_contact_args);
         }

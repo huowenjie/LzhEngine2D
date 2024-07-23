@@ -1,7 +1,7 @@
 #include <lzh_object.h>
 #include <lzh_sprite.h>
 #include <lzh_transform.h>
-#include <lzh_collider.h>
+//#include <lzh_collider2d.h>
 
 #include "globalres.h"
 #include "scene.h"
@@ -23,7 +23,7 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     chassisSp = lzh_sprite_create(eg, chassis->GetObjectHandle(), GetTankResPath());
     turretSp = lzh_sprite_create(eg, turret->GetObjectHandle(), GetTankTurretPath());
 
-    collider = lzh_collider_create(eg, object);
+    //collider = lzh_collider_create(eg, object);
 
     moveSpeed = 5.0f;
     rotateSpeed = 60.0f;
@@ -43,15 +43,15 @@ Tank::Tank(LZH_ENGINE *eg, Scene *scene) : GameObject(eg, scene)
     turret->SetScale(0.5f, 0.5f);
     turret->SetDepth(0.1f);
 
-    LZH_COLLIDER_PARAM param;
-    param.type = BOX_2D;
-    param.box2d.cx = 0.0f;
-    param.box2d.cy = 0.0f;
-    param.box2d.w = 1.0f;
-    param.box2d.h = 1.0f;
-    lzh_collider_set_param(collider, &param);
-    lzh_collider_set_start_contact(collider, GameObject::ColliderObjectCb, this);
-    lzh_collider_set_end_contact(collider, GameObject::ColliderObjectEndCb, this);
+    // LZH_COLLIDER_PARAM param;
+    // param.type = BOX_2D;
+    // param.box2d.cx = 0.0f;
+    // param.box2d.cy = 0.0f;
+    // param.box2d.w = 1.0f;
+    // param.box2d.h = 1.0f;
+    // lzh_collider_set_param(collider, &param);
+    // lzh_collider_set_start_contact(collider, GameObject::ColliderObjectCb, this);
+    // lzh_collider_set_end_contact(collider, GameObject::ColliderObjectEndCb, this);
 }
 
 Tank::~Tank()

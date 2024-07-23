@@ -1,6 +1,7 @@
 #include <lzh_engine.h>
 
-#include "lzh_core_collider.h"
+#include "lzh_core_rigidbody2d.h"
+#include "lzh_core_collider2d.h"
 #include "lzh_core_transform.h"
 #include "lzh_core_camera.h"
 
@@ -9,76 +10,59 @@
 
 /*===========================================================================*/
 
-/**
- * 在组件中：
- * TODO
- * 1.创建四叉树
- * 
- * 组件 UPDATE 逻辑:
- * 2.获取当前场景对象
- * 3.遍历场景中的渲染树对象，将对象添加至四叉树
- * 4.获取和当前对象处于同一区域的对象
- * 5.循环判断是否相交（根据设定的碰撞类型）
- * 6.如果碰撞，调用碰撞回调函数
- * 7.清空四叉树对象
- * 参照 level.cpp 的实现
- */
-
 /* 组件加载到对象中 */
-static void lzh_collider_b2_load(LZH_COLLIDER *collider, LZH_OBJECT *object);
+static void lzh_collider_b2_load(LZH_COLLIDER2D *collider, LZH_OBJECT *object);
 
 /* 组件从对象中移除 */
-static void lzh_collider_b2_unload(LZH_COLLIDER *collider, LZH_OBJECT *object);
+static void lzh_collider_b2_unload(LZH_COLLIDER2D *collider, LZH_OBJECT *object);
 
+#if 0
 /* 创建 box2d 组件 */
 static void lzh_collider_b2_create_box2d(
-    LZH_COLLIDER *collider, const LZH_COLLIDER_PARAM *param);
+    LZH_COLLIDER2D *collider, const LZH_COLLIDER_PARAM *param);
 
 /* 创建 circle 组件 */
 static void lzh_collider_b2_create_circle2d(
-    LZH_COLLIDER *collider, const LZH_COLLIDER_PARAM *param);
-
+    LZH_COLLIDER2D *collider, const LZH_COLLIDER_PARAM *param);
+#endif
 /* 移除碰撞组件 */
-static void lzh_collider_remove(LZH_COMPONENT *cpnt);
-
-/* 碰撞更新 */
-static void lzh_collider_update(LZH_BASE *base, void *args);
+static void lzh_collider2d_remove(LZH_COMPONENT *cpnt);
 
 /*===========================================================================*/
 
-LZH_COLLIDER *lzh_collider_create(LZH_ENGINE *engine, LZH_OBJECT *object)
+LZH_COLLIDER2D *lzh_collider2d_create(LZH_RIGIDBODY2D *body)
 {
-    LZH_COLLIDER *collider = NULL;
+    LZH_COLLIDER2D *collider = NULL;
     LZH_COMPONENT *base = NULL;
 
-    if (!engine || !object) {
+    if (!body) {
         return NULL;
     }
 
-    collider = LZH_MALLOC(sizeof(LZH_COLLIDER));
+    collider = LZH_MALLOC(sizeof(LZH_COLLIDER2D));
     if (!collider) {
         return NULL;
     }
-    memset(collider, 0, sizeof(LZH_COLLIDER));
+    memset(collider, 0, sizeof(LZH_COLLIDER2D));
 
-    base = &collider->base;
-    lzh_cpnt_init(base, LZH_CPNT_COLLIDER, object);
+    // base = &collider->base;
+    // lzh_cpnt_init(base, LZH_CPNT_COLLIDER2D, object);
 
-    base->base.engine = engine;
-    base->base.fixed_update = lzh_collider_update;
-    base->remove_component = lzh_collider_remove;
+    // base->base.engine = engine;
+    // base->remove_component = lzh_collider2d_remove;
 
-    lzh_collider_b2_load(collider, object);
+    // lzh_collider_b2_load(collider, object);
     return collider;
 }
 
-void lzh_collider_destroy(LZH_COLLIDER *collider)
+void lzh_collider2d_destroy(LZH_COLLIDER2D *collider)
 {
     lzh_cpnt_destroy((LZH_COMPONENT *)collider);
 }
 
-void lzh_collider_set_param(
-    LZH_COLLIDER *collider, const LZH_COLLIDER_PARAM *param)
+#if 0
+void lzh_collider2d_set_param(
+    LZH_COLLIDER2D *collider, const LZH_COLLIDER_PARAM *param)
 {
     if (!param) {
         return;
@@ -90,9 +74,28 @@ void lzh_collider_set_param(
         lzh_collider_b2_create_circle2d(collider, param);
     }
 }
+#endif
 
-void lzh_collider_set_start_contact(
-    LZH_COLLIDER *collider, LZH_COLLIDER_CB cb, void *args)
+void lzh_collider2d_set_type(
+    LZH_COLLIDER2D *collider, LZH_COLLIDER2D_TYPE type)
+{
+    
+}
+
+void lzh_collider2d_set_rect(
+    LZH_COLLIDER2D *collider, float cx, float cy, float w, float h)
+{
+    
+}
+
+void lzh_collider2d_set_circle(
+    LZH_COLLIDER2D *collider, float cx, float cy, float r)
+{
+
+}
+
+void lzh_collider2d_set_start_contact(
+    LZH_COLLIDER2D *collider, LZH_COLLIDER2D_CB cb, void *args)
 {
     if (collider) {
         collider->start_contact = cb;
@@ -100,8 +103,8 @@ void lzh_collider_set_start_contact(
     }
 }
 
-void lzh_collider_set_end_contact(
-    LZH_COLLIDER *collider, LZH_COLLIDER_CB cb, void *args)
+void lzh_collider2d_set_end_contact(
+    LZH_COLLIDER2D *collider, LZH_COLLIDER2D_CB cb, void *args)
 {
     if (collider) {
         collider->end_contact = cb;
@@ -111,7 +114,8 @@ void lzh_collider_set_end_contact(
 
 /*===========================================================================*/
 
-void lzh_collider_b2_load(LZH_COLLIDER *collider, LZH_OBJECT *object)
+#if 0
+void lzh_collider_b2_load(LZH_COLLIDER2D *collider, LZH_OBJECT *object)
 {
     LZH_B2_BODY *b2_body = NULL;
     LZH_B2_FIXUTRE *b2_fixture = NULL;
@@ -159,7 +163,7 @@ void lzh_collider_b2_load(LZH_COLLIDER *collider, LZH_OBJECT *object)
     lzh_b2_shape_box_destroy(b2_box);
 }
 
-void lzh_collider_b2_unload(LZH_COLLIDER *collider, LZH_OBJECT *object)
+void lzh_collider_b2_unload(LZH_COLLIDER2D *collider, LZH_OBJECT *object)
 {
     LZH_B2_WORLD *b2_world = NULL;
     LZH_SCENE *cur_scene = NULL;
@@ -189,7 +193,7 @@ void lzh_collider_b2_unload(LZH_COLLIDER *collider, LZH_OBJECT *object)
     }
 }
 
-void lzh_collider_b2_create_box2d(LZH_COLLIDER *collider, const LZH_COLLIDER_PARAM *param)
+void lzh_collider_b2_create_box2d(LZH_COLLIDER2D *collider, const LZH_COLLIDER_PARAM *param)
 {
     LZH_B2_BODY *body = NULL;
     LZH_B2_FIXUTRE *fixture = NULL;
@@ -239,7 +243,7 @@ void lzh_collider_b2_create_box2d(LZH_COLLIDER *collider, const LZH_COLLIDER_PAR
     lzh_b2_shape_box_destroy(b2_box);
 }
 
-void lzh_collider_b2_create_circle2d(LZH_COLLIDER *collider, const LZH_COLLIDER_PARAM *param)
+void lzh_collider_b2_create_circle2d(LZH_COLLIDER2D *collider, const LZH_COLLIDER_PARAM *param)
 {
     LZH_B2_BODY *body = NULL;
     LZH_B2_FIXUTRE *fixture = NULL;
@@ -287,42 +291,17 @@ void lzh_collider_b2_create_circle2d(LZH_COLLIDER *collider, const LZH_COLLIDER_
     collider->b2_fixture = fixture;
     lzh_b2_shape_circle_destroy(b2_circle);
 }
+#endif
 
-void lzh_collider_remove(LZH_COMPONENT *cpnt)
+void lzh_collider2d_remove(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
-        LZH_COLLIDER *collider = (LZH_COLLIDER *)cpnt;
-        lzh_collider_b2_unload(collider, cpnt->object);
+        LZH_COLLIDER2D *collider = (LZH_COLLIDER2D *)cpnt;
+        //lzh_collider_b2_unload(collider, cpnt->object);
 
         lzh_cpnt_quit(cpnt);
         LZH_FREE(collider);
     }
-}
-
-void lzh_collider_update(LZH_BASE *base, void *args)
-{
-    LZH_COLLIDER *collider = NULL;
-    LZH_OBJECT *object = NULL;
-
-    LZH_B2_BODY *body = NULL;
-
-    if (!base) {
-        return;
-    }
-
-    collider = (LZH_COLLIDER *)base;
-
-    object = collider->base.object;
-    if (!object) {
-        return;
-    }
-    body = collider->b2_body;
-
-    LZH_TRANSFORM *transform = object->transform;
-    LZH_VEC3F pos = transform->local_pos;
-    LZH_VEC2F pos2d = lzh_vec2f_xy(pos.x, pos.y);
-
-    lzh_b2_body_set_transform(body, &pos2d, 0.0f);
 }
 
 /*===========================================================================*/
