@@ -44,6 +44,7 @@ LZH_RIGIDBODY2D *lzh_rigidbody2d_create(LZH_ENGINE *engine, LZH_OBJECT *object)
     base->base.engine = engine;
     base->base.fixed_update = lzh_rigidbody2d_update;
     base->remove_component = lzh_rigidbody2d_remove;
+    body->collider2ds = cld2d_rb_create(lzh_rigidbody2d_cld2d_comp);
 
     lzh_rigidbody2d_b2_load(body, object);
     return body;
@@ -61,6 +62,7 @@ void lzh_rigidbody2d_remove(LZH_COMPONENT *cpnt)
     if (cpnt) {
         LZH_RIGIDBODY2D *body = (LZH_RIGIDBODY2D *)cpnt;
         lzh_rigidbody2d_b2_unload(body, cpnt->object);
+        cld2d_rb_destroy(body->collider2ds, lzh_rigidbody2d_cld2d_delvisit, NULL);
 
         lzh_cpnt_quit(cpnt);
         LZH_FREE(body);
