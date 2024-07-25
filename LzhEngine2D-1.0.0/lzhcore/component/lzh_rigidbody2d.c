@@ -61,8 +61,10 @@ void lzh_rigidbody2d_remove(LZH_COMPONENT *cpnt)
 {
     if (cpnt) {
         LZH_RIGIDBODY2D *body = (LZH_RIGIDBODY2D *)cpnt;
-        lzh_rigidbody2d_b2_unload(body, cpnt->object);
+
+        /* 必须先释放 collider 列表，collider 依赖 b2body 对象 */
         cld2d_rb_destroy(body->collider2ds, lzh_rigidbody2d_cld2d_delvisit, NULL);
+        lzh_rigidbody2d_b2_unload(body, cpnt->object);
 
         lzh_cpnt_quit(cpnt);
         LZH_FREE(body);
@@ -87,7 +89,7 @@ void lzh_rigidbody2d_update(LZH_BASE *base, void *args)
         return;
     }
     
-    b2body = body->b2_body;
+    b2body = body->b2body;
     if (!object) {
         return;
     }
@@ -100,7 +102,7 @@ void lzh_rigidbody2d_update(LZH_BASE *base, void *args)
     LZH_VEC3F pos = transform->local_pos;
     LZH_VEC2F pos2d = lzh_vec2f_xy(pos.x, pos.y);
 
-    lzh_b2_body_set_transform(body, &pos2d, 0.0f);
+    lzh_b2_body_set_transform(b2body, &pos2d, 0.0f);
 }
 
 void lzh_rigidbody2d_b2_load(LZH_RIGIDBODY2D *body, LZH_OBJECT *object)
@@ -128,7 +130,7 @@ void lzh_rigidbody2d_b2_load(LZH_RIGIDBODY2D *body, LZH_OBJECT *object)
         return;
     }
 
-    body->b2_body = b2_body;
+    body->b2body = b2_body;
 }
 
 void lzh_rigidbody2d_b2_unload(LZH_RIGIDBODY2D *body, LZH_OBJECT *object)
@@ -150,9 +152,9 @@ void lzh_rigidbody2d_b2_unload(LZH_RIGIDBODY2D *body, LZH_OBJECT *object)
         return;
     }
 
-    if (body->b2_body) {
-        lzh_b2_body_destroy(b2_world, body->b2_body);
-        body->b2_body = NULL;
+    if (body->b2body) {
+        lzh_b2_body_destroy(b2_world, body->b2body);
+        body->b2body = NULL;
     }
 }
 

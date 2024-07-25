@@ -11,28 +11,17 @@
 extern "C" {
 #endif
 
-/* 碰撞器类型 */
-typedef enum LZH_COLLIDER2D_TYPE {
-    UNDEF = 0,
-    CT_BOX_2D,
-    CT_CIRCLE_2D
-} LZH_COLLIDER2D_TYPE;
-
 /* 碰撞回调 */
 typedef void (*LZH_COLLIDER2D_CB)(LZH_OBJECT *self, LZH_OBJECT *target, void *args);
 
-/* 创建碰撞组件 */
+/* 创建碰撞组件，默认类型为 BOX */
 LZH_API LZH_COLLIDER2D *lzh_collider2d_create(LZH_RIGIDBODY2D *body);
 
 /* 销毁碰撞组件 */
 LZH_API void lzh_collider2d_destroy(LZH_COLLIDER2D *collider);
 
-/* 设置碰撞器参数 */
-LZH_API void lzh_collider2d_set_type(
-    LZH_COLLIDER2D *collider, LZH_COLLIDER2D_TYPE type);
-
 /* 设置方形碰撞器，如果碰撞器形状是其他形状，则无效 */
-LZH_API void lzh_collider2d_set_rect(
+LZH_API void lzh_collider2d_set_box(
     LZH_COLLIDER2D *collider, float cx, float cy, float w, float h);
 
 /* 设置圆形碰撞器，如果碰撞器形状是其他形状，则无效 */

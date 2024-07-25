@@ -372,17 +372,14 @@ void *lzh_b2_fixture_get_data(LZH_B2_FIXUTRE *fixture)
     return NULL;
 }
 
-LZH_B2_SHAPE_CIRCLE *lzh_b2_shape_circle_create(const LZH_VEC2F *center, float radius)
+LZH_B2_SHAPE_CIRCLE *lzh_b2_shape_circle_create(float cx, float cy, float radius)
 {
     b2CircleShape *bc = new b2CircleShape();
     if (!bc) {
         return NULL;
     }
 
-    bc->m_p.SetZero();
-    if (center) {
-        bc->m_p.Set(center->x, center->y);
-    }
+    bc->m_p.Set(cx, cy);
     bc->m_radius = radius;
 
     LZH_B2_SHAPE_CIRCLE *circle = (LZH_B2_SHAPE_CIRCLE *)LZH_MALLOC(sizeof(LZH_B2_SHAPE_CIRCLE));
@@ -408,7 +405,7 @@ void lzh_b2_shape_circle_destroy(LZH_B2_SHAPE_CIRCLE *circle)
     }
 }
 
-LZH_B2_SHAPE_BOX *lzh_b2_shape_box_create(const LZH_VEC2F *center, float ew, float eh)
+LZH_B2_SHAPE_BOX *lzh_b2_shape_box_create(float cx, float cy, float ew, float eh)
 {
     b2PolygonShape *bp = new b2PolygonShape();
     if (!bp) {
@@ -416,11 +413,7 @@ LZH_B2_SHAPE_BOX *lzh_b2_shape_box_create(const LZH_VEC2F *center, float ew, flo
     }
 
     b2Vec2 ct;
-
-    ct.SetZero();
-    if (center) {
-        ct.Set(center->x, center->y);
-    }
+    ct.Set(cx, cy);
     bp->SetAsBox(ew, eh, ct, 0.0f);
 
     LZH_B2_SHAPE_BOX *box = (LZH_B2_SHAPE_BOX *)LZH_MALLOC(sizeof(LZH_B2_SHAPE_BOX));

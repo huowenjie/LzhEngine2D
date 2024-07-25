@@ -1,6 +1,7 @@
 #include <lzh_sprite.h>
 #include <lzh_object.h>
 #include <lzh_transform.h>
+#include <lzh_rigidbody2d.h>
 #include <lzh_collider2d.h>
 #include <cstddef>
 #include <cmath>
@@ -17,7 +18,10 @@ Bullet::Bullet(LZH_ENGINE *eg, Scene *scene, LZH_UINT32 roles) : GameObject(eg, 
 {
     objType = OT_Bullet;
     bulletSp = lzh_sprite_create(eg, object, GetTankBulletPath());
-    //collider = lzh_collider_create(eg, object);
+    
+    rigidbody = lzh_rigidbody2d_create(eg, object);
+    collider = lzh_collider2d_create(rigidbody);
+
     moveSpeed = 5.0f;
     fireDistance = 100.0f;
     isExplode = false;
@@ -32,17 +36,8 @@ Bullet::Bullet(LZH_ENGINE *eg, Scene *scene, LZH_UINT32 roles) : GameObject(eg, 
     lzh_object_set_name(object, name);
 
     lzh_transform_scale(transform, 0.5f, 0.5f, 1.0f);
-
-#if 0
-    LZH_COLLIDER_PARAM param;
-    param.type = BOX_2D;
-    param.box2d.cx = 0.0f;
-    param.box2d.cy = 0.0f;
-    param.box2d.w = 0.5f;
-    param.box2d.h = 0.5f;
-    lzh_collider_set_param(collider, &param);
-    lzh_collider_set_start_contact(collider, GameObject::ColliderObjectCb, this);
-#endif
+    lzh_collider2d_set_box(collider, 0.0f, 0.0f, 0.5f, 0.5f);
+    lzh_collider2d_set_start_contact(collider, GameObject::ColliderObjectCb, this);
 }
 
 Bullet::~Bullet()

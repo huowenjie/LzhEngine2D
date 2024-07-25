@@ -8,6 +8,7 @@
 #include "../engine/lzh_core_engine.h"
 #include "../component/lzh_core_camera.h"
 #include "../component/lzh_core_collider2d.h"
+#include "../component/lzh_core_rigidbody2d.h"
 
 #include "lzh_scene_manager.h"
 
@@ -161,6 +162,8 @@ LZH_BOOL lzh_scene_raycast2d(
     LZH_BOOL is_hit = LZH_FALSE;
     LZH_VEC2F start = lzh_vec2f_xy(sx, sy);
     LZH_VEC2F end = lzh_vec2f_xy(ex, ey);
+    LZH_COLLIDER2D *collider = NULL;
+    LZH_RIGIDBODY2D *rigidbody = NULL;
 
     if (!scene || !scene->world2d) {
         return LZH_FALSE;
@@ -187,7 +190,13 @@ LZH_BOOL lzh_scene_raycast2d(
         goto end;
     }
 
-    info->hitobj = (LZH_OBJECT *)lzh_b2_fixture_get_data(hitinfo.fixture);
+    collider = (LZH_COLLIDER2D *)lzh_b2_fixture_get_data(hitinfo.fixture);
+    if (!collider || !collider->rigidbody) {
+        goto end;
+    }
+
+    rigidbody = collider->rigidbody;
+    info->hitobj = rigidbody->base.object;
     info->hx = hitinfo.point.x;
     info->hy = hitinfo.point.y;
     info->nx = hitinfo.normal.x;
@@ -271,22 +280,28 @@ void lzh_scene_begine_contact(LZH_B2_FIXUTRE *fixa, LZH_B2_FIXUTRE *fixb, void *
 {
     if (fixa && fixb) {
         /* 将碰撞结果回调到各个对象的 collider 组件 */
-        LZH_OBJECT *oa = (LZH_OBJECT *)lzh_b2_fixture_get_data(fixa);
-        LZH_OBJECT *ob = (LZH_OBJECT *)lzh_b2_fixture_get_data(fixb);
+        LZH_COLLIDER2D *clda = (LZH_COLLIDER2D *)lzh_b2_fixture_get_data(fixa);
+        LZH_COLLIDER2D *cldb = (LZH_COLLIDER2D *)lzh_b2_fixture_get_data(fixb);
+        LZH_RIGIDBODY2D *rigida = NULL;
+        LZH_RIGIDBODY2D *rigidb = NULL;
 
-        if (!oa || !ob) {
+        if (!clda || !cldb) {
             return;
         }
 
-        LZH_COLLIDER2D *collider = 
-            (LZH_COLLIDER2D *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER2D);
-        if (collider && collider->start_contact) {
-            collider->start_contact(oa, ob, collider->start_contact_args);
+        rigida = clda->rigidbody;
+        rigidb = cldb->rigidbody;
+
+        if (!rigida || !rigidb) {
+            return;
         }
 
-        collider = (LZH_COLLIDER2D *)lzh_cpnt_get_type(ob->components, LZH_CPNT_COLLIDER2D);
-        if (collider && collider->start_contact) {
-            collider->start_contact(ob, oa, collider->start_contact_args);
+        if (clda->start_contact) {
+            clda->start_contact(rigida->base.object, rigidb->base.object, clda->start_contact_args);
+        }
+
+        if (cldb->start_contact) {
+            cldb->start_contact(rigidb->base.object, rigida->base.object, cldb->start_contact_args);
         }
     }
 }
@@ -294,22 +309,28 @@ void lzh_scene_begine_contact(LZH_B2_FIXUTRE *fixa, LZH_B2_FIXUTRE *fixb, void *
 void lzh_scene_end_contact(LZH_B2_FIXUTRE *fixa, LZH_B2_FIXUTRE *fixb, void *args)
 {
     if (fixa && fixb) {
-        LZH_OBJECT *oa = (LZH_OBJECT *)lzh_b2_fixture_get_data(fixa);
-        LZH_OBJECT *ob = (LZH_OBJECT *)lzh_b2_fixture_get_data(fixb);
+        LZH_COLLIDER2D *clda = (LZH_COLLIDER2D *)lzh_b2_fixture_get_data(fixa);
+        LZH_COLLIDER2D *cldb = (LZH_COLLIDER2D *)lzh_b2_fixture_get_data(fixb);
+        LZH_RIGIDBODY2D *rigida = NULL;
+        LZH_RIGIDBODY2D *rigidb = NULL;
 
-        if (!oa || !ob) {
+        if (!clda || !cldb) {
             return;
         }
 
-        LZH_COLLIDER2D *collider = 
-            (LZH_COLLIDER2D *)lzh_cpnt_get_type(oa->components, LZH_CPNT_COLLIDER2D);
-        if (collider && collider->end_contact) {
-            collider->end_contact(oa, ob, collider->end_contact_args);
+        rigida = clda->rigidbody;
+        rigidb = cldb->rigidbody;
+
+        if (!rigida || !rigidb) {
+            return;
         }
 
-        collider = (LZH_COLLIDER2D *)lzh_cpnt_get_type(ob->components, LZH_CPNT_COLLIDER2D);
-        if (collider && collider->end_contact) {
-            collider->end_contact(ob, oa, collider->end_contact_args);
+        if (clda->end_contact) {
+            clda->end_contact(rigida->base.object, rigidb->base.object, clda->end_contact_args);
+        }
+
+        if (cldb->end_contact) {
+            cldb->end_contact(rigidb->base.object, rigida->base.object, cldb->end_contact_args);
         }
     }
 }

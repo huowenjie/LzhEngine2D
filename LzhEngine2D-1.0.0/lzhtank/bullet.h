@@ -26,7 +26,8 @@ protected:
 
 protected:
     LZH_SPRITE *bulletSp;
-    //LZH_COLLIDER *collider;
+    LZH_RIGIDBODY2D *rigidbody;
+    LZH_COLLIDER2D *collider;
 
     // ÒÆ¶¯ËÙ¶È
     float moveSpeed;

@@ -125,13 +125,13 @@ void lzh_b2_fixture_set_data(LZH_B2_FIXUTRE *fixture, void *data);
 void *lzh_b2_fixture_get_data(LZH_B2_FIXUTRE *fixture);
 
 /* 创建圆形形状 */
-LZH_B2_SHAPE_CIRCLE *lzh_b2_shape_circle_create(const LZH_VEC2F *center, float radius);
+LZH_B2_SHAPE_CIRCLE *lzh_b2_shape_circle_create(float cx, float cy, float radius);
 
 /* 销毁圆形形状 */
 void lzh_b2_shape_circle_destroy(LZH_B2_SHAPE_CIRCLE *circle);
 
 /* 创建方盒形状 */
-LZH_B2_SHAPE_BOX *lzh_b2_shape_box_create(const LZH_VEC2F *center, float ew, float eh);
+LZH_B2_SHAPE_BOX *lzh_b2_shape_box_create(float cx, float cy, float ew, float eh);
 
 /* 销毁方盒形状 */
 void lzh_b2_shape_box_destroy(LZH_B2_SHAPE_BOX *box);

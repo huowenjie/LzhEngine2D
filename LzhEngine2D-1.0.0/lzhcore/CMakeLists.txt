@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project(lzhcore LANGUAGES C CXX)
+project(lzhcore LANGUAGES C CXX VERSION ${LZH_ENGINE_VERSION_MAJOR}.${LZH_ENGINE_VERSION_MINOR})
 
 # 指定静态库目录
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
+# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
 
 # 指定动态库文件目录
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
 
 # 指定可执行文件目录
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
 
 # 指定源文件 
 aux_source_directory(. SRCFILE)
@@ -36,11 +36,14 @@ add_library(lzhcore SHARED ${SRCFILE})
 # 生成位置无关代码
 set_property(TARGET lzhcore PROPERTY POSITION_INDEPENDENT_CODE ON)
 
+# 生成 soname 版本号
+set_target_properties(lzhcore PROPERTIES VERSION ${LZH_ENGINE_VERSION_MAJOR}.${LZH_ENGINE_VERSION_MINOR} SOVERSION ${LZH_ENGINE_VERSION_MAJOR})
+
 # 指定头文件目录
-target_include_directories(lzhcore PUBLIC ${PROJECT_SOURCE_DIR}/../include)
+target_include_directories(lzhcore PUBLIC ${CMAKE_PROJECT_ROOT}/include)
 target_include_directories(lzhcore PRIVATE ${PROJECT_SOURCE_DIR}/.)
-target_include_directories(lzhcore PRIVATE ${PROJECT_SOURCE_DIR}/../freetype)
-target_include_directories(lzhcore PRIVATE ${PROJECT_SOURCE_DIR}/../sdl2)
+target_include_directories(lzhcore PRIVATE ${CMAKE_PROJECT_ROOT}/../freetype)
+target_include_directories(lzhcore PRIVATE ${CMAKE_PROJECT_ROOT}/../sdl2)
 
 # 指定依赖库
 target_link_libraries(lzhcore PRIVATE SDL2)

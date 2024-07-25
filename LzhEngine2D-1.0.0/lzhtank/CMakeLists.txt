@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project(lzhtank LANGUAGES C CXX)
+project(lzhtank LANGUAGES C CXX VERSION 1.0.0)
 
 # 指定静态库目录
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
+# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
 
 # 指定动态库文件目录
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
 
 # 指定可执行文件目录
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
 
 # 指定源文件 
 aux_source_directory(. SRCFILE)
@@ -30,9 +30,8 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "$ORIGIN/.")
 
 # 指定头文件目录
-include_directories(lzhtank PRIVATE ${PROJECT_SOURCE_DIR}/../include)
-include_directories(lzhtank PRIVATE ${PROJECT_SOURCE_DIR}/../glm)
-include_directories(lzhtank PRIVATE ${PROJECT_SOURCE_DIR}/.)
+include_directories(lzhtank PRIVATE ${CMAKE_PROJECT_ROOT}/../include)
+include_directories(lzhtank PRIVATE ${CMAKE_PROJECT_ROOT}/../glm)
 
 # 指定依赖库
 target_link_libraries(lzhtank lzhcore)

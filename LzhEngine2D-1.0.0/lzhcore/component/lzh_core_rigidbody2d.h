@@ -4,8 +4,8 @@
 #include <lzh_rigidbody2d.h>
 #include <lzh_rbtree.h>
 
-#include "../box2d/lzh_b2_api.h"
 #include "lzh_component.h"
+#include "../box2d/lzh_b2_api.h"
 
 /*===========================================================================*/
 /* 刚体组件定义(内部) */
@@ -15,7 +15,7 @@ RBTREE_DECLARE(CLD2D, cld2d, int, LZH_COLLIDER2D *)
 
 struct LZH_RIGIDBODY2D {
     LZH_COMPONENT base;                 /* 基本组件信息 */
-    LZH_B2_BODY *b2_body;               /* 2d 物理引擎刚体对象 */
+    LZH_B2_BODY *b2body;                /* box2d 物理引擎刚体对象 */
 
     CLD2D_RB_TREE *collider2ds;         /* 碰撞体列表 */
 };

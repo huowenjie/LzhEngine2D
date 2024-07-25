@@ -34,7 +34,7 @@ void lzh_rigidbody2d_add_cld2d(
 {
     if (rigidbody && collider2d) {
         collider2d->rigidbody = rigidbody;
-        cld2d_rb_insert(rigidbody->collider2ds, collider2d->hash, collider2d);
+        cld2d_rb_insert(rigidbody->collider2ds, collider2d->id, collider2d);
     }
 }
 
@@ -42,7 +42,7 @@ void lzh_rigibody2d_remove_cld2d(LZH_RIGIDBODY2D *rigidbody, LZH_COLLIDER2D *col
 {
     if (rigidbody && collider2d) {
         cld2d_rb_delete(
-            rigidbody->collider2ds, collider2d->hash,
+            rigidbody->collider2ds, collider2d->id,
             lzh_rigidbody2d_cld2d_delvisit, NULL);
     }
 }

@@ -3,8 +3,8 @@
 
 #include <lzh_collider2d.h>
 
-#include "../box2d/lzh_b2_api.h"
 #include "lzh_component.h"
+#include "../box2d/lzh_b2_api.h"
 
 /*===========================================================================*/
 /* 碰撞体定义(内部) */
@@ -12,10 +12,10 @@
 
 /* 碰撞体对象 */
 struct LZH_COLLIDER2D {
-    LZH_HASH_CODE hash;                 /* 对象哈希值 */
+    int id;                             /* 对象标识 */
 
     LZH_RIGIDBODY2D *rigidbody;         /* 所属 rigidbody */
-    LZH_B2_FIXUTRE *b2_fixture;         /* 2d 固定组件 */
+    LZH_B2_FIXUTRE *b2fixture;         /* 2d 固定组件 */
 
     LZH_COLLIDER2D_CB start_contact;    /* 开始碰撞回调 */
     LZH_COLLIDER2D_CB end_contact;      /* 结束碰撞回调 */
@@ -25,7 +25,21 @@ struct LZH_COLLIDER2D {
 };
 
 /* 移除碰撞体 */
-void lzh_collider2d_remove(LZH_COLLIDER2D *collider2d);
+void lzh_collider2d_remove(LZH_COLLIDER2D *collider);
+
+/* 组件加载到对象中 */
+void lzh_collider2d_load(LZH_COLLIDER2D *collider, LZH_RIGIDBODY2D *body);
+
+/* 组件从对象中移除 */
+void lzh_collider2d_unload(LZH_COLLIDER2D *collider, LZH_RIGIDBODY2D *body);
+
+/* 创建 box2d 形状 */
+void lzh_collider2d_create_box2d(
+    LZH_COLLIDER2D *collider, float cx, float cy, float w, float h);
+
+/* 创建 circle2d 形状 */
+void lzh_collider2d_create_circle2d(
+    LZH_COLLIDER2D *collider, float cx, float cy, float r);
 
 /*===========================================================================*/
 
