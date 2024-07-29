@@ -1,85 +1,163 @@
-#ifndef __SR_VEC3F_H__
-#define __SR_VEC3F_H__
+#ifndef __LZH_VEC3D_H__
+#define __LZH_VEC3D_H__
 
-#include "sr_vec2f.h"
+#include "LzhVector2d.h"
 
 //-----------------------------------------------------------------------------
 // 3 维向量
 //-----------------------------------------------------------------------------
 
-class SR_Vec3f
+template <typename T>
+class Lzh_Vec3d
 {
 public:
-    SR_Vec3f();
-    SR_Vec3f(float xyz);
-    SR_Vec3f(const SR_Vec2f &v, float z = 0.0f);
-    SR_Vec3f(float x, float y, float z);
-    SR_Vec3f(const SR_Vec3f &v);
-    ~SR_Vec3f();
+    Lzh_Vec3d()
+    {
+        this->x = 0;
+        this->y = 0;
+        this->z = 0;
+    }
+
+    Lzh_Vec3d(T xyz)
+    {
+        this->x = xyz;
+        this->y = xyz;
+        this->z = xyz;
+    }
+
+    Lzh_Vec3d(const Lzh_Vec2d<T> &v, T z = 0)
+    {
+        this->x = v.x;
+        this->y = v.y;
+        this->z = z;
+    }
+
+    Lzh_Vec3d(T x, T y, T z)
+    {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
 
 public:
     // 向量点乘
-    static float dot(const SR_Vec3f &v1, const SR_Vec3f &v2);
+    static T Dot(const Lzh_Vec3d &v1, const Lzh_Vec3d &v2)
+    {
+        T t = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+        return t;
+    }
 
     // 向量叉乘
-    static SR_Vec3f cross(const SR_Vec3f &v1, const SR_Vec3f &v2);
-
-    // 向量叉乘的模
-    static float crossValue(const SR_Vec3f &v1, const SR_Vec3f &v2);
+    static Lzh_Vec3d Cross(const Lzh_Vec3d &v1, const Lzh_Vec3d &v2)
+    {
+        return Lzh_Vec3d(
+            v1.y * v2.z - v1.z * v2.y,
+            v1.z * v2.x - v1.x * v2.z,
+            v1.x * v2.y - v1.y * v2.x
+        );
+    }
 
     // 求向量的夹角，弧度
-    static float angle(const SR_Vec3f &v1, const SR_Vec3f &v2);
+    static float Angle(const Lzh_Vec3d &v1, const Lzh_Vec3d &v2)
+    {
+        float len = (float)(v1.Length() * v2.Length());
+        float dot = (float)v1.Dot(v2);
+        return std::acos(dot / len);
+    }
 
     // 向量归一化并返回一个新向量
-    static SR_Vec3f normalize(const SR_Vec3f &v);
+    static Lzh_Vec3d Normalize(const Lzh_Vec3d &v)
+    {
+        T len = v.Length();
+        return v / len;
+    }
 
     // p = (1 - t) * a + t * b 当 t = 0 时返回 a，否则返回 b
-    static SR_Vec3f lerp(const SR_Vec3f &a, const SR_Vec3f &b, float t);
+    static Lzh_Vec3d Lerp(const Lzh_Vec3d &a, const Lzh_Vec3d &b, float t)
+    {
+        return a * (1.0f - t) + b * t;
+    }
+
+    // if a.x > b.x x => x = 0 : x = 1; y、z 同理
+    static Lzh_Vec3d Step(const Lzh_Vec3d &a, const Lzh_Vec3d &b)
+    {
+        return Lzh_Vec3d(
+            (T)(a.x > b.x ? 0 : 1),
+            (T)(a.y > b.y ? 0 : 1),
+            (T)(a.z > b.z ? 0 : 1));
+    }
 
 public:
-    SR_Vec3f & operator=(const SR_Vec3f &v);
+    Lzh_Vec3d operator+(const Lzh_Vec3d &v) const
+    {
+        return Lzh_Vec3d(this->x + v.x, this->y + v.y, this->z + v.z);
+    }
 
-    // 向量加法和减法
-    SR_Vec3f operator+(const SR_Vec3f &v) const;
-    SR_Vec3f operator-(const SR_Vec3f &v) const;
+    Lzh_Vec3d operator-(const Lzh_Vec3d &v) const
+    {
+        return Lzh_Vec3d(this->x - v.x, this->y - v.y, this->z - v.z);
+    }
 
     // 取反向量
-    SR_Vec3f operator-() const;
+    Lzh_Vec3d operator-() const
+    {
+        return Lzh_Vec3d(-this->x, -this->y, -this->z);
+    }
 
     // 向量和实数相乘
-    SR_Vec3f operator*(float t) const;
-    friend SR_Vec3f operator*(float t, const SR_Vec3f &v);
+    Lzh_Vec3d operator*(T t) const
+    {
+        return Lzh_Vec3d(this->x * t, this->y * t, this->z * t);
+    }
 
-    // 向量和实数相除
-    SR_Vec3f operator/(float t) const;
+    friend Lzh_Vec3d operator*(T t, const Lzh_Vec3d &v)
+    {
+        return Lzh_Vec3d(v.x * t, v.y * t, v.z * t);
+    }
 
-    // 向量长度
-    float length() const;
-
-    // 向量点乘
-    float dot(const SR_Vec3f &v) const;
-
-    // 和另一个向量的夹角
-    float angle(const SR_Vec3f &v) const;
-
-    // 和另一个向量叉乘的值
-    float crossValue(const SR_Vec3f &v) const;
-
-    // 向量叉乘
-    SR_Vec3f cross(const SR_Vec3f &v) const;
-
-    // 将当前向量归一化
-    void normalize();
-
-    // 打印向量
-    void printValue(const char *title = nullptr) const;
+    Lzh_Vec3d operator/(T t) const
+    {
+        return Lzh_Vec3d(this->x / t, this->y / t, this->z / t);
+    }
 
 public:
-    float x;
-    float y;
-    float z;
+    // 向量长度
+    T Length() const
+    {
+        float val = x * x + y * y + z * z;
+        return (T)std::sqrt(val);
+    }
+
+    // 向量点乘
+    T Dot(const Lzh_Vec3d &v) const
+    {
+        return Lzh_Vec3d::Dot(*this, v);
+    }
+
+    // 和另一个向量的夹角
+    T Angle(const Lzh_Vec3d &v) const
+    {
+        return Lzh_Vec3d::Angle(*this, v);
+    }
+
+    // 向量叉乘
+    Lzh_Vec3d Cross(const Lzh_Vec3d &v) const
+    {
+        return Lzh_Vec3d::Cross(*this, v);
+    }
+
+    // 向量归一化
+    void Normalize()
+    {
+        *this = Lzh_Vec3d::Normalize(*this);
+    }
+
+public:
+    T x;
+    T y;
+    T z;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // __SR_VEC3F_H__
+#endif // __LZH_VEC3D_H__

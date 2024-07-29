@@ -1,3 +1,4 @@
+#if 0
 #include <lzh_scene.h>
 #include <lzh_object.h>
 
@@ -157,5 +158,5 @@ void Scene::ClearSceneObjects()
     }
     sceneObjects.clear();
 }
-
+#endif
 /*===========================================================================*/

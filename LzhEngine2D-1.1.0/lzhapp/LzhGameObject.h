@@ -1,3 +1,4 @@
+#if 0
 #ifndef __GAMEOBJECT_H__
 #define __GAMEOBJECT_H__
 
@@ -138,5 +139,5 @@ protected:
 };
 
 /*===========================================================================*/
-
+#endif
 #endif /* __GAMEOBJECT_H__ */

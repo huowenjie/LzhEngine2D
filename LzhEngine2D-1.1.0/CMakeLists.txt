@@ -36,4 +36,4 @@ add_compile_options(-fexec-charset=utf-8)
 
 # 指定子项目
 add_subdirectory(lzhcore)
-add_subdirectory(lzhtank)
+add_subdirectory(lzhphysics)

@@ -1,3 +1,4 @@
+#if 0
 #include <lzh_object.h>
 #include <lzh_transform.h>
 #include <stddef.h>
@@ -302,3 +303,4 @@ void GameObject::ColliderObjectEndCb(LZH_OBJECT *self, LZH_OBJECT *target, void 
 }
 
 /*===========================================================================*/
+#endif

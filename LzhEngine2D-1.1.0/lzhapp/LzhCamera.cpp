@@ -1,3 +1,4 @@
+#if 0
 #include <lzh_object.h>
 #include <lzh_camera.h>
 #include <lzh_transform.h>
@@ -36,3 +37,4 @@ float Camera::GetViewHeight() const
 }
 
 /*===========================================================================*/
+#endif
