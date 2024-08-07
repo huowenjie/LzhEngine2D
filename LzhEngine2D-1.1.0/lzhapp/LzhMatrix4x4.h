@@ -78,39 +78,75 @@ public:
 
 public:
     // 缩放变换
-    static Lzh_Mat4x4f ScaleMatrix(float sx, float sy, float sz)
+    static Lzh_Mat4x4f ScaleMatrix(T sx, T sy, T sz)
     {
-        
+        Lzh_Mat4x4f mat;
+        mat.m00 = sx;
+        mat.m11 = sy;
+        mat.m22 = sz;
+        return mat;
     }
 
     // 围绕 z 轴的旋转的旋转矩阵
     static Lzh_Mat4x4f RotateZMatrix(float theta)
     {
-        
+        Lzh_Mat4x4f mat;
+        mat.m00 = (T)cos(theta);
+        mat.m01 = (T)-sin(theta);
+        mat.m10 = (T)sin(theta);
+        mat.m11 = (T)cos(theta);
+        return mat;
     }
 
     // 围绕 X 轴的旋转的旋转矩阵
     static Lzh_Mat4x4f RotateXMatrix(float theta)
     {
-        
+        Lzh_Mat4x4f mat;
+        mat.m11 = (T)cos(theta);
+        mat.m12 = (T)-sin(theta);
+        mat.m21 = (T)sin(theta);
+        mat.m22 = (T)cos(theta);
+        return mat;
     }
 
     // 围绕 Y 轴的旋转的旋转矩阵
     static Lzh_Mat4x4f RotateYMatrix(float theta)
     {
-        
+        Lzh_Mat4x4f mat;
+        mat.m00 = (T)cos(theta);
+        mat.m20 = (T)-sin(theta);
+        mat.m02 = (T)sin(theta);
+        mat.m22 = (T)cos(theta);
+        return mat;
+    }
+
+    // 构建镜像矩阵
+    static Lzh_Mat4x4f ReflectMatrix(const Lzh_Vec3d<T> &n)
+    {
+        Lzh_Mat4x4f mat;
+
+        T ax = -2 * n->x;
+        T ay = -2 * n->y;
+        T az = -2 * n->z;
+
+        mat.m00 = 1 + ax * n->x;
+        mat.m11 = 1 + ay * n->y;
+        mat.m22 = 1 + az * n->z;
+
+        mat.m01 = mat.m10 = ax * n->y;
+        mat.m02 = mat.m20 = ax * n->z;
+        mat.m12 = mat.m21 = ay * n->z;
+        return mat;
     }
 
     // 平移矩阵
-    static Lzh_Mat4x4f TranslateMatrix(float dx, float dy, float dz)
+    static Lzh_Mat4x4f TranslateMatrix(T dx, T dy, T dz)
     {
-        Lzh_Mat4x4f trans;
-
+        Lzh_Mat4x4f mat;
         mat.m03 = dx;
         mat.m13 = dy;
         mat.m23 = dz;
-
-        return trans;
+        return mat;
     }
 
     /**
@@ -198,13 +234,14 @@ public:
     }
 
     // 正交投影矩阵
-    static Lzh_Mat4x4f OrthoMatrix(const Lzh_Vec3d<T> &l, const Lzh_Vec3d<T> &h)
+    static Lzh_Mat4x4f OrthoMatrix(
+        float left, float top, float right, float bottom, float near, float far)
     {
         Lzh_Mat4x4f ortho;
 
-        ortho.m00 =   (T)((2.0f) / (right - left));
-        ortho.m11 =   (T)((2.0f) / (top - bottom));
-        ortho.m22 = - (T)((2.0f) / (far - near));
+        ortho.m00 =   (T)(2.0f / (right - left));
+        ortho.m11 =   (T)(2.0f / (top - bottom));
+        ortho.m22 = - (T)(2.0f / (far - near));
 
         ortho.m03 = - (right + left) / (right - left);
         ortho.m13 = - (top + bottom) / (top - bottom);
@@ -213,7 +250,7 @@ public:
     }
 
     // 正交投影矩阵(2D)
-    static Lzh_Mat4x4f Ortho2dMatrix(const Lzh_Vec3d<T> &l, const Lzh_Vec3d<T> &h)
+    static Lzh_Mat4x4f Ortho2dMatrix(float left, float top, float right, float bottom)
     {
         Lzh_Mat4x4f ortho;
 
@@ -254,7 +291,7 @@ public:
     }
 
     // 乘
-    Lzh_Mat4x4f operator*(float val) const
+    Lzh_Mat4x4f operator*(T val) const
     {
         Lzh_Mat4x4f tmp(*this);
 
@@ -266,7 +303,7 @@ public:
         return tmp;
     }
 
-    friend Lzh_Mat4x4f operator*(float val, const Lzh_Mat4x4f &mat)
+    friend Lzh_Mat4x4f operator*(T val, const Lzh_Mat4x4f &mat)
     {
         Lzh_Mat4x4f tmp(mat);
 

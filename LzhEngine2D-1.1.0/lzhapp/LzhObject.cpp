@@ -1,4 +1,3 @@
-#if 0
 #include <lzh_mem.h>
 #include "object.h"
 
@@ -35,4 +34,3 @@ void Object::operator delete[](void *pt)
 }
 
 /*===========================================================================*/
-#endif

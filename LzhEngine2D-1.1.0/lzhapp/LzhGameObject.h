@@ -1,38 +1,19 @@
-#if 0
 #ifndef __GAMEOBJECT_H__
 #define __GAMEOBJECT_H__
-
+#if 0
 #include <lzh_engine.h>
 #include <string>
 #include <glm.hpp>
 
 #include "object.h"
 
-/*===========================================================================*/
-/* 对象 */
-/*===========================================================================*/
+//=============================================================================
+// 对象
+//=============================================================================
 
 class Scene;
 class GameObject : public Object
 {
-public:
-    enum ObjectType {
-        OT_Object = 0,
-        OT_Player,
-        OT_Tank,
-        OT_Enemy,
-        OT_Camera,
-        OT_Bullet,
-        OT_Explode,
-        OT_UI
-    };
-
-    enum RoleType {
-        RT_None = 0x00000000U,
-        RT_Player = 0x00000001U,
-        RT_Enemy = 0x00000002U,
-    };
-
 public:
     GameObject(LZH_ENGINE *eg, Scene *scene);
     GameObject(LZH_ENGINE *eg, LZH_OBJECT *obj, Scene *scene);
@@ -138,6 +119,6 @@ protected:
     LZH_UINT32 targetRole;
 };
 
-/*===========================================================================*/
+//=============================================================================
 #endif
 #endif /* __GAMEOBJECT_H__ */
